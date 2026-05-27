@@ -6,6 +6,8 @@ COPY package*.json ./
 RUN npm ci --include=dev
 
 COPY . .
+ARG VITE_BASE_PATH=/
+ENV VITE_BASE_PATH=$VITE_BASE_PATH
 RUN npm run build
 
 FROM nginx:1.27-alpine
