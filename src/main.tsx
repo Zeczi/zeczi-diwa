@@ -14,13 +14,16 @@ import {
   Gauge,
   Inbox,
   Layers3,
+  Mail,
   MessageSquareText,
   PanelLeftClose,
   PanelLeftOpen,
   PhoneCall,
   PlugZap,
+  Send,
   Search,
   Sparkles,
+  Star,
   Target,
   UserRoundCheck,
   Zap,
@@ -124,6 +127,7 @@ const pipelineStages = [
 ];
 
 const cockpitStatusRow = [
+  { id: "All", label: "All", count: 392, value: "$3.62m", tone: "all" },
   { label: "Critical", count: 7, value: "$132k", tone: "critical" },
   { label: "Ready To Close", count: 9, value: "$318k", tone: "ready" },
   { label: "Hot", count: 17, value: "$200k", tone: "hot" },
@@ -355,6 +359,49 @@ const v3AiActivity = [
 
 function money(value: number) {
   return `$${value.toLocaleString("en-NZ")}`;
+}
+
+function normaliseStatusLabel(label: string) {
+  return label.toLowerCase().replace(/\s+/g, "-");
+}
+
+function getHeatBand(deal: (typeof v3Deals)[number]) {
+  if (deal.closeLikelihood > 85) return "Ready to Close";
+  if (deal.closeLikelihood >= 70) return "Hot";
+  if (deal.closeLikelihood >= 50) return "Drifting";
+  return "Stale";
+}
+
+function isCriticalDeal(deal: (typeof v3Deals)[number]) {
+  return (
+    deal.category === "Human Required" ||
+    deal.aiStatus.toLowerCase().includes("human") ||
+    deal.urgency >= 90 ||
+    (deal.stage === "Prepare Quote" && deal.assessmentStatus === "Completed" && deal.readiness <= 55)
+  );
+}
+
+function getQueueSignal(deal: (typeof v3Deals)[number]) {
+  if (isCriticalDeal(deal)) return "Critical";
+  return getHeatBand(deal);
+}
+
+function getRecommendedChannel(deal: (typeof v3Deals)[number]) {
+  const text = `${deal.nextAction} ${deal.preferredChannel}`.toLowerCase();
+  if (text.includes("whatsapp")) return "WhatsApp";
+  if (text.includes("sms")) return "SMS";
+  if (text.includes("email") || text.includes("draft") || text.includes("send")) return "Email";
+  return "Call";
+}
+
+function HeatScore({ deal }: { deal: (typeof v3Deals)[number] }) {
+  const signal = getQueueSignal(deal);
+  return (
+    <span className={`v3-heat ${normaliseStatusLabel(signal)}`}>
+      <b>{deal.closeLikelihood}%</b>
+      <small>{signal}</small>
+    </span>
+  );
 }
 
 const cockpitQueue = [
@@ -842,12 +889,13 @@ function App() {
 }
 
 function CockpitV4() {
-  const [activeStage, setActiveStage] = React.useState("All");
+  const [activeStage, setActiveStage] = React.useState<string | null>(null);
+  const [activeStatus, setActiveStatus] = React.useState<string | null>(null);
   const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
   const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
   const selectedDeal = v3Deals.find((deal) => deal.id === selectedId) ?? v3Deals[0];
   const stageDeals = React.useMemo(() => {
-    if (activeStage === "All") return v3Deals;
+    if (!activeStage || activeStage === "All") return v3Deals;
     if (activeStage.includes("Human Required")) {
       return v3Deals.filter((deal) => deal.category === "Human Required" || deal.aiStatus.includes("human"));
     }
@@ -857,7 +905,12 @@ function CockpitV4() {
     if (activeStage === "Prepare Quote") return v3Deals.filter((deal) => deal.stage === "Prepare Quote");
     return v3Deals.filter((deal) => deal.stage === activeStage);
   }, [activeStage]);
-  const queueDeals = stageDeals.length > 0 ? stageDeals : v3Deals;
+  const statusDeals = React.useMemo(() => {
+    if (!activeStatus || activeStatus === "All") return stageDeals;
+    if (activeStatus === "Critical") return stageDeals.filter(isCriticalDeal);
+    return stageDeals.filter((deal) => getHeatBand(deal) === activeStatus);
+  }, [activeStatus, stageDeals]);
+  const queueDeals = statusDeals.length > 0 ? statusDeals : stageDeals;
 
   return (
     <section className="cockpit-v4" aria-label="DIWA cockpit v4">
@@ -866,7 +919,7 @@ function CockpitV4() {
           <button
             className={`${activeStage === stage.id ? "active" : ""} ${stage.tone ?? ""}`}
             type="button"
-            onClick={() => setActiveStage(stage.id)}
+            onClick={() => setActiveStage((current) => current === stage.id ? null : stage.id)}
             key={stage.id}
           >
             <span>{stage.label}</span>
@@ -878,7 +931,12 @@ function CockpitV4() {
 
       <div className="v4-status-row" aria-label="Cockpit status filters">
         {cockpitStatusRow.map((status) => (
-          <button className={status.tone} type="button" key={status.label}>
+          <button
+            className={`${status.tone} ${activeStatus === status.label ? "active" : ""}`}
+            type="button"
+            onClick={() => setActiveStatus((current) => current === status.label ? null : status.label)}
+            key={status.label}
+          >
             <span>{status.label}</span>
             <strong>{status.count}</strong>
             <em>{status.value}</em>
@@ -890,8 +948,8 @@ function CockpitV4() {
         <section className="panel v4-queue">
           <div className="v3-panel-head">
             <div>
-              <p className="eyebrow">{activeStage === "All" ? "Command Queue" : activeStage}</p>
-              <h3>Deals filtered by pipeline state</h3>
+              <p className="eyebrow">{activeStage && activeStage !== "All" ? activeStage : "Command Queue"}</p>
+              <h3>{activeStage || activeStatus ? "Filtered deal queue" : "Command Queue"}</h3>
             </div>
             <span className="v2-live">{queueDeals.length} shown</span>
           </div>
@@ -900,7 +958,7 @@ function CockpitV4() {
               <button className={deal.id === selectedDeal.id ? "selected" : ""} type="button" onClick={() => setSelectedId(deal.id)} key={deal.id}>
                 <span className="v3-rank">{index + 1}</span>
                 <div><strong>{deal.name}</strong><small>{deal.customer} · {deal.owner} · {deal.lastMeaningful}</small></div>
-                <span className={"v3-risk " + (deal.category === "Human Required" ? "high" : deal.category === "Quote Bottleneck" ? "medium" : "")}>{deal.category}</span>
+                <HeatScore deal={deal} />
                 <strong>{money(deal.value)}</strong>
                 <small>{deal.nextAction}</small>
               </button>
@@ -911,7 +969,7 @@ function CockpitV4() {
         <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <aside className="v4-side">
-          <V4SidePanel view="Context Timeline" />
+          <V4ActionPanel deal={selectedDeal} />
         </aside>
       </div>
     </section>
@@ -924,6 +982,90 @@ function ProfileMenu() {
       <button type="button">Profile</button>
       <button type="button">Settings</button>
       <button type="button">Logout</button>
+    </section>
+  );
+}
+
+function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
+  const recommendedChannel = getRecommendedChannel(deal);
+  const [activeChannel, setActiveChannel] = React.useState(recommendedChannel);
+  const [activityState, setActivityState] = React.useState("Ready to create");
+
+  React.useEffect(() => {
+    setActiveChannel(recommendedChannel);
+    setActivityState("Ready to create");
+  }, [deal.id, recommendedChannel]);
+
+  const channels = [
+    { label: "SMS", icon: MessageSquareText },
+    { label: "WhatsApp", icon: MessageSquareText },
+    { label: "Email", icon: Mail },
+    { label: "Call", icon: PhoneCall },
+  ];
+
+  const channelCopy: Record<string, string> = {
+    SMS: `Hi ${deal.customer.split(" ")[0]}, quick check-in from Eco Lawn. Is now still a good time to move this forward, or should we adjust timing?`,
+    WhatsApp: `Hi ${deal.customer.split(" ")[0]}, just keeping this tidy: ${deal.nextAction}`,
+    Email: `Hi ${deal.customer.split(" ")[0]},\n\nThanks again. The clean next step from here is: ${deal.nextAction}\n\nI can keep this moving once you confirm.`,
+    Call: `Objective: ${deal.nextAction}\n\nOpen by confirming timing, then clarify the real blocker. Avoid discounting unless price is explicitly the decision issue.`,
+  };
+
+  return (
+    <section className="panel v4-action-panel" aria-label="Next best action">
+      <div className="v3-panel-head">
+        <div>
+          <p className="eyebrow">Next Best Action</p>
+          <h3>{deal.customer}</h3>
+        </div>
+        <span className="v2-live">{recommendedChannel}</span>
+      </div>
+
+      <article className="v4-next-step">
+        <strong>{deal.nextAction}</strong>
+        <p>{deal.why}</p>
+        <div>
+          <span>{deal.stage}</span>
+          <span>{deal.owner}</span>
+          <span>{deal.due}</span>
+        </div>
+      </article>
+
+      <div className="v4-channel-tabs" role="tablist" aria-label="Communication channels">
+        {channels.map((channel) => {
+          const Icon = channel.icon;
+          const recommended = channel.label === recommendedChannel;
+          return (
+            <button
+              className={activeChannel === channel.label ? "active" : ""}
+              type="button"
+              onClick={() => setActiveChannel(channel.label)}
+              key={channel.label}
+            >
+              <Icon size={15} />
+              <span>{channel.label}</span>
+              {recommended && <Star size={13} aria-label="Recommended" />}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="v4-composer">
+        <div>
+          <span>{activeChannel === recommendedChannel ? "Recommended channel" : "Alternate channel"}</span>
+          <strong>{activeChannel}</strong>
+        </div>
+        <pre>{channelCopy[activeChannel]}</pre>
+        <div className="v4-activity-actions">
+          <button
+            className="primary-button"
+            type="button"
+            onClick={() => setActivityState(`Activity staged for ${deal.owner} via ${activeChannel}`)}
+          >
+            <Send size={15} /> Create Pipedrive activity
+          </button>
+          <span>{activityState}</span>
+        </div>
+      </div>
     </section>
   );
 }

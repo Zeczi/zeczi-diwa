@@ -1294,7 +1294,7 @@ button:hover {
 
 .v3-command-list button {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 58px 82px;
+  grid-template-columns: 28px minmax(0, 1fr) 86px 82px;
   gap: 8px;
   align-items: center;
   border: 1px solid #292929;
@@ -1348,6 +1348,51 @@ button:hover {
 .v3-risk.medium {
   border-color: rgba(247, 178, 103, 0.46);
   color: #ffd0a0;
+}
+
+.v3-heat {
+  min-height: 34px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1px;
+  border: 1px solid rgba(232, 197, 71, 0.34);
+  border-radius: 7px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.v3-heat b {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.v3-heat small {
+  color: inherit;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.v3-heat.critical {
+  border-color: rgba(242, 95, 92, 0.48);
+  color: #ffb5b3;
+}
+
+.v3-heat.ready-to-close {
+  border-color: rgba(97, 211, 148, 0.44);
+  color: #a6f0c5;
+}
+
+.v3-heat.drifting {
+  border-color: rgba(247, 178, 103, 0.46);
+  color: #ffd0a0;
+}
+
+.v3-heat.stale {
+  border-color: rgba(120, 120, 120, 0.48);
+  color: var(--muted);
 }
 
 .v3-deal-detail,
@@ -1740,8 +1785,13 @@ button:hover {
 }
 
 .v4-stage-strip button.critical {
-  border-color: rgba(242, 95, 92, 0.48);
-  background: rgba(242, 95, 92, 0.07);
+  border-color: #292929;
+  background: #111;
+}
+
+.v4-stage-strip button.critical.active {
+  border-color: rgba(242, 95, 92, 0.54);
+  background: rgba(242, 95, 92, 0.08);
 }
 
 .v4-stage-strip button.quiet {
@@ -1770,7 +1820,7 @@ button:hover {
 
 .v4-status-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1800,23 +1850,42 @@ button:hover {
 }
 
 .v4-status-row .critical {
-  border-color: rgba(242, 95, 92, 0.52);
+  border-color: #292929;
 }
 
-.v4-status-row .ready {
-  border-color: rgba(67, 209, 124, 0.42);
-}
-
-.v4-status-row .hot {
-  border-color: rgba(232, 197, 71, 0.52);
-}
-
+.v4-status-row .ready,
+.v4-status-row .hot,
 .v4-status-row .drifting {
-  border-color: rgba(245, 158, 11, 0.42);
+  border-color: #292929;
 }
 
 .v4-status-row .stale {
+  opacity: 1;
+}
+
+.v4-status-row button.active {
+  background: rgba(232, 197, 71, 0.07);
+}
+
+.v4-status-row .critical.active {
+  border-color: rgba(242, 95, 92, 0.52);
+}
+
+.v4-status-row .ready.active {
+  border-color: rgba(67, 209, 124, 0.42);
+}
+
+.v4-status-row .hot.active {
+  border-color: rgba(232, 197, 71, 0.52);
+}
+
+.v4-status-row .drifting.active {
+  border-color: rgba(245, 158, 11, 0.42);
+}
+
+.v4-status-row .stale.active {
   opacity: 0.78;
+  border-color: rgba(120, 120, 120, 0.52);
 }
 
 .v4-workspace {
@@ -1860,6 +1929,109 @@ button:hover {
   color: var(--soft);
   font-size: 13px;
   line-height: 1.45;
+}
+
+.v4-action-panel {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.v4-next-step {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #292929;
+  border-radius: 7px;
+  background: #111;
+  padding: 10px;
+}
+
+.v4-next-step p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.v4-next-step div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.v4-next-step span {
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #333;
+  border-radius: 999px;
+  color: var(--soft);
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.v4-channel-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.v4-channel-tabs button {
+  min-height: 34px;
+  justify-content: flex-start;
+  background: #111;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.v4-channel-tabs button.active {
+  border-color: rgba(232, 197, 71, 0.58);
+  color: var(--accent);
+}
+
+.v4-channel-tabs svg:last-child {
+  margin-left: auto;
+  color: var(--accent);
+}
+
+.v4-composer {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #292929;
+  border-radius: 7px;
+  background: #111;
+  padding: 10px;
+}
+
+.v4-composer > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.v4-composer span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.v4-composer pre {
+  min-height: 132px;
+  margin: 0;
+  white-space: pre-wrap;
+  border: 1px solid #303030;
+  border-radius: 7px;
+  background: #0b0b0b;
+  color: var(--soft);
+  padding: 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.v4-activity-actions {
+  display: grid;
+  gap: 6px;
 }
 
 @media (max-width: 1180px) {
