@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">ZECZI Black Z App Icon V2</title>
+  <desc id="desc">A bold black future-cut Z monogram on a Zcash-yellow app icon background.</desc>
+  <rect width="1024" height="1024" rx="224" fill="#F4B728"/>
+  <path fill="#050505" d="
+    M 236 232
+    L 818 232
+    L 786 376
+    L 500 376
+    L 790 648
+    L 818 648
+    L 786 792
+    L 206 792
+    L 238 648
+    L 524 648
+    L 234 376
+    L 206 376
+    Z
+  "/>
+</svg>
