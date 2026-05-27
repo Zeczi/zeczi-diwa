@@ -1900,6 +1900,108 @@ button:hover {
   padding: 10px;
 }
 
+.v4-queue-controls {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.v4-queue-controls > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.v4-queue-controls span {
+  min-width: 34px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.v4-queue-controls button {
+  min-height: 28px;
+  border-radius: 999px;
+  background: #111;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.v4-queue-controls button.active {
+  border-color: rgba(232, 197, 71, 0.58);
+  color: var(--accent);
+}
+
+.v4-queue-head,
+.v4-queue .v3-command-list button {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 82px 86px 68px;
+  gap: 8px;
+  align-items: center;
+}
+
+.v4-queue-head {
+  min-height: 26px;
+  border-bottom: 1px solid #292929;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.v4-queue-head span:first-child {
+  grid-column: 2;
+}
+
+.v4-queue .v3-command-list button {
+  min-height: 86px;
+}
+
+.v4-queue .v3-command-list button > small {
+  grid-column: auto;
+}
+
+.v4-queue-deal {
+  display: grid;
+  gap: 2px;
+}
+
+.v4-queue-deal strong,
+.v4-queue-deal small,
+.v4-queue-deal em {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v4-queue-deal small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.v4-queue-deal em {
+  color: var(--soft);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.v4-due-cell {
+  display: grid;
+  gap: 2px;
+  justify-items: end;
+  color: var(--soft);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.v4-due-cell small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
 .v4-side {
   display: grid;
   gap: 8px;

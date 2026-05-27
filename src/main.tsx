@@ -404,6 +404,54 @@ function HeatScore({ deal }: { deal: (typeof v3Deals)[number] }) {
   );
 }
 
+type QueueSort = "heat-desc" | "heat-asc" | "value-desc" | "value-asc" | "due-asc" | "due-desc";
+type DueFilter = "All" | "Overdue" | "Today" | "Tomorrow" | "Next 7" | "Next 14" | "Next 28" | "Custom";
+
+const queueSortOptions: { id: QueueSort; label: string }[] = [
+  { id: "heat-desc", label: "Heat high-low" },
+  { id: "heat-asc", label: "Heat low-high" },
+  { id: "value-desc", label: "Value high-low" },
+  { id: "value-asc", label: "Value low-high" },
+  { id: "due-asc", label: "Due soonest" },
+  { id: "due-desc", label: "Due latest" },
+];
+
+const dueFilterOptions: DueFilter[] = ["All", "Overdue", "Today", "Tomorrow", "Next 7", "Next 14", "Next 28", "Custom"];
+
+function getDealHeatScore(deal: (typeof v3Deals)[number]) {
+  return Math.round((deal.intent + deal.readiness + deal.closeLikelihood + deal.urgency) / 4);
+}
+
+function getDealDueDays(deal: (typeof v3Deals)[number]) {
+  if (deal.due === "Overdue") return -1;
+  if (deal.due === "Today") return 0;
+  if (deal.due === "Tomorrow") return 1;
+  const parsed = Date.parse(`${deal.due} 2026`);
+  if (Number.isNaN(parsed)) return 999;
+  const today = Date.parse("28 May 2026");
+  return Math.round((parsed - today) / 86400000);
+}
+
+function getDueBucketLabel(deal: (typeof v3Deals)[number]) {
+  const days = getDealDueDays(deal);
+  if (days < 0) return "Overdue";
+  if (days === 0) return "Today";
+  if (days === 1) return "Tomorrow";
+  if (days <= 7) return "Next 7";
+  if (days <= 14) return "Next 14";
+  if (days <= 28) return "Next 28";
+  return "Later";
+}
+
+function matchesDueFilter(deal: (typeof v3Deals)[number], filter: DueFilter) {
+  if (filter === "All" || filter === "Custom") return true;
+  return getDueBucketLabel(deal) === filter;
+}
+
+function getQueueSummary(action: string) {
+  return action.length > 78 ? `${action.slice(0, 75)}...` : action;
+}
+
 const cockpitQueue = [
   {
     rank: 1,
@@ -891,6 +939,8 @@ function App() {
 function CockpitV4() {
   const [activeStage, setActiveStage] = React.useState<string | null>(null);
   const [activeStatus, setActiveStatus] = React.useState<string | null>(null);
+  const [queueSort, setQueueSort] = React.useState<QueueSort>("heat-desc");
+  const [dueFilter, setDueFilter] = React.useState<DueFilter>("All");
   const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
   const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
   const selectedDeal = v3Deals.find((deal) => deal.id === selectedId) ?? v3Deals[0];
@@ -910,7 +960,18 @@ function CockpitV4() {
     if (activeStatus === "Critical") return stageDeals.filter(isCriticalDeal);
     return stageDeals.filter((deal) => getHeatBand(deal) === activeStatus);
   }, [activeStatus, stageDeals]);
-  const queueDeals = statusDeals.length > 0 ? statusDeals : stageDeals;
+  const dueDeals = React.useMemo(() => statusDeals.filter((deal) => matchesDueFilter(deal, dueFilter)), [dueFilter, statusDeals]);
+  const queueDeals = React.useMemo(() => {
+    const filtered = dueDeals.length > 0 ? dueDeals : statusDeals;
+    return [...filtered].sort((a, b) => {
+      if (queueSort === "heat-desc") return getDealHeatScore(b) - getDealHeatScore(a);
+      if (queueSort === "heat-asc") return getDealHeatScore(a) - getDealHeatScore(b);
+      if (queueSort === "value-desc") return b.value - a.value;
+      if (queueSort === "value-asc") return a.value - b.value;
+      if (queueSort === "due-desc") return getDealDueDays(b) - getDealDueDays(a);
+      return getDealDueDays(a) - getDealDueDays(b);
+    });
+  }, [dueDeals, queueSort, statusDeals]);
 
   return (
     <section className="cockpit-v4" aria-label="DIWA cockpit v4">
@@ -953,14 +1014,42 @@ function CockpitV4() {
             </div>
             <span className="v2-live">{queueDeals.length} shown</span>
           </div>
+          <div className="v4-queue-controls" aria-label="Command queue controls">
+            <div>
+              <span>Sort</span>
+              {queueSortOptions.map((option) => (
+                <button className={queueSort === option.id ? "active" : ""} type="button" onClick={() => setQueueSort(option.id)} key={option.id}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <div>
+              <span>Due</span>
+              {dueFilterOptions.map((option) => (
+                <button className={dueFilter === option ? "active" : ""} type="button" onClick={() => setDueFilter(option)} key={option}>
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="v4-queue-head">
+            <span>Deal</span>
+            <span>Value</span>
+            <span>Heat</span>
+            <span>Due</span>
+          </div>
           <div className="v3-command-list expanded">
             {queueDeals.map((deal, index) => (
               <button className={deal.id === selectedDeal.id ? "selected" : ""} type="button" onClick={() => setSelectedId(deal.id)} key={deal.id}>
                 <span className="v3-rank">{index + 1}</span>
-                <div><strong>{deal.name}</strong><small>{deal.customer} · {deal.owner} · {deal.lastMeaningful}</small></div>
-                <HeatScore deal={deal} />
+                <div className="v4-queue-deal">
+                  <strong>{deal.id} · {deal.customer}</strong>
+                  <small>{deal.company !== "Residential" ? deal.company : deal.name} · Owner: {deal.owner}</small>
+                  <em>{getQueueSummary(deal.nextAction)}</em>
+                </div>
                 <strong>{money(deal.value)}</strong>
-                <small>{deal.nextAction}</small>
+                <HeatScore deal={deal} />
+                <span className="v4-due-cell"><b>{deal.due}</b><small>{getDueBucketLabel(deal)}</small></span>
               </button>
             ))}
           </div>
