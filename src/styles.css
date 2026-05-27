@@ -1652,6 +1652,112 @@ button:hover {
   color: var(--accent);
 }
 
+.content-v4 .workspace {
+  padding: 10px;
+}
+
+.cockpit-v4 {
+  display: grid;
+  gap: 10px;
+  min-height: calc(100vh - 74px);
+}
+
+.v4-stage-strip {
+  position: sticky;
+  top: 70px;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(15, minmax(92px, 1fr));
+  gap: 6px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(8, 8, 8, 0.94);
+  padding: 8px;
+  scrollbar-width: thin;
+}
+
+.v4-stage-strip button {
+  min-height: 56px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 2px;
+  border-color: #292929;
+  background: #111;
+  padding: 8px;
+  text-align: left;
+}
+
+.v4-stage-strip button.active {
+  border-color: rgba(232, 197, 71, 0.64);
+  background: rgba(232, 197, 71, 0.09);
+}
+
+.v4-stage-strip button.critical {
+  border-color: rgba(242, 95, 92, 0.48);
+  background: rgba(242, 95, 92, 0.07);
+}
+
+.v4-stage-strip button.quiet {
+  opacity: 0.76;
+}
+
+.v4-stage-strip span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.v4-stage-strip strong {
+  color: var(--accent);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.v4-workspace {
+  display: grid;
+  grid-template-columns: minmax(380px, 0.92fr) minmax(420px, 1fr) minmax(330px, 0.72fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.v4-queue,
+.v4-side-panel {
+  padding: 10px;
+}
+
+.v4-side {
+  display: grid;
+  gap: 8px;
+}
+
+.v4-side-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.v4-side-tabs button {
+  min-height: 32px;
+  justify-content: flex-start;
+  background: #111;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.v4-side-tabs button.active {
+  border-color: rgba(232, 197, 71, 0.58);
+  color: var(--accent);
+}
+
+.v4-brief {
+  margin: 0 0 10px;
+  color: var(--soft);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 @media (max-width: 1180px) {
   .v2-status-grid,
   .stage-grid {
@@ -1684,7 +1790,8 @@ button:hover {
 
 @media (max-width: 1180px) {
   .cockpit-v3,
-  .v3-grid {
+  .v3-grid,
+  .v4-workspace {
     grid-template-columns: 1fr;
   }
 
@@ -1744,7 +1851,8 @@ button:hover {
   .v3-knowledge,
   .v3-settings,
   .v3-queue-page,
-  .v3-report-page {
+  .v3-report-page,
+  .v4-workspace {
     grid-column: auto;
     grid-template-columns: 1fr;
   }

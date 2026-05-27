@@ -106,6 +106,24 @@ const stageSignals = [
 ];
 
 const pipelineStages = [
+  { id: "All", label: "All", count: 392 },
+  { id: "New Lead", label: "New Lead", count: 41 },
+  { id: "2nd Attempt", label: "2nd Attempt", count: 24 },
+  { id: "Attempting", label: "Attempting", count: 39 },
+  { id: "Awaiting Info", label: "Awaiting Info", count: 81 },
+  { id: "Early Human Required", label: "Human Required", count: 4, tone: "critical" },
+  { id: "Prepare Quote", label: "Prepare Quote", count: 28 },
+  { id: "Quote Sent", label: "Quote Sent", count: 17 },
+  { id: "BD Expired", label: "BD Expired", count: 11 },
+  { id: "AI Long-Tail", label: "AI Long-Tail", count: 101, tone: "quiet" },
+  { id: "AI Follow-Up", label: "AI Follow-Up", count: 68, tone: "quiet" },
+  { id: "Closing", label: "Closing", count: 9 },
+  { id: "Late Human Required", label: "Human Required", count: 3, tone: "critical" },
+  { id: "Finance", label: "Finance", count: 7 },
+  { id: "AAD", label: "AAD", count: 14 },
+];
+
+const v3PipelineStages = [
   "New Lead",
   "Attempting",
   "Awaiting",
@@ -556,8 +574,9 @@ const cockpitQueue = [
 
 function App() {
   const isV1 = window.location.pathname.startsWith("/v1");
+  const isV4 = window.location.pathname.startsWith("/v4");
   const isV3 = window.location.pathname.startsWith("/v3");
-  const isV2 = !isV1 && !isV3;
+  const isV2 = !isV1 && !isV3 && !isV4;
   const [askOpen, setAskOpen] = React.useState(false);
   const askPanelRef = React.useRef<HTMLDivElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
@@ -629,10 +648,15 @@ function App() {
         </div>
       </aside>
 
-      <section className={`content ${isV2 || isV3 ? "content-v2" : ""} ${isV3 ? "content-v3" : ""}`}>
-        <header className={`topbar ${isV2 || isV3 ? "topbar-v2" : ""}`}>
+      <section className={`content ${isV2 || isV3 || isV4 ? "content-v2" : ""} ${isV3 || isV4 ? "content-v3" : ""} ${isV4 ? "content-v4" : ""}`}>
+        <header className={`topbar ${isV2 || isV3 || isV4 ? "topbar-v2" : ""}`}>
           <div>
-            {isV3 ? (
+            {isV4 ? (
+              <>
+                <p className="eyebrow">DIWA Cockpit v4</p>
+                <h1>Pipeline stages drive the workspace.</h1>
+              </>
+            ) : isV3 ? (
               <>
                 <p className="eyebrow">DIWA Cockpit v3</p>
                 <h1>Command centre for deal context.</h1>
@@ -662,7 +686,9 @@ function App() {
         </header>
 
         <div className="workspace" id="cockpit">
-          {isV3 ? (
+          {isV4 ? (
+            <CockpitV4 />
+          ) : isV3 ? (
             <CockpitV3 />
           ) : isV2 ? (
             <CockpitV2 />
@@ -793,6 +819,170 @@ function App() {
   );
 }
 
+function CockpitV4() {
+  const [activeStage, setActiveStage] = React.useState("All");
+  const [sideView, setSideView] = React.useState("Context Timeline");
+  const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
+  const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
+  const selectedDeal = v3Deals.find((deal) => deal.id === selectedId) ?? v3Deals[0];
+  const stageDeals = React.useMemo(() => {
+    if (activeStage === "All") return v3Deals;
+    if (activeStage.includes("Human Required")) {
+      return v3Deals.filter((deal) => deal.category === "Human Required" || deal.aiStatus.includes("human"));
+    }
+    if (activeStage === "AI Long-Tail") return v3Deals.filter((deal) => deal.category === "Long-Tail");
+    if (activeStage === "AI Follow-Up") return v3Deals.filter((deal) => deal.stage === "AI Follow-Up");
+    if (activeStage === "Quote Sent") return v3Deals.filter((deal) => deal.stage === "Quote Sent");
+    if (activeStage === "Prepare Quote") return v3Deals.filter((deal) => deal.stage === "Prepare Quote");
+    return v3Deals.filter((deal) => deal.stage === activeStage);
+  }, [activeStage]);
+  const queueDeals = stageDeals.length > 0 ? stageDeals : v3Deals;
+  const sideItems = ["Context Timeline", "AI Activity", "Reports", "Knowledge", "Integrations", "Settings"];
+
+  return (
+    <section className="cockpit-v4" aria-label="DIWA cockpit v4">
+      <div className="v4-stage-strip" aria-label="Pipeline stage filters">
+        {pipelineStages.map((stage) => (
+          <button
+            className={`${activeStage === stage.id ? "active" : ""} ${stage.tone ?? ""}`}
+            type="button"
+            onClick={() => setActiveStage(stage.id)}
+            key={stage.id}
+          >
+            <span>{stage.label}</span>
+            <strong>{stage.count}</strong>
+          </button>
+        ))}
+      </div>
+
+      <div className="v4-workspace">
+        <section className="panel v4-queue">
+          <div className="v3-panel-head">
+            <div>
+              <p className="eyebrow">{activeStage === "All" ? "Command Queue" : activeStage}</p>
+              <h3>Deals filtered by pipeline state</h3>
+            </div>
+            <span className="v2-live">{queueDeals.length} shown</span>
+          </div>
+          <div className="v3-command-list expanded">
+            {queueDeals.map((deal, index) => (
+              <button className={deal.id === selectedDeal.id ? "selected" : ""} type="button" onClick={() => setSelectedId(deal.id)} key={deal.id}>
+                <span className="v3-rank">{index + 1}</span>
+                <div><strong>{deal.name}</strong><small>{deal.customer} · {deal.owner} · {deal.lastMeaningful}</small></div>
+                <span className={"v3-risk " + (deal.category === "Human Required" ? "high" : deal.category === "Quote Bottleneck" ? "medium" : "")}>{deal.category}</span>
+                <strong>{money(deal.value)}</strong>
+                <small>{deal.nextAction}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
+
+        <aside className="v4-side">
+          <nav className="v4-side-tabs" aria-label="Workspace tools">
+            {sideItems.map((item) => (
+              <button className={sideView === item ? "active" : ""} type="button" onClick={() => setSideView(item)} key={item}>
+                {item}
+              </button>
+            ))}
+          </nav>
+          <V4SidePanel view={sideView} />
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function V4SidePanel({ view }: { view: string }) {
+  if (view === "Context Timeline") {
+    return (
+      <section className="panel v4-side-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">Context Timeline</p><h3>Historic and upcoming context</h3></div></div>
+        <div className="v3-timeline-list">
+          {v3TimelineEvents.map((event) => (
+            <article key={event.type + event.time}>
+              <div><strong>{event.type}</strong><time>{event.time}</time></div>
+              <small>{event.source} · {event.stage}</small>
+              <p>{event.summary}</p>
+              <div>{event.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+            </article>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (view === "AI Activity") {
+    return (
+      <section className="panel v4-side-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">AI Activity</p><h3>Scheduled and recent actions</h3></div><span className="v2-live">Live</span></div>
+        <div className="v3-ai-list expanded">
+          {v3AiActivity.map(([activityName, dealName, value, status, reason]) => (
+            <span key={activityName + dealName}><Bot size={15} /><strong>{activityName}</strong><small>{dealName} · {value} · {status} · {reason}</small></span>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (view === "Reports") {
+    return (
+      <section className="panel v4-side-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">Reports</p><h3>Manager briefing</h3></div></div>
+        <p className="v4-brief">North Shore is the biggest cash risk because follow-up is overdue. Evergreen needs a human response today. Westfield is an internal blockage, not a customer problem.</p>
+        <div className="v3-report-grid">
+          <span><strong>18%</strong><small>Human edit rate</small></span>
+          <span><strong>74%</strong><small>Approval rate</small></span>
+          <span><strong>31%</strong><small>Response rate</small></span>
+        </div>
+      </section>
+    );
+  }
+
+  if (view === "Knowledge") {
+    return (
+      <section className="panel v4-side-panel">
+        <div className="v3-panel-head">
+          <div><p className="eyebrow">Knowledge</p><h3>Context asset builder</h3></div>
+          <button className="primary-button" type="button"><Sparkles size={15} /> Create</button>
+        </div>
+        <div className="v3-knowledge-brief">
+          <strong>Separate page, not cockpit clutter.</strong>
+          <p>DIWA should ask targeted questions, then build macro personas, micro personas, pain points, objections, quote rules, tone guidance and scorecard frameworks.</p>
+        </div>
+        <div className="v3-asset-grid expanded">
+          {["Personas", "Pain points", "Objections", "Product details", "Service details", "Quote rules", "Escalation logic", "Tone guidance", "Sales scripts"].map((asset) => <span key={asset}>{asset}</span>)}
+        </div>
+      </section>
+    );
+  }
+
+  if (view === "Integrations") {
+    return (
+      <section className="panel v4-side-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">Integrations</p><h3>Source connections</h3></div></div>
+        <div className="v3-settings-table">
+          {[["CRM", "Pipedrive", "Live"], ["Email/RFQ", "Gmail via n8n", "Live"], ["Automation", "n8n", "Live"], ["Quoting", "Quote workflow", "Planned"]].map(([layer, system, status]) => (
+            <div key={layer}><strong>{layer}</strong><span>{system}</span><em>{status}</em></div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="panel v4-side-panel">
+      <div className="v3-panel-head"><div><p className="eyebrow">Settings</p><h3>Implementation admin</h3></div><span className="pill">MVP</span></div>
+      <div className="v3-settings-table">
+        {[["Permissions", "Roles and approval rules", "Designing"], ["Human Required", "Escalation thresholds", "Designing"], ["Stage mapping", "Pipedrive pipeline stages", "Mapped"], ["Workspace", "Eco Lawn tenant", "Prototype"]].map(([layer, system, status]) => (
+          <div key={layer}><strong>{layer}</strong><span>{system}</span><em>{status}</em></div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function AskDiwaPanel() {
   const commands = [
     {
@@ -886,7 +1076,7 @@ function CockpitV3() {
 
       <section className="v3-main">
         <div className="v3-pipeline-strip" aria-label="Pipeline stages">
-          {pipelineStages.map((stage, index) => (
+          {v3PipelineStages.map((stage, index) => (
             <button className={stage === "Human Required" ? "critical" : index > 5 ? "quiet" : ""} type="button" key={stage}>
               <span>{stage}</span>
               <strong>{stage === "Human Required" ? 4 : stage === "Quote Sent" ? 17 : stage === "AI Follow-Up" ? 68 : index * 7 + 12}</strong>
