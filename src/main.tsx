@@ -88,7 +88,32 @@ const sources = [
   { name: "n8n", status: "Workflow execution layer", health: "Live" },
 ];
 
+const cockpitHealth = [
+  { label: "Open pipeline", value: "$3.69m", detail: "392 deals", tone: "gold" },
+  { label: "Human required", value: "4", detail: "$74k exposed", tone: "red" },
+  { label: "Today actions", value: "27", detail: "9 time-sensitive", tone: "orange" },
+  { label: "Agent lane", value: "31", detail: "safe to progress", tone: "green" },
+  { label: "Data freshness", value: "Live", detail: "4 sources synced", tone: "blue" },
+];
+
+const stageSignals = [
+  { stage: "New", count: 41, value: "$228k", alert: "watch" },
+  { stage: "Awaiting info", count: 81, value: "$378k", alert: "drift" },
+  { stage: "Prepare quote", count: 28, value: "$92k", alert: "active" },
+  { stage: "Quote sent", count: 17, value: "$200k", alert: "hot" },
+  { stage: "AI follow-up", count: 68, value: "$697k", alert: "agent" },
+  { stage: "Long-tail", count: 101, value: "$1.67m", alert: "hold" },
+];
+
+const cockpitQueue = [
+  { rank: 1, customer: "Keegan Shillock", org: "Stack Construction", value: "$48.6k", state: "Quote coordination", next: "Assign one owner and confirm quote position", owner: "Miles / Sean", risk: "High", age: "Today" },
+  { rank: 2, customer: "Commercial facilities lead", org: "Board pack", value: "$112k", state: "Long-tail decision", next: "Hold until board window then trigger reminder", owner: "Agent", risk: "Medium", age: "2d" },
+  { rank: 3, customer: "Homeowner quote sent", org: "Residential premium", value: "$18.9k", state: "Quote sent", next: "Send finance and install-timing follow-up", owner: "Rachel", risk: "Medium", age: "1d" },
+  { rank: 4, customer: "RFQ inbox", org: "Native Gmail intake", value: "TBD", state: "Classifying", next: "Extract turf / shock-pad scope and route", owner: "n8n", risk: "Low", age: "8m" },
+];
+
 function App() {
+  const isV2 = window.location.pathname.startsWith("/v2");
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
   });
@@ -137,19 +162,37 @@ function App() {
         </div>
       </aside>
 
-      <section className="content">
-        <header className="topbar">
+      <section className={`content ${isV2 ? "content-v2" : ""}`}>
+        <header className={`topbar ${isV2 ? "topbar-v2" : ""}`}>
           <div>
-            <p className="eyebrow">Deal Intelligence Workspace Application</p>
-            <h1>Today&apos;s commercial control surface</h1>
+            {isV2 ? (
+              <>
+                <p className="eyebrow">DIWA Cockpit v2</p>
+                <h1>Context is operational intelligence.</h1>
+              </>
+            ) : (
+              <>
+                <p className="eyebrow">Deal Intelligence Workspace Application</p>
+                <h1>Today&apos;s commercial control surface</h1>
+              </>
+            )}
           </div>
           <div className="topbar-actions">
             <button className="icon-button" aria-label="Search"><Search size={18} /></button>
             <button className="primary-button"><Sparkles size={16} /> Ask DIWA</button>
+            {isV2 && (
+              <button className="customer-avatar" aria-label="Focused customer: Keegan Shillock" title="Keegan Shillock">
+                KS
+              </button>
+            )}
           </div>
         </header>
 
         <div className="workspace" id="cockpit">
+          {isV2 ? (
+            <CockpitV2 />
+          ) : (
+            <>
           <section className="hero-band">
             <div>
               <p className="eyebrow">The Art of Context</p>
@@ -267,6 +310,8 @@ function App() {
               <button><Brain size={16} /> Summarise this customer.</button>
             </div>
           </section>
+            </>
+          )}
         </div>
       </section>
     </main>
@@ -281,6 +326,131 @@ function Metric({ icon: Icon, label, value, detail, tone }: { icon: typeof Gauge
       <strong>{value}</strong>
       <p>{detail}</p>
     </div>
+  );
+}
+
+function CockpitV2() {
+  return (
+    <section className="cockpit-v2" aria-label="DIWA cockpit v2">
+      <div className="v2-status-grid">
+        {cockpitHealth.map((item) => (
+          <div className={`v2-stat ${item.tone}`} key={item.label}>
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <small>{item.detail}</small>
+          </div>
+        ))}
+      </div>
+
+      <div className="v2-layout">
+        <section className="panel v2-panel v2-queue">
+          <div className="v2-panel-head">
+            <div>
+              <p className="eyebrow">Command Queue</p>
+              <h3>What needs attention now</h3>
+            </div>
+            <span className="v2-live">Live context</span>
+          </div>
+          <div className="v2-table">
+            <div className="v2-row v2-row-head">
+              <span>#</span><span>Customer</span><span>State</span><span>Value</span><span>Owner</span><span>Next action</span>
+            </div>
+            {cockpitQueue.map((deal) => (
+              <div className="v2-row" key={deal.rank}>
+                <span className="v2-rank">{deal.rank}</span>
+                <span><strong>{deal.customer}</strong><small>{deal.org}</small></span>
+                <span><em className={`risk-dot ${deal.risk.toLowerCase()}`} />{deal.state}<small>{deal.age}</small></span>
+                <span>{deal.value}</span>
+                <span>{deal.owner}</span>
+                <span>{deal.next}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <aside className="v2-side-stack">
+          <section className="panel v2-panel">
+            <div className="v2-panel-head tight">
+              <p className="eyebrow">Exceptions</p>
+              <span className="pill warn">Human Required</span>
+            </div>
+            <div className="v2-exception">
+              <strong>Pricing judgement before send</strong>
+              <span>Stack Construction has live coordination risk. DIWA should hold automation until one commercial owner is clear.</span>
+            </div>
+            <div className="v2-exception muted">
+              <strong>Quote assumptions incomplete</strong>
+              <span>Surface system / shock-pad details need source confidence before handoff.</span>
+            </div>
+          </section>
+
+          <section className="panel v2-panel">
+            <div className="v2-panel-head tight">
+              <p className="eyebrow">Source Health</p>
+              <span className="v2-live">4/4</span>
+            </div>
+            <div className="v2-source-bars">
+              {sources.map((source) => (
+                <div className="v2-source" key={source.name}>
+                  <span>{source.name}</span>
+                  <strong>{source.health}</strong>
+                </div>
+              ))}
+            </div>
+          </section>
+        </aside>
+
+        <section className="panel v2-panel v2-stage-panel">
+          <div className="v2-panel-head">
+            <div>
+              <p className="eyebrow">Pipeline State</p>
+              <h3>Stage pressure map</h3>
+            </div>
+          </div>
+          <div className="stage-grid">
+            {stageSignals.map((stage) => (
+              <div className={`stage-tile ${stage.alert}`} key={stage.stage}>
+                <span>{stage.stage}</span>
+                <strong>{stage.count}</strong>
+                <small>{stage.value}</small>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel v2-panel">
+          <div className="v2-panel-head">
+            <div>
+              <p className="eyebrow">Agent Work</p>
+              <h3>Autonomy lanes</h3>
+            </div>
+          </div>
+          <div className="lane-list">
+            <div><span>Safe to act</span><strong>31</strong><small>Follow-ups, summaries, routing</small></div>
+            <div><span>Needs approval</span><strong>7</strong><small>Customer sends / CRM writes</small></div>
+            <div><span>Blocked</span><strong>3</strong><small>Missing source confidence</small></div>
+          </div>
+        </section>
+
+        <section className="panel v2-panel">
+          <div className="v2-panel-head">
+            <div>
+              <p className="eyebrow">Context Stream</p>
+              <h3>Latest changes</h3>
+            </div>
+          </div>
+          <div className="v2-feed">
+            {activity.map((item) => (
+              <div key={item.label}>
+                <time>{item.time}</time>
+                <strong>{item.label}</strong>
+                <span>{item.detail}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </section>
   );
 }
 
