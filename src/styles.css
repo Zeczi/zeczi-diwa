@@ -1519,6 +1519,131 @@ button:hover {
   gap: 8px;
 }
 
+.v3-snapshots-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.v3-snapshot-filter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.v3-snapshot-filter label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.v3-snapshot-filter span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.v3-snapshot-filter select {
+  min-height: 32px;
+  border: 1px solid #292929;
+  border-radius: 7px;
+  background: #111;
+  color: var(--text);
+  padding: 0 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.v3-snapshot-list {
+  display: grid;
+  gap: 8px;
+}
+
+.v3-snapshot-list article {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #292929;
+  border-radius: 7px;
+  background: #111;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.v3-snapshot-main {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) 66px;
+  align-items: center;
+  gap: 8px;
+}
+
+.v3-snapshot-main small,
+.v3-snapshot-list p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.v3-snapshot-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.v3-snapshot-actions button {
+  min-height: 30px;
+  background: #0c0c0c;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.v3-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.66);
+  padding: 18px;
+}
+
+.v3-modal {
+  width: min(620px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(232, 197, 71, 0.34);
+  border-radius: 8px;
+  background: #111;
+  padding: 14px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+}
+
+.v3-modal p {
+  margin: 0;
+  color: var(--soft);
+}
+
+.v3-modal pre {
+  margin: 0;
+  white-space: pre-wrap;
+  border: 1px solid #303030;
+  border-radius: 7px;
+  background: #090909;
+  color: var(--soft);
+  padding: 10px;
+  font: inherit;
+  font-size: 13px;
+}
+
+.v3-scorecard-popup {
+  display: grid;
+  gap: 8px;
+}
+
+.v3-scorecard-popup > strong {
+  color: var(--accent);
+  font-size: 28px;
+}
+
 .v3-timeline-list article > div:first-child,
 .v3-quote-grid article > div,
 .v3-scorecard-list article > div {

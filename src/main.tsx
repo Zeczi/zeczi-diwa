@@ -9,6 +9,7 @@ import {
   BriefcaseBusiness,
   CheckCircle2,
   ClipboardList,
+  Copy,
   Clock3,
   FileText,
   Gauge,
@@ -163,7 +164,7 @@ const navItems = [
   "Settings",
 ];
 
-const dealTabs = ["Summary", "Timeline", "Quotes", "Scorecards", "Actions"];
+const dealTabs = ["Summary", "Snapshots", "Timeline", "Quotes", "Scorecards", "Actions"];
 
 const v3Deals = [
   {
@@ -348,6 +349,59 @@ const v3Scorecards = [
   { type: "Discovery Review", interaction: "Inbound phone call", human: "Rachel", stage: "New Lead", score: 86, sentiment: "Positive", finding: "Customer needed installation before school holidays, but board process was not fully mapped.", next: "Confirm board approval steps and documentation requirements.", coaching: "Strong discovery. Next time, lock down who signs off and what evidence they need." },
   { type: "Quote Readiness Review", interaction: "Site visit", human: "Myles", stage: "Prepare Quote", score: 78, sentiment: "Positive", finding: "Site context was strong, but compliance wording needed sharper documentation.", next: "Add safety evidence and install timing assumptions to the proposal.", coaching: "Good technical capture. Missing written decision evidence creates drag later." },
   { type: "Closing Review", interaction: "Outbound phone call", human: "Rachel", stage: "Quote Sent", score: 91, sentiment: "Very positive", finding: "Customer is close if board pack answers safety and timing concerns.", next: "Send board-ready response and book follow-up decision call.", coaching: "Excellent. You identified the real blocker and avoided premature discounting." },
+];
+
+const snapshotAgents = ["All", "Agent A", "Agent B", "Agent C"];
+
+const v3Snapshots = [
+  {
+    id: "S-1048-04",
+    agent: "Agent C",
+    event: "Outbound phone call",
+    owner: "Rachel",
+    stage: "Quote Sent",
+    time: "Today, 9:14 am",
+    due: "Today",
+    summary: "Helen is close to approval but needs a board-ready explanation of safety compliance, install timing and quote revision details.",
+    markdown: "## Snapshot S-1048-04\n\n**Agent:** Agent C\n**Event:** Outbound phone call\n**Responsible:** Rachel\n**Stage:** Quote Sent\n**Due:** Today\n\nHelen is close to approval but needs a board-ready explanation of safety compliance, install timing and quote revision details.",
+    scorecard: { score: 91, title: "Closing Review", finding: "Rachel identified the real blocker and avoided premature discounting.", coaching: "Send the board-ready pack and book the decision call before the urgency cools." },
+  },
+  {
+    id: "S-1048-03",
+    agent: "Agent B",
+    event: "Site assessment booked",
+    owner: "Myles",
+    stage: "Prepare Quote",
+    time: "8 May, 10:30 am",
+    due: "8 May",
+    summary: "Site meeting was booked and then completed. Until the assessment was done, the right state was waiting rather than chasing.",
+    markdown: "## Snapshot S-1048-03\n\n**Agent:** Agent B\n**Event:** Site assessment booked\n**Responsible:** Myles\n**Stage:** Prepare Quote\n\nSite meeting booked and assessment dependency recorded.",
+    scorecard: { score: 78, title: "Quote Readiness Review", finding: "Good technical capture, but compliance wording needed sharper documentation.", coaching: "Attach evidence while the site context is fresh." },
+  },
+  {
+    id: "S-1048-02",
+    agent: "Agent A",
+    event: "Inbound phone call",
+    owner: "Kent",
+    stage: "Awaiting Info",
+    time: "7 May, 3:42 pm",
+    due: "7 May",
+    summary: "Initial discovery captured timing pressure and board approval, but decision evidence requirements were not fully mapped.",
+    markdown: "## Snapshot S-1048-02\n\n**Agent:** Agent A\n**Event:** Inbound phone call\n**Responsible:** Kent\n**Stage:** Awaiting Info\n\nInitial discovery captured timing pressure and board approval.",
+    scorecard: { score: 86, title: "Discovery Review", finding: "Customer needed installation before school holidays, but board process was not fully mapped.", coaching: "Confirm who signs off and what evidence they need." },
+  },
+  {
+    id: "S-1048-01",
+    agent: "Agent A",
+    event: "Lead form completed",
+    owner: "Kent",
+    stage: "New Lead",
+    time: "7 May, 9:08 am",
+    due: "7 May",
+    summary: "New childcare lead entered the pipeline with playground turf and shock-pad context.",
+    markdown: "## Snapshot S-1048-01\n\n**Agent:** Agent A\n**Event:** Lead form completed\n**Responsible:** Kent\n**Stage:** New Lead\n\nNew childcare lead entered the pipeline with playground turf and shock-pad context.",
+    scorecard: { score: 82, title: "Lead Intake Review", finding: "Source and product intent were captured cleanly.", coaching: "Push site/use-case context into the first follow-up faster." },
+  },
 ];
 
 const v3AiActivity = [
@@ -1631,6 +1685,74 @@ function V3DealDetailShell({ deal, activeTab, setActiveTab }: { deal: (typeof v3
 }
 
 function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Deals)[number] }) {
+  const [snapshotAgent, setSnapshotAgent] = React.useState("All");
+  const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "scorecard"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
+
+  if (activeTab === "Snapshots") {
+    const snapshots = snapshotAgent === "All" ? v3Snapshots : v3Snapshots.filter((snapshot) => snapshot.agent === snapshotAgent);
+    const copyMarkdown = async (markdown: string) => {
+      await navigator.clipboard?.writeText(markdown);
+    };
+
+    return (
+      <div className="v3-snapshots-panel">
+        <div className="v3-snapshot-filter">
+          <label>
+            <span>Agent</span>
+            <select value={snapshotAgent} onChange={(event) => setSnapshotAgent(event.target.value)}>
+              {snapshotAgents.map((agent) => <option value={agent} key={agent}>{agent}</option>)}
+            </select>
+          </label>
+        </div>
+        <div className="v3-snapshot-list">
+          {snapshots.map((snapshot) => (
+            <article key={snapshot.id}>
+              <div className="v3-snapshot-main">
+                <span className="v3-rank">{snapshot.agent}</span>
+                <div>
+                  <strong>{snapshot.event}</strong>
+                  <small>{snapshot.stage} · {snapshot.owner} · {snapshot.time}</small>
+                </div>
+                <span className="v4-due-cell"><b>{snapshot.due}</b><small>Due</small></span>
+              </div>
+              <p>{snapshot.summary}</p>
+              <div className="v3-snapshot-actions">
+                <button type="button" onClick={() => setSnapshotModal({ kind: "summary", snapshot })}>Summary</button>
+                <button type="button" onClick={() => setSnapshotModal({ kind: "scorecard", snapshot })}>Scorecard {snapshot.scorecard.score}%</button>
+              </div>
+            </article>
+          ))}
+        </div>
+        {snapshotModal && (
+          <div className="v3-modal-backdrop" role="presentation" onClick={() => setSnapshotModal(null)}>
+            <section className="v3-modal" role="dialog" aria-modal="true" aria-label="Snapshot detail" onClick={(event) => event.stopPropagation()}>
+              <div className="v3-panel-head">
+                <div>
+                  <p className="eyebrow">{snapshotModal.snapshot.agent} · {snapshotModal.snapshot.event}</p>
+                  <h3>{snapshotModal.kind === "summary" ? "Snapshot Summary" : snapshotModal.snapshot.scorecard.title}</h3>
+                </div>
+                <button type="button" onClick={() => setSnapshotModal(null)}>Close</button>
+              </div>
+              {snapshotModal.kind === "summary" ? (
+                <>
+                  <p>{snapshotModal.snapshot.summary}</p>
+                  <pre>{snapshotModal.snapshot.markdown}</pre>
+                  <button className="primary-button" type="button" onClick={() => copyMarkdown(snapshotModal.snapshot.markdown)}><Copy size={15} /> Copy markdown</button>
+                </>
+              ) : (
+                <div className="v3-scorecard-popup">
+                  <strong>{snapshotModal.snapshot.scorecard.score}%</strong>
+                  <p>{snapshotModal.snapshot.scorecard.finding}</p>
+                  <p><b>Coaching:</b> {snapshotModal.snapshot.scorecard.coaching}</p>
+                </div>
+              )}
+            </section>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (activeTab === "Timeline") {
     return (
       <div className="v3-timeline-list">
