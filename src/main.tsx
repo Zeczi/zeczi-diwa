@@ -330,6 +330,7 @@ const cockpitQueue = [
 
 function App() {
   const isV2 = !window.location.pathname.startsWith("/v1");
+  const [askOpen, setAskOpen] = React.useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
   });
@@ -395,11 +396,14 @@ function App() {
           </div>
           <div className="topbar-actions">
             <button className="icon-button" aria-label="Search"><Search size={18} /></button>
-            <button className="primary-button"><Sparkles size={16} /> Ask DIWA</button>
+            <button className="primary-button" onClick={() => setAskOpen((current) => !current)} aria-expanded={askOpen}>
+              <Sparkles size={16} /> Ask DIWA
+            </button>
             <button className="customer-avatar" aria-label="Customer profile" title="Customer profile">
               <img src="/brand/customer-avatar.jpg" alt="" />
             </button>
           </div>
+          {askOpen && <AskDiwaPanel />}
         </header>
 
         <div className="workspace" id="cockpit">
@@ -529,6 +533,67 @@ function App() {
         </div>
       </section>
     </main>
+  );
+}
+
+function AskDiwaPanel() {
+  const commands = [
+    {
+      icon: Target,
+      title: "Create campaign",
+      detail: "Build a focused SMS, WhatsApp, or email offer from selected deal segments.",
+    },
+    {
+      icon: BriefcaseBusiness,
+      title: "Brief this deal",
+      detail: "Summarise buyer context, last touch, risk, value, owner, and best next action.",
+    },
+    {
+      icon: Search,
+      title: "Find hidden risk",
+      detail: "Search CRM, email, notes, RFQs, and quote state for stale or exposed work.",
+    },
+    {
+      icon: Bot,
+      title: "Create agent project",
+      detail: "Spin up a workspace with source context, objective, constraints, and approval lane.",
+    },
+  ];
+
+  return (
+    <section className="ask-panel" aria-label="Ask DIWA command surface">
+      <div className="ask-panel-head">
+        <div>
+          <p className="eyebrow">Ask DIWA</p>
+          <h3>Command the context layer</h3>
+        </div>
+        <span>Prototype</span>
+      </div>
+      <div className="ask-input">
+        <Sparkles size={16} />
+        <span>Create a campaign for warm quote-sent deals over $3k with no activity this week...</span>
+      </div>
+      <div className="ask-command-grid">
+        {commands.map((command) => {
+          const Icon = command.icon;
+          return (
+            <button type="button" key={command.title}>
+              <Icon size={17} />
+              <span>
+                <strong>{command.title}</strong>
+                <small>{command.detail}</small>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="ask-context-strip">
+        <span>Pipedrive</span>
+        <span>DIWA context</span>
+        <span>Gmail/RFQ</span>
+        <span>n8n actions</span>
+      </div>
+    </section>
   );
 }
 
