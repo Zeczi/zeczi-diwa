@@ -578,6 +578,7 @@ function App() {
   const isV3 = window.location.pathname.startsWith("/v3");
   const isV2 = !isV1 && !isV3 && !isV4;
   const [askOpen, setAskOpen] = React.useState(false);
+  const [profileOpen, setProfileOpen] = React.useState(false);
   const askPanelRef = React.useRef<HTMLDivElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
@@ -588,15 +589,19 @@ function App() {
   }, [sidebarCollapsed]);
 
   React.useEffect(() => {
-    if (!askOpen) return;
+    if (!askOpen && !profileOpen) return;
 
     const closeOnOutsideClick = (event: PointerEvent) => {
       if (askPanelRef.current?.contains(event.target as Node)) return;
       setAskOpen(false);
+      setProfileOpen(false);
     };
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setAskOpen(false);
+      if (event.key === "Escape") {
+        setAskOpen(false);
+        setProfileOpen(false);
+      }
     };
 
     window.addEventListener("pointerdown", closeOnOutsideClick);
@@ -606,7 +611,7 @@ function App() {
       window.removeEventListener("pointerdown", closeOnOutsideClick);
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [askOpen]);
+  }, [askOpen, profileOpen]);
 
   return (
     <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
@@ -623,9 +628,11 @@ function App() {
           <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
           <a className="nav-item" href="#deals" title="Deal Intelligence"><BriefcaseBusiness size={17} /> <span>Deal Intelligence</span></a>
           <a className="nav-item" href="#context" title="Context Timeline"><Layers3 size={17} /> <span>Context Timeline</span></a>
-          <a className="nav-item" href="#human" title="Human Required"><UserRoundCheck size={17} /> <span>Human Required</span></a>
-          <a className="nav-item" href="#agents" title="Agent Work"><Bot size={17} /> <span>Agent Work</span></a>
+          <a className="nav-item" href="#reports" title="Reports"><FileText size={17} /> <span>Reports</span></a>
           <a className="nav-item" href="#sources" title="Source Links"><ShieldCheck size={17} /> <span>Source Links</span></a>
+          <a className="nav-item" href="#ai-activity" title="AI Activity"><Bot size={17} /> <span>AI Activity</span></a>
+          <a className="nav-item" href="#integrations" title="Integrations"><Activity size={17} /> <span>Integrations</span></a>
+          <a className="nav-item" href="#knowledge" title="Knowledge"><Brain size={17} /> <span>Knowledge</span></a>
         </nav>
 
         <div className="sidebar-foot">
@@ -678,10 +685,11 @@ function App() {
             <button className="primary-button" onClick={() => setAskOpen((current) => !current)} aria-expanded={askOpen}>
               <Sparkles size={16} /> Ask DIWA
             </button>
-            <button className="customer-avatar" aria-label="Customer profile" title="Customer profile">
+            <button className="customer-avatar" aria-label="Customer profile" title="Customer profile" onClick={() => setProfileOpen((current) => !current)} aria-expanded={profileOpen}>
               <img src="/brand/customer-avatar.jpg" alt="" />
             </button>
             {askOpen && <AskDiwaPanel />}
+            {profileOpen && <ProfileMenu />}
           </div>
         </header>
 
@@ -821,7 +829,6 @@ function App() {
 
 function CockpitV4() {
   const [activeStage, setActiveStage] = React.useState("All");
-  const [sideView, setSideView] = React.useState("Context Timeline");
   const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
   const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
   const selectedDeal = v3Deals.find((deal) => deal.id === selectedId) ?? v3Deals[0];
@@ -837,7 +844,6 @@ function CockpitV4() {
     return v3Deals.filter((deal) => deal.stage === activeStage);
   }, [activeStage]);
   const queueDeals = stageDeals.length > 0 ? stageDeals : v3Deals;
-  const sideItems = ["Context Timeline", "AI Activity", "Reports", "Knowledge", "Integrations", "Settings"];
 
   return (
     <section className="cockpit-v4" aria-label="DIWA cockpit v4">
@@ -880,16 +886,19 @@ function CockpitV4() {
         <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <aside className="v4-side">
-          <nav className="v4-side-tabs" aria-label="Workspace tools">
-            {sideItems.map((item) => (
-              <button className={sideView === item ? "active" : ""} type="button" onClick={() => setSideView(item)} key={item}>
-                {item}
-              </button>
-            ))}
-          </nav>
-          <V4SidePanel view={sideView} />
+          <V4SidePanel view="Context Timeline" />
         </aside>
       </div>
+    </section>
+  );
+}
+
+function ProfileMenu() {
+  return (
+    <section className="profile-menu" aria-label="Profile menu">
+      <button type="button">Profile</button>
+      <button type="button">Settings</button>
+      <button type="button">Logout</button>
     </section>
   );
 }
