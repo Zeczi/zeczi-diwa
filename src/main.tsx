@@ -396,11 +396,9 @@ function App() {
           <div className="topbar-actions">
             <button className="icon-button" aria-label="Search"><Search size={18} /></button>
             <button className="primary-button"><Sparkles size={16} /> Ask DIWA</button>
-            {isV2 && (
-              <button className="customer-avatar" aria-label="Focused customer: Keegan Shillock" title="Keegan Shillock">
-                KS
-              </button>
-            )}
+            <button className="customer-avatar" aria-label="Customer profile" title="Customer profile">
+              <img src="/brand/customer-avatar.jpg" alt="" />
+            </button>
           </div>
         </header>
 
