@@ -855,6 +855,7 @@ function AskDiwaPanel() {
 }
 
 function CockpitV3() {
+  const [view, setView] = React.useState("Command Centre");
   const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
   const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
   const commandDeals = React.useMemo(() => [...v3Deals].sort((a, b) => b.priority - a.priority), []);
@@ -876,9 +877,9 @@ function CockpitV3() {
         </div>
         <nav aria-label="DIWA v3 sections">
           {navItems.map((item) => (
-            <a className={item === "Command Centre" ? "active" : ""} href={`#v3-${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
+            <button className={view === item ? "active" : ""} type="button" onClick={() => setView(item)} key={item}>
               {item}
-            </a>
+            </button>
           ))}
         </nav>
       </aside>
@@ -895,7 +896,7 @@ function CockpitV3() {
 
         <div className="v3-metrics">
           {metrics.map((metric) => (
-            <button className={`v3-metric ${metric.tone}`} type="button" key={metric.label}>
+            <button className={`v3-metric ${metric.tone}`} type="button" onClick={() => setView(metric.label === "Ready to Close" ? "Hot Deals" : metric.label === "Follow-Up Due" ? "Follow-Up" : metric.label === "Human Required" ? "Human Required" : "Reports")} key={metric.label}>
               <span>{metric.label}</span>
               <strong>{metric.value}</strong>
               <small>{metric.count} · {metric.detail}</small>
@@ -903,6 +904,7 @@ function CockpitV3() {
           ))}
         </div>
 
+        {view === "Command Centre" ? (
         <div className="v3-grid">
           <section className="panel v3-command" id="v3-command-centre">
             <div className="v3-panel-head">
@@ -1029,7 +1031,136 @@ function CockpitV3() {
             </div>
           </section>
         </div>
+        ) : (
+          <V3SelectedView
+            view={view}
+            selectedDeal={selectedDeal}
+            setSelectedId={setSelectedId}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )}
       </section>
+    </section>
+  );
+}
+
+function V3SelectedView({
+  view,
+  selectedDeal,
+  setSelectedId,
+  activeTab,
+  setActiveTab,
+}: {
+  view: string;
+  selectedDeal: (typeof v3Deals)[number];
+  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
+  activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const queueDeals = React.useMemo(() => {
+    if (view === "Human Required") return v3Deals.filter((deal) => deal.category === "Human Required" || deal.aiStatus.includes("human"));
+    if (view === "Hot Deals") return v3Deals.filter((deal) => deal.intent >= 80 || deal.category === "Ready to Close");
+    if (view === "Follow-Up") return v3Deals.filter((deal) => deal.due === "Today" || deal.due === "Overdue" || deal.category === "Ready to Close");
+    if (view === "Quote Bottlenecks") return v3Deals.filter((deal) => deal.category === "Quote Bottleneck");
+    if (view === "Long-Tail") return v3Deals.filter((deal) => deal.category === "Long-Tail");
+    return v3Deals;
+  }, [view]);
+
+  if (view === "Deals") {
+    return (
+      <section className="v3-single-view">
+        <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </section>
+    );
+  }
+
+  if (view === "AI Activity") {
+    return (
+      <section className="panel v3-single-view v3-view-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">AI Activity</p><h3>Agent execution log</h3></div><span className="v2-live">Visible</span></div>
+        <div className="v3-ai-list expanded">
+          {v3AiActivity.map(([activityName, dealName, value, status, reason]) => (
+            <span key={activityName + dealName}><Bot size={15} /><strong>{activityName}</strong><small>{dealName} · {value} · {status} · {reason}</small></span>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (view === "Reports") {
+    return (
+      <section className="v3-single-view v3-report-page">
+        {[
+          ["Human edit rate", "18%", "Low", "AI drafts are generally close enough for approval."],
+          ["Approval rate", "74%", "Good", "Good enough to keep testing controlled automation."],
+          ["Response rate", "31%", "Watch", "Segment by channel before drawing big conclusions."],
+        ].map(([label, count, value, detail]) => (
+          <button className="v3-metric green" type="button" key={label}><span>{label}</span><strong>{value}</strong><small>{count} · {detail}</small></button>
+        ))}
+      </section>
+    );
+  }
+
+  if (view === "Knowledge") {
+    return (
+      <section className="panel v3-single-view v3-view-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">Knowledge</p><h3>Context assets</h3></div><span className="v2-live">Design layer</span></div>
+        <div className="v3-asset-grid expanded">
+          {["Personas", "Pain points", "Objections", "Product details", "Service details", "Quote rules", "Escalation logic", "Tone guidance", "Sales scripts", "Scorecard frameworks", "Discovery framework", "Closing framework"].map((asset) => <span key={asset}>{asset}</span>)}
+        </div>
+      </section>
+    );
+  }
+
+  if (view === "Settings") {
+    return (
+      <section className="panel v3-single-view v3-view-panel">
+        <div className="v3-panel-head"><div><p className="eyebrow">Settings</p><h3>Implementation admin</h3></div><span className="pill">MVP map</span></div>
+        <div className="v3-settings-table">
+          {[["CRM", "Pipedrive", "Connected"], ["Communication", "Gmail, VoIP, WhatsApp", "Partial"], ["Quoting", "Measure or custom workflow", "Planned"], ["Permissions", "Roles and approval rules", "Designing"]].map(([layer, system, status]) => (
+            <div key={layer}><strong>{layer}</strong><span>{system}</span><em>{status}</em></div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="v3-single-view v3-queue-page">
+      <div className="panel v3-view-panel">
+        <div className="v3-panel-head">
+          <div><p className="eyebrow">{view}</p><h3>{queueDeals.length} deals in this queue</h3></div>
+          <span className="v2-live">{money(queueDeals.reduce((sum, deal) => sum + deal.value, 0))}</span>
+        </div>
+        <div className="v3-command-list expanded">
+          {queueDeals.map((deal, index) => (
+            <button type="button" onClick={() => setSelectedId(deal.id)} key={deal.id}>
+              <span className="v3-rank">{index + 1}</span>
+              <div><strong>{deal.name}</strong><small>{deal.customer} · {deal.owner} · {deal.lastMeaningful}</small></div>
+              <span className={"v3-risk " + (deal.category === "Human Required" ? "high" : deal.category === "Quote Bottleneck" ? "medium" : "")}>{deal.category}</span>
+              <strong>{money(deal.value)}</strong>
+              <small>{deal.nextAction}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+      <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
+    </section>
+  );
+}
+
+function V3DealDetailShell({ deal, activeTab, setActiveTab }: { deal: (typeof v3Deals)[number]; activeTab: string; setActiveTab: React.Dispatch<React.SetStateAction<string>> }) {
+  return (
+    <section className="panel v3-deal-detail">
+      <div className="v3-panel-head">
+        <div><p className="eyebrow">Deal Detail</p><h3>{deal.name}</h3></div>
+        <span className="pill warn">{deal.aiStatus}</span>
+      </div>
+      <div className="v3-tabs" role="tablist" aria-label="Deal views">
+        {dealTabs.map((tab) => <button className={activeTab === tab ? "active" : ""} type="button" onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
+      </div>
+      <V3DealTab activeTab={activeTab} deal={deal} />
     </section>
   );
 }

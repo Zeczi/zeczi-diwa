@@ -1100,12 +1100,15 @@ button:hover {
   gap: 4px;
 }
 
-.v3-nav-panel a {
+.v3-nav-panel a,
+.v3-nav-panel button {
   min-height: 30px;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   border: 1px solid transparent;
   border-radius: 6px;
+  background: transparent;
   color: var(--soft);
   padding: 0 9px;
   text-decoration: none;
@@ -1114,7 +1117,9 @@ button:hover {
 }
 
 .v3-nav-panel a:hover,
-.v3-nav-panel a.active {
+.v3-nav-panel a.active,
+.v3-nav-panel button:hover,
+.v3-nav-panel button.active {
   border-color: rgba(232, 197, 71, 0.28);
   background: rgba(232, 197, 71, 0.08);
   color: var(--text);
@@ -1597,6 +1602,35 @@ button:hover {
   font-weight: 850;
 }
 
+.v3-single-view {
+  min-width: 0;
+}
+
+.v3-queue-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.v3-view-panel {
+  padding: 10px;
+}
+
+.v3-command-list.expanded {
+  max-height: none;
+}
+
+.v3-report-page {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.v3-asset-grid.expanded {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .v3-ai-list svg {
   color: var(--accent);
 }
@@ -1691,8 +1725,11 @@ button:hover {
 
   .v3-manager,
   .v3-knowledge,
-  .v3-settings {
+  .v3-settings,
+  .v3-queue-page,
+  .v3-report-page {
     grid-column: auto;
+    grid-template-columns: 1fr;
   }
 
   .v3-settings-table div {
