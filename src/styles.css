@@ -1700,7 +1700,7 @@ button:hover {
   top: 70px;
   z-index: 3;
   display: grid;
-  grid-template-columns: repeat(15, minmax(92px, 1fr));
+  grid-template-columns: repeat(14, minmax(92px, 1fr));
   gap: 6px;
   overflow-x: auto;
   border: 1px solid var(--line);

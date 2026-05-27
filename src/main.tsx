@@ -107,10 +107,9 @@ const stageSignals = [
 
 const pipelineStages = [
   { id: "All", label: "All", count: 392 },
-  { id: "New Lead", label: "New Lead", count: 41 },
-  { id: "2nd Attempt", label: "2nd Attempt", count: 24 },
+  { id: "New Lead", label: "New Lead", count: 65 },
   { id: "Attempting", label: "Attempting", count: 39 },
-  { id: "Awaiting Info", label: "Awaiting Info", count: 81 },
+  { id: "Awaiting Info", label: "Awaiting", count: 81 },
   { id: "Early Human Required", label: "Human Required", count: 4, tone: "critical" },
   { id: "Prepare Quote", label: "Prepare Quote", count: 28 },
   { id: "Quote Sent", label: "Quote Sent", count: 17 },
