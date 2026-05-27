@@ -351,6 +351,53 @@ const v3Scorecards = [
   { type: "Closing Review", interaction: "Outbound phone call", human: "Rachel", stage: "Quote Sent", score: 91, sentiment: "Very positive", finding: "Customer is close if board pack answers safety and timing concerns.", next: "Send board-ready response and book follow-up decision call.", coaching: "Excellent. You identified the real blocker and avoided premature discounting." },
 ];
 
+const richScorecards = [
+  {
+    id: "SC-23621",
+    title: "Elite Sales Architect",
+    event: "Site Visit (Plaud)",
+    human: "Myles",
+    agent: "Agent B",
+    stage: "Prepare Quote",
+    score: 90,
+    confidence: "high",
+    why: "Myles combined technical authority, transparent live quoting, strong sample framing and a clear follow-up path.",
+    coaching: "Masterclass site assessment. To reach 100, push deeper on emotional pain early: why fixing this area matters now.",
+    criteria: [
+      ["Trust Rapport Opening", "10/10", "Professional greeting and immediate project-context identification."],
+      ["Emotional Pain Discovery", "10/20", "Functional pain was clear, but personal/lifestyle impact could go deeper."],
+      ["Solution Positioning", "15/15", "Excellent sample framing: natural light, grain direction, sand infill and product comparison."],
+      ["Quote Transparency", "15/15", "Live quote shown with GST clarity, interactive product swaps and transparent line items."],
+      ["Objection Handling", "10/10", "Handled comparison quotes by framing professional turf companies versus non-specialists."],
+      ["Closing Discipline", "5/5", "Confirmed decision structure and contact details before leaving."],
+    ],
+    strengths: ["Expert sample framing", "Transparent pricing", "Strategic urgency", "Clear handover to Rachel"],
+    improvements: ["Ask more open-ended questions about personal frustration and desired lifestyle outcome."],
+    eventNote: "Site visit transcript: Myles explained the groundworks, product differences, drainage, sample evaluation, quote transparency, discount window and follow-up process. Customer wanted to move quickly and would compare two professional quotes.",
+  },
+  {
+    id: "SC-1048",
+    title: "Strong Closer",
+    event: "Outbound phone call",
+    human: "Rachel",
+    agent: "Agent C",
+    stage: "Quote Sent",
+    score: 91,
+    confidence: "high",
+    why: "Rachel identified the real blocker: board-ready safety and timing language, not price.",
+    coaching: "Excellent close-control. Next step is to send the board-ready summary and secure a decision call.",
+    criteria: [
+      ["Intent Confirmation", "18/20", "Customer remained engaged and positive."],
+      ["Objection Clarity", "20/20", "Safety, timing and board approval were clearly isolated."],
+      ["Next Step Control", "17/20", "Follow-up path was strong but decision call should be locked immediately."],
+      ["Commercial Discipline", "20/20", "No premature discounting."],
+    ],
+    strengths: ["Found the real blocker", "Protected margin", "Kept next action focused"],
+    improvements: ["Book the decision call before sending the written pack."],
+    eventNote: "Call summary: Helen liked the quote and needed board-safe wording around compliance and timing. The call should convert into a concise board pack plus booked decision follow-up.",
+  },
+];
+
 const snapshotAgents = ["All", "Agent A", "Agent B", "Agent C"];
 const snapshotTypes = ["All", "Phone Call", "Message", "Meeting", "Assessment", "Lead Form"];
 
@@ -1013,6 +1060,7 @@ function App() {
 }
 
 function CockpitV4() {
+  const [workspaceColumns, setWorkspaceColumns] = React.useState([0.92, 1, 0.72]);
   const [activeStage, setActiveStage] = React.useState<string | null>(null);
   const [activeStatus, setActiveStatus] = React.useState<string | null>(null);
   const [queueSort, setQueueSort] = React.useState<QueueSort>("heat-desc");
@@ -1049,6 +1097,29 @@ function CockpitV4() {
       return getDealDueDays(a) - getDealDueDays(b);
     });
   }, [dueDeals, queueSort, statusDeals]);
+  const startResize = (divider: 0 | 1, startEvent: React.PointerEvent<HTMLButtonElement>) => {
+    startEvent.preventDefault();
+    const startX = startEvent.clientX;
+    const startColumns = [...workspaceColumns];
+    const total = startColumns[divider] + startColumns[divider + 1];
+
+    const move = (event: PointerEvent) => {
+      const delta = (event.clientX - startX) / 420;
+      const nextLeft = Math.max(0.58, Math.min(total - 0.58, startColumns[divider] + delta));
+      const next = [...startColumns];
+      next[divider] = nextLeft;
+      next[divider + 1] = total - nextLeft;
+      setWorkspaceColumns(next);
+    };
+
+    const stop = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+    };
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+  };
 
   return (
     <section className="cockpit-v4" aria-label="DIWA cockpit v4">
@@ -1082,7 +1153,10 @@ function CockpitV4() {
         ))}
       </div>
 
-      <div className="v4-workspace">
+      <div
+        className="v4-workspace"
+        style={{ gridTemplateColumns: `minmax(300px, ${workspaceColumns[0]}fr) 10px minmax(360px, ${workspaceColumns[1]}fr) 10px minmax(300px, ${workspaceColumns[2]}fr)` }}
+      >
         <section className="panel v4-queue">
           <div className="v3-panel-head">
             <div>
@@ -1134,7 +1208,11 @@ function CockpitV4() {
           </div>
         </section>
 
+        <button className="v4-resize-handle" type="button" aria-label="Resize Command Queue and Deal Detail" onPointerDown={(event) => startResize(0, event)} />
+
         <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
+
+        <button className="v4-resize-handle" type="button" aria-label="Resize Deal Detail and Next Best Action" onPointerDown={(event) => startResize(1, event)} />
 
         <aside className="v4-side">
           <V4ActionPanel deal={selectedDeal} />
@@ -1702,6 +1780,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
   const [snapshotHuman, setSnapshotHuman] = React.useState("All");
   const [snapshotType, setSnapshotType] = React.useState("All");
   const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "scorecard" | "note"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
+  const [scorecardModal, setScorecardModal] = React.useState<(typeof richScorecards)[number] | null>(null);
 
   if (activeTab === "Snapshots") {
     const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
@@ -1830,16 +1909,55 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
 
   if (activeTab === "Scorecards") {
     return (
-      <div className="v3-scorecard-list">
-        {v3Scorecards.map((card) => (
-          <article key={card.type}>
-            <div><strong>{card.type}</strong><span>{card.score}%</span></div>
-            <small>{card.interaction} · {card.human} · {card.stage} · {card.sentiment}</small>
-            <p>{card.finding}</p>
-            <p><b>Next:</b> {card.next}</p>
+      <div className="v3-scorecard-list rich">
+        {richScorecards.map((card) => (
+          <article key={card.id}>
+            <div>
+              <strong>{card.title}</strong>
+              <span>{card.score}/100</span>
+            </div>
+            <small>{card.event} · {card.human} · {card.agent} · {card.stage} · confidence {card.confidence}</small>
+            <p><b>Why this scorecard:</b> {card.why}</p>
             <p><b>Coaching:</b> {card.coaching}</p>
+            <div className="v3-snapshot-actions">
+              <button type="button" onClick={() => setScorecardModal(card)}>Open scorecard</button>
+              <button type="button" onClick={() => setSnapshotModal({ kind: "note", snapshot: v3Snapshots[1] })}>View event note</button>
+            </div>
           </article>
         ))}
+        {scorecardModal && (
+          <div className="v3-modal-backdrop" role="presentation" onClick={() => setScorecardModal(null)}>
+            <section className="v3-modal v3-scorecard-modal" role="dialog" aria-modal="true" aria-label="Full scorecard" onClick={(event) => event.stopPropagation()}>
+              <div className="v3-panel-head">
+                <div>
+                  <p className="eyebrow">{scorecardModal.event} · {scorecardModal.human}</p>
+                  <h3>{scorecardModal.title}</h3>
+                </div>
+                <button type="button" onClick={() => setScorecardModal(null)}>Close</button>
+              </div>
+              <div className="v3-scorecard-hero">
+                <strong>{scorecardModal.score}/100</strong>
+                <span>Confidence {scorecardModal.confidence}</span>
+                <p>{scorecardModal.why}</p>
+              </div>
+              <div className="v3-criteria-table">
+                {scorecardModal.criteria.map(([criterion, score, evidence]) => (
+                  <div key={criterion}>
+                    <strong>{criterion}</strong>
+                    <span>{score}</span>
+                    <p>{evidence}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="v3-scorecard-columns">
+                <article><strong>Strengths</strong>{scorecardModal.strengths.map((item) => <span key={item}>{item}</span>)}</article>
+                <article><strong>Improvements</strong>{scorecardModal.improvements.map((item) => <span key={item}>{item}</span>)}</article>
+              </div>
+              <article className="v3-scorecard-coaching"><strong>Coaching Summary</strong><p>{scorecardModal.coaching}</p></article>
+              <article className="v3-scorecard-coaching"><strong>Event Note</strong><p>{scorecardModal.eventNote}</p></article>
+            </section>
+          </div>
+        )}
       </div>
     );
   }
