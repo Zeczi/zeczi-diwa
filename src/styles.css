@@ -1558,6 +1558,23 @@ button:hover {
   gap: 6px;
 }
 
+.v3-knowledge-brief {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(232, 197, 71, 0.24);
+  border-radius: 7px;
+  background: rgba(232, 197, 71, 0.06);
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.v3-knowledge-brief p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .v3-asset-grid span {
   min-height: 30px;
   display: flex;

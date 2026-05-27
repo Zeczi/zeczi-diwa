@@ -998,18 +998,6 @@ function CockpitV3() {
             </div>
           </section>
 
-          <section className="panel v3-knowledge" id="v3-knowledge">
-            <div className="v3-panel-head tight">
-              <p className="eyebrow">Knowledge</p>
-              <span className="v2-live">Context assets</span>
-            </div>
-            <div className="v3-asset-grid">
-              {["Personas", "Pain points", "Objections", "Product details", "Quote rules", "Escalation logic", "Tone guidance", "Sales scripts", "Scorecard frameworks", "Closing framework"].map((asset) => (
-                <span key={asset}>{asset}</span>
-              ))}
-            </div>
-          </section>
-
           <section className="panel v3-settings" id="v3-settings">
             <div className="v3-panel-head tight">
               <p className="eyebrow">Implementation Admin</p>
@@ -1105,7 +1093,17 @@ function V3SelectedView({
   if (view === "Knowledge") {
     return (
       <section className="panel v3-single-view v3-view-panel">
-        <div className="v3-panel-head"><div><p className="eyebrow">Knowledge</p><h3>Context assets</h3></div><span className="v2-live">Design layer</span></div>
+        <div className="v3-panel-head">
+          <div>
+            <p className="eyebrow">Knowledge</p>
+            <h3>Context asset builder</h3>
+          </div>
+          <button className="primary-button" type="button"><Sparkles size={15} /> Create knowledge page</button>
+        </div>
+        <div className="v3-knowledge-brief">
+          <strong>DIWA should ask the right questions, then structure the answers.</strong>
+          <p>Use this page for macro personas, micro personas, pain points, objections, product/service details, quote rules, tone guidance, sales scripts and scorecard frameworks.</p>
+        </div>
         <div className="v3-asset-grid expanded">
           {["Personas", "Pain points", "Objections", "Product details", "Service details", "Quote rules", "Escalation logic", "Tone guidance", "Sales scripts", "Scorecard frameworks", "Discovery framework", "Closing framework"].map((asset) => <span key={asset}>{asset}</span>)}
         </div>
