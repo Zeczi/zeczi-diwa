@@ -443,8 +443,17 @@ function getDueBucketLabel(deal: (typeof v3Deals)[number]) {
   return "Later";
 }
 
-function matchesDueFilter(deal: (typeof v3Deals)[number], filter: DueFilter) {
-  if (filter === "All" || filter === "Custom") return true;
+function getDealDueDate(deal: (typeof v3Deals)[number]) {
+  if (deal.due === "Overdue" || deal.due === "Today") return "2026-05-28";
+  if (deal.due === "Tomorrow") return "2026-05-29";
+  const parsed = Date.parse(`${deal.due} 2026`);
+  if (Number.isNaN(parsed)) return "";
+  return new Date(parsed).toISOString().slice(0, 10);
+}
+
+function matchesDueFilter(deal: (typeof v3Deals)[number], filter: DueFilter, customDueDate: string) {
+  if (filter === "Custom") return customDueDate ? getDealDueDate(deal) === customDueDate : true;
+  if (filter === "All") return true;
   return getDueBucketLabel(deal) === filter;
 }
 
@@ -941,6 +950,7 @@ function CockpitV4() {
   const [activeStatus, setActiveStatus] = React.useState<string | null>(null);
   const [queueSort, setQueueSort] = React.useState<QueueSort>("heat-desc");
   const [dueFilter, setDueFilter] = React.useState<DueFilter>("All");
+  const [customDueDate, setCustomDueDate] = React.useState("");
   const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
   const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
   const selectedDeal = v3Deals.find((deal) => deal.id === selectedId) ?? v3Deals[0];
@@ -960,7 +970,7 @@ function CockpitV4() {
     if (activeStatus === "Critical") return stageDeals.filter(isCriticalDeal);
     return stageDeals.filter((deal) => getHeatBand(deal) === activeStatus);
   }, [activeStatus, stageDeals]);
-  const dueDeals = React.useMemo(() => statusDeals.filter((deal) => matchesDueFilter(deal, dueFilter)), [dueFilter, statusDeals]);
+  const dueDeals = React.useMemo(() => statusDeals.filter((deal) => matchesDueFilter(deal, dueFilter, customDueDate)), [customDueDate, dueFilter, statusDeals]);
   const queueDeals = React.useMemo(() => {
     const filtered = dueDeals.length > 0 ? dueDeals : statusDeals;
     return [...filtered].sort((a, b) => {
@@ -1014,23 +1024,25 @@ function CockpitV4() {
             </div>
             <span className="v2-live">{queueDeals.length} shown</span>
           </div>
-          <div className="v4-queue-controls" aria-label="Command queue controls">
-            <div>
+          <div className="v4-queue-controls compact" aria-label="Command queue controls">
+            <label>
               <span>Sort</span>
-              {queueSortOptions.map((option) => (
-                <button className={queueSort === option.id ? "active" : ""} type="button" onClick={() => setQueueSort(option.id)} key={option.id}>
-                  {option.label}
-                </button>
-              ))}
-            </div>
-            <div>
+              <select value={queueSort} onChange={(event) => setQueueSort(event.target.value as QueueSort)}>
+                {queueSortOptions.map((option) => <option value={option.id} key={option.id}>{option.label}</option>)}
+              </select>
+            </label>
+            <label>
               <span>Due</span>
-              {dueFilterOptions.map((option) => (
-                <button className={dueFilter === option ? "active" : ""} type="button" onClick={() => setDueFilter(option)} key={option}>
-                  {option}
-                </button>
-              ))}
-            </div>
+              <select value={dueFilter} onChange={(event) => setDueFilter(event.target.value as DueFilter)}>
+                {dueFilterOptions.map((option) => <option value={option} key={option}>{option}</option>)}
+              </select>
+            </label>
+            {dueFilter === "Custom" && (
+              <label className="v4-date-control">
+                <span>Date</span>
+                <input type="date" value={customDueDate} onChange={(event) => setCustomDueDate(event.target.value)} />
+              </label>
+            )}
           </div>
           <div className="v4-queue-head">
             <span>Deal</span>
