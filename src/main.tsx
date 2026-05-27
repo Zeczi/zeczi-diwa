@@ -135,6 +135,202 @@ const navItems = [
 
 const dealTabs = ["Summary", "Timeline", "Quotes", "Scorecards", "Actions"];
 
+const v3Deals = [
+  {
+    id: "D-1048",
+    name: "Evergreen Childcare Play Area",
+    customer: "Helen Marsh",
+    company: "Evergreen Childcare",
+    phone: "+64 21 555 0148",
+    email: "helen@evergreen.example",
+    preferredChannel: "Phone then email",
+    location: "Auckland",
+    owner: "Rachel",
+    stage: "Human Required",
+    value: 42800,
+    leadSource: "Google Ads",
+    product: "Playground turf and shock pad",
+    customerType: "Childcare operator",
+    quoteStatus: "Revision requested",
+    assessmentStatus: "Completed",
+    expectedTiming: "Before school holidays",
+    decisionMaker: "Centre owner and board",
+    budgetSignal: "Budget acceptable if compliance is clear",
+    category: "Human Required",
+    priority: 96,
+    intent: 94,
+    sentiment: 82,
+    urgency: 91,
+    readiness: 86,
+    closeLikelihood: 84,
+    followUpPriority: 93,
+    lastMeaningful: "Today, 9:14 am",
+    timeSinceAction: "2 hours",
+    aiStatus: "Escalated to human",
+    due: "Today",
+    why: "Strong intent, positive sentiment, compliance question, short timing window and quote revision pending human judgement.",
+    snapshot: "Helen likes the proposal but needs a board-ready response covering safety certification, lead time and whether installation can be completed before school holidays.",
+    nextAction: "Call Helen today, confirm safety and timing, then send a concise board pack summary.",
+    objections: ["Safety compliance", "Install timing", "Board approval"],
+    persona: "Operational decision-maker. Wants confidence, evidence and clean written summaries for board approval.",
+    quote: "Q-2048 v2",
+    quoteValue: 42800,
+    quoteViewed: "Viewed twice",
+  },
+  {
+    id: "D-1035",
+    name: "North Shore Sports Facility",
+    customer: "Mike Rawiri",
+    company: "North Shore Sports Trust",
+    phone: "+64 21 555 0135",
+    email: "mike@nsst.example",
+    preferredChannel: "Email",
+    location: "North Shore",
+    owner: "Gareth",
+    stage: "Quote Sent",
+    value: 118500,
+    leadSource: "Referral",
+    product: "Multi-sport turf system",
+    customerType: "Sports facility committee",
+    quoteStatus: "Sent and viewed",
+    assessmentStatus: "Completed",
+    expectedTiming: "Board decision this month",
+    decisionMaker: "Committee",
+    budgetSignal: "Funding approved in principle",
+    category: "Ready to Close",
+    priority: 92,
+    intent: 88,
+    sentiment: 74,
+    urgency: 79,
+    readiness: 91,
+    closeLikelihood: 78,
+    followUpPriority: 90,
+    lastMeaningful: "5 days ago",
+    timeSinceAction: "5 days",
+    aiStatus: "Draft awaiting approval",
+    due: "Overdue",
+    why: "Quote viewed, high value, strong intent and no human follow-up for five days.",
+    snapshot: "The Trust is engaged and has funding momentum, but the post-quote follow-up window is being wasted.",
+    nextAction: "Approve the follow-up draft and book a decision call before Friday.",
+    objections: ["Board timing", "Comparison quote", "Installation window"],
+    persona: "Committee buyer. Needs confidence, documentation and a clear next meeting path.",
+    quote: "Q-2035 v1",
+    quoteValue: 118500,
+    quoteViewed: "Viewed three times",
+  },
+  {
+    id: "D-1017",
+    name: "Westfield Pool Surround",
+    customer: "James Patel",
+    company: "Westfield Homes",
+    phone: "+64 21 555 0117",
+    email: "james@westfield.example",
+    preferredChannel: "SMS",
+    location: "Hamilton",
+    owner: "Myles",
+    stage: "Prepare Quote",
+    value: 36500,
+    leadSource: "Website",
+    product: "Landscape turf and pool edging",
+    customerType: "Residential homeowner",
+    quoteStatus: "Not ready",
+    assessmentStatus: "Completed",
+    expectedTiming: "Next 3 to 4 weeks",
+    decisionMaker: "Homeowner",
+    budgetSignal: "Wants premium look, price sensitive on extras",
+    category: "Quote Bottleneck",
+    priority: 84,
+    intent: 81,
+    sentiment: 77,
+    urgency: 67,
+    readiness: 52,
+    closeLikelihood: 69,
+    followUpPriority: 76,
+    lastMeaningful: "Yesterday",
+    timeSinceAction: "28 hours",
+    aiStatus: "Needs missing data",
+    due: "Tomorrow",
+    why: "Assessment happened more than 24 hours ago and quote-ready fields are still incomplete.",
+    snapshot: "The customer is interested, but the quote is blocked because product preference and drainage notes are missing after assessment.",
+    nextAction: "Ask Myles to complete product selection and drainage notes, then move the deal to quote production.",
+    objections: ["Drainage", "Product uncertainty", "Price sensitivity"],
+    persona: "Homeowner. Visual buyer who needs confidence that the finished look will be premium and practical.",
+    quote: "Not created",
+    quoteValue: 36500,
+    quoteViewed: "N/A",
+  },
+  {
+    id: "D-1029",
+    name: "Barker Residence Backyard Upgrade",
+    customer: "Anna Barker",
+    company: "Residential",
+    phone: "+64 21 555 0129",
+    email: "anna@example.test",
+    preferredChannel: "WhatsApp",
+    location: "Auckland",
+    owner: "Rachel",
+    stage: "AI Follow-Up",
+    value: 17600,
+    leadSource: "Organic search",
+    product: "Natural-look lawn turf",
+    customerType: "Residential homeowner",
+    quoteStatus: "Sent",
+    assessmentStatus: "Not required",
+    expectedTiming: "Waiting on finance",
+    decisionMaker: "Homeowner and spouse",
+    budgetSignal: "Finance dependent",
+    category: "Long-Tail",
+    priority: 53,
+    intent: 73,
+    sentiment: 69,
+    urgency: 58,
+    readiness: 84,
+    closeLikelihood: 61,
+    followUpPriority: 42,
+    lastMeaningful: "2 weeks ago",
+    timeSinceAction: "14 days",
+    aiStatus: "Scheduled follow-up",
+    due: "14 Jun",
+    why: "Parked because the customer is waiting on finance and has a do-not-disturb date.",
+    snapshot: "Anna is interested but timing depends on finance. The correct move is to preserve context and re-engage on the agreed date.",
+    nextAction: "Hold until the DND date, then send a soft check-in through WhatsApp.",
+    objections: ["Finance timing", "Spouse approval"],
+    persona: "Practical homeowner. Needs reassurance and gentle timing control, not pushy sales noise.",
+    quote: "Q-2029 v1",
+    quoteValue: 17600,
+    quoteViewed: "Viewed once",
+  },
+];
+
+const v3TimelineEvents = [
+  { type: "Call connected", time: "Today, 9:14 am", source: "Rachel", stage: "Quote Sent", summary: "Customer liked the quote but asked whether installation could happen before school holidays. Budget sounded acceptable. Board approval is required.", tags: ["Positive intent", "Timing concern", "Decision-maker shared"] },
+  { type: "AI draft generated", time: "Today, 9:22 am", source: "Closing Review", stage: "Human Required", summary: "DIWA prepared a board-ready response but escalated because compliance wording needs human approval.", tags: ["Draft awaiting approval", "Human Required"] },
+  { type: "Quote revised", time: "Yesterday, 4:18 pm", source: "Gareth", stage: "Quote Sent", summary: "Revision added compliance note, premium shock pad option and updated installation timing assumptions.", tags: ["Quote v2", "Scope changed"] },
+  { type: "Site assessment completed", time: "8 May 2026, 10:30 am", source: "Myles", stage: "Prepare Quote", summary: "Measurements, photos and access notes were attached. Site appears straightforward with normal access.", tags: ["Assessment complete", "Quote-ready"] },
+];
+
+const v3QuoteSnapshots = [
+  { version: "Q-2048 v2", value: 42800, created: "8 May 2026", sent: "8 May 2026", status: "Viewed twice", reason: "Added compliance wording and optional shock pad line item.", risk: "Board approval depends on clear safety and timing explanation." },
+  { version: "Q-2048 v1", value: 39750, created: "7 May 2026", sent: "7 May 2026", status: "Superseded", reason: "Initial quote after site assessment.", risk: "Did not address compliance requirements deeply enough." },
+];
+
+const v3Scorecards = [
+  { type: "Discovery Review", interaction: "Inbound phone call", human: "Rachel", stage: "New Lead", score: 86, sentiment: "Positive", finding: "Customer needed installation before school holidays, but board process was not fully mapped.", next: "Confirm board approval steps and documentation requirements.", coaching: "Strong discovery. Next time, lock down who signs off and what evidence they need." },
+  { type: "Quote Readiness Review", interaction: "Site visit", human: "Myles", stage: "Prepare Quote", score: 78, sentiment: "Positive", finding: "Site context was strong, but compliance wording needed sharper documentation.", next: "Add safety evidence and install timing assumptions to the proposal.", coaching: "Good technical capture. Missing written decision evidence creates drag later." },
+  { type: "Closing Review", interaction: "Outbound phone call", human: "Rachel", stage: "Quote Sent", score: 91, sentiment: "Very positive", finding: "Customer is close if board pack answers safety and timing concerns.", next: "Send board-ready response and book follow-up decision call.", coaching: "Excellent. You identified the real blocker and avoided premature discounting." },
+];
+
+const v3AiActivity = [
+  ["Draft generated", "North Shore Sports Facility", "$118,500", "Awaiting approval", "92% confidence"],
+  ["Escalation created", "Evergreen Childcare Play Area", "$42,800", "Human Required", "Compliance question"],
+  ["Summary created", "Westfield Pool Surround", "$36,500", "Quote bottleneck", "Missing PLOD notes"],
+  ["Follow-up scheduled", "Barker Residence", "$17,600", "Long-tail", "DND active"],
+];
+
+function money(value: number) {
+  return `$${value.toLocaleString("en-NZ")}`;
+}
+
 const cockpitQueue = [
   {
     rank: 1,
@@ -660,8 +856,16 @@ function AskDiwaPanel() {
 
 function CockpitV3() {
   const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
-  const commandDeals = React.useMemo(() => cockpitQueue.slice(0, 8), []);
-  const selectedDeal = commandDeals[0];
+  const [selectedId, setSelectedId] = React.useState(v3Deals[0].id);
+  const commandDeals = React.useMemo(() => [...v3Deals].sort((a, b) => b.priority - a.priority), []);
+  const selectedDeal = commandDeals.find((deal) => deal.id === selectedId) ?? commandDeals[0];
+  const totalValue = commandDeals.reduce((sum, deal) => sum + deal.value, 0);
+  const metrics = [
+    { label: "Ready to Close", count: 2, value: money(161300), detail: "Avg readiness 88%. Oldest untouched: North Shore, 5 days.", tone: "green" },
+    { label: "Human Required", count: 3, value: money(197800), detail: "Top reason: judgement or approval required.", tone: "red" },
+    { label: "Follow-Up Due", count: 2, value: money(161300), detail: "One overdue, one human-call-required.", tone: "orange" },
+    { label: "Pipeline Sentiment", count: "74%", value: money(totalValue), detail: "Top negative driver: slow internal action.", tone: "blue" },
+  ];
 
   return (
     <section className="cockpit-v3" aria-label="DIWA cockpit v3">
@@ -689,6 +893,16 @@ function CockpitV3() {
           ))}
         </div>
 
+        <div className="v3-metrics">
+          {metrics.map((metric) => (
+            <button className={`v3-metric ${metric.tone}`} type="button" key={metric.label}>
+              <span>{metric.label}</span>
+              <strong>{metric.value}</strong>
+              <small>{metric.count} · {metric.detail}</small>
+            </button>
+          ))}
+        </div>
+
         <div className="v3-grid">
           <section className="panel v3-command" id="v3-command-centre">
             <div className="v3-panel-head">
@@ -696,20 +910,20 @@ function CockpitV3() {
                 <p className="eyebrow">Command Queue</p>
                 <h3>Highest leverage moves</h3>
               </div>
-              <span className="v2-live">8 visible</span>
+              <span className="v2-live">{commandDeals.length} model deals</span>
             </div>
             <div className="v3-command-list">
-              {commandDeals.map((deal) => (
-                <article className={deal.rank === 1 ? "selected" : ""} key={deal.rank}>
-                  <span className="v3-rank">{deal.rank}</span>
+              {commandDeals.map((deal, index) => (
+                <button className={deal.id === selectedDeal.id ? "selected" : ""} type="button" onClick={() => setSelectedId(deal.id)} key={deal.id}>
+                  <span className="v3-rank">{index + 1}</span>
                   <div>
                     <strong>{deal.customer}</strong>
-                    <small>{deal.org}</small>
+                    <small>{deal.name}</small>
                   </div>
-                  <span className={`v3-risk ${deal.risk.toLowerCase()}`}>{deal.risk}</span>
-                  <strong>{deal.value}</strong>
-                  <small>{deal.next}</small>
-                </article>
+                  <span className={`v3-risk ${deal.category === "Human Required" ? "high" : deal.category === "Quote Bottleneck" ? "medium" : ""}`}>{deal.category}</span>
+                  <strong>{money(deal.value)}</strong>
+                  <small>{deal.nextAction}</small>
+                </button>
               ))}
             </div>
           </section>
@@ -720,7 +934,7 @@ function CockpitV3() {
                 <p className="eyebrow">Selected Deal</p>
                 <h3>{selectedDeal.customer}</h3>
               </div>
-              <span className="pill warn">Human watch</span>
+              <span className="pill warn">{selectedDeal.aiStatus}</span>
             </div>
             <div className="v3-tabs" role="tablist" aria-label="Deal views">
               {dealTabs.map((tab) => (
@@ -729,19 +943,7 @@ function CockpitV3() {
                 </button>
               ))}
             </div>
-            <div className="v3-detail-body">
-              <div>
-                <span>Current view</span>
-                <strong>{activeTab}</strong>
-              </div>
-              <p>{selectedDeal.next}</p>
-              <div className="v3-context-grid">
-                <span><strong>{selectedDeal.value}</strong><small>Deal value</small></span>
-                <span><strong>{selectedDeal.state}</strong><small>Stage</small></span>
-                <span><strong>{selectedDeal.owner}</strong><small>Owner</small></span>
-                <span><strong>{selectedDeal.age}</strong><small>Next date</small></span>
-              </div>
-            </div>
+            <V3DealTab activeTab={activeTab} deal={selectedDeal} />
           </section>
 
           <section className="panel v3-human" id="v3-human-required">
@@ -771,15 +973,115 @@ function CockpitV3() {
               <span className="v2-live">Live</span>
             </div>
             <div className="v3-ai-list">
-              <span><Bot size={15} /> 31 safe actions queued</span>
-              <span><Brain size={15} /> 12 deal briefs refreshed</span>
-              <span><MessageSquareText size={15} /> 7 follow-ups drafted</span>
-              <span><ShieldCheck size={15} /> 3 blocked by source confidence</span>
+              {v3AiActivity.map(([activityName, dealName, value, status, reason]) => (
+                <span key={activityName + dealName}>
+                  <Bot size={15} />
+                  <strong>{activityName}</strong>
+                  <small>{dealName} · {value} · {status} · {reason}</small>
+                </span>
+              ))}
             </div>
           </section>
         </div>
       </section>
     </section>
+  );
+}
+
+function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Deals)[number] }) {
+  if (activeTab === "Timeline") {
+    return (
+      <div className="v3-timeline-list">
+        {v3TimelineEvents.map((event) => (
+          <article key={event.type + event.time}>
+            <div><strong>{event.type}</strong><time>{event.time}</time></div>
+            <small>{event.source} · {event.stage}</small>
+            <p>{event.summary}</p>
+            <div>{event.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+          </article>
+        ))}
+      </div>
+    );
+  }
+
+  if (activeTab === "Quotes") {
+    return (
+      <div className="v3-quote-grid">
+        {v3QuoteSnapshots.map((quote) => (
+          <article key={quote.version}>
+            <div><strong>{quote.version}</strong><span>{quote.status}</span></div>
+            <h4>{money(quote.value)}</h4>
+            <small>Created {quote.created} · Sent {quote.sent}</small>
+            <p><b>Revision:</b> {quote.reason}</p>
+            <p><b>Risk:</b> {quote.risk}</p>
+          </article>
+        ))}
+      </div>
+    );
+  }
+
+  if (activeTab === "Scorecards") {
+    return (
+      <div className="v3-scorecard-list">
+        {v3Scorecards.map((card) => (
+          <article key={card.type}>
+            <div><strong>{card.type}</strong><span>{card.score}%</span></div>
+            <small>{card.interaction} · {card.human} · {card.stage} · {card.sentiment}</small>
+            <p>{card.finding}</p>
+            <p><b>Next:</b> {card.next}</p>
+            <p><b>Coaching:</b> {card.coaching}</p>
+          </article>
+        ))}
+      </div>
+    );
+  }
+
+  if (activeTab === "Actions") {
+    return (
+      <div className="v3-actions-panel">
+        <article>
+          <strong>Draft approval panel</strong>
+          <small>Channel: Email · Recipient: {deal.customer} · Confidence: 91% · Approval required</small>
+          <p>Hi {deal.customer.split(" ")[0]}, thanks again for your time. Based on what you raised, I have pulled together the key points around timing, scope and next steps so you have a clear summary for review.</p>
+          <div><button type="button">Approve</button><button type="button">Edit</button><button type="button">Regenerate</button></div>
+        </article>
+        <article>
+          <strong>Call script panel</strong>
+          <small>{deal.customer} · {deal.stage} · {deal.preferredChannel}</small>
+          <p><b>Objective:</b> {deal.nextAction}</p>
+          <p><b>Quiet prompts:</b> Confirm decision-maker. Clarify timing. Do not discount yet. Secure the next commitment.</p>
+        </article>
+      </div>
+    );
+  }
+
+  return (
+    <div className="v3-detail-body">
+      <div>
+        <span>Current snapshot</span>
+        <strong>{deal.id}</strong>
+      </div>
+      <p>{deal.snapshot}</p>
+      <div className="v3-context-grid">
+        <span><strong>{money(deal.value)}</strong><small>Deal value</small></span>
+        <span><strong>{deal.stage}</strong><small>Stage</small></span>
+        <span><strong>{deal.owner}</strong><small>Owner</small></span>
+        <span><strong>{deal.due}</strong><small>Due</small></span>
+      </div>
+      <div className="v3-score-grid">
+        <span><strong>{deal.intent}%</strong><small>Intent</small></span>
+        <span><strong>{deal.sentiment}%</strong><small>Sentiment</small></span>
+        <span><strong>{deal.urgency}%</strong><small>Urgency</small></span>
+        <span><strong>{deal.closeLikelihood}%</strong><small>Close</small></span>
+      </div>
+      <article className="v3-persona-card">
+        <strong>Recommended next action</strong>
+        <p>{deal.nextAction}</p>
+        <strong>Persona</strong>
+        <p>{deal.persona}</p>
+        <div>{deal.objections.map((item) => <span key={item}>{item}</span>)}</div>
+      </article>
+    </div>
   );
 }
 

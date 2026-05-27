@@ -1174,6 +1174,46 @@ button:hover {
   align-items: start;
 }
 
+.v3-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.v3-metric {
+  min-height: 86px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 3px;
+  border-left: 3px solid var(--accent);
+  background: #111;
+  padding: 10px;
+  text-align: left;
+}
+
+.v3-metric span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.v3-metric strong {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.v3-metric small {
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.v3-metric.red { border-left-color: var(--danger); }
+.v3-metric.orange { border-left-color: var(--warn); }
+.v3-metric.green { border-left-color: var(--ok); }
+.v3-metric.blue { border-left-color: #7aa2ff; }
+
 .v3-panel-head {
   min-height: 32px;
   display: flex;
@@ -1202,7 +1242,7 @@ button:hover {
   gap: 6px;
 }
 
-.v3-command-list article {
+.v3-command-list button {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 58px 82px;
   gap: 8px;
@@ -1212,14 +1252,15 @@ button:hover {
   background: #111;
   padding: 8px;
   font-size: 12px;
+  text-align: left;
 }
 
-.v3-command-list article.selected {
+.v3-command-list button.selected {
   border-color: rgba(232, 197, 71, 0.44);
   background: rgba(232, 197, 71, 0.06);
 }
 
-.v3-command-list article > small {
+.v3-command-list button > small {
   grid-column: 2 / -1;
   color: var(--muted);
 }
@@ -1312,12 +1353,108 @@ button:hover {
   gap: 6px;
 }
 
-.v3-context-grid span {
+.v3-score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.v3-context-grid span,
+.v3-score-grid span {
   display: grid;
   gap: 1px;
   border: 1px solid #292929;
   border-radius: 6px;
   padding: 7px;
+}
+
+.v3-persona-card,
+.v3-timeline-list article,
+.v3-quote-grid article,
+.v3-scorecard-list article,
+.v3-actions-panel article {
+  display: grid;
+  gap: 7px;
+  border: 1px solid #292929;
+  border-radius: 7px;
+  background: #111;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.v3-persona-card p,
+.v3-timeline-list p,
+.v3-quote-grid p,
+.v3-scorecard-list p,
+.v3-actions-panel p,
+.v3-timeline-list small,
+.v3-quote-grid small,
+.v3-scorecard-list small,
+.v3-actions-panel small {
+  margin: 0;
+  color: var(--muted);
+}
+
+.v3-persona-card div,
+.v3-timeline-list article > div:last-child,
+.v3-actions-panel article > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.v3-persona-card span,
+.v3-timeline-list article > div:last-child span,
+.v3-quote-grid article > div span {
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #333;
+  border-radius: 999px;
+  color: var(--soft);
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.v3-timeline-list,
+.v3-scorecard-list,
+.v3-actions-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.v3-timeline-list article > div:first-child,
+.v3-quote-grid article > div,
+.v3-scorecard-list article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.v3-timeline-list time,
+.v3-scorecard-list article > div span {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.v3-quote-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.v3-quote-grid h4 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.v3-actions-panel button {
+  min-height: 30px;
+  background: #181818;
 }
 
 .v3-human-card {
@@ -1344,7 +1481,8 @@ button:hover {
 
 .v3-ai-list span {
   min-height: 32px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 0.58fr) minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   border: 1px solid #292929;
@@ -1353,6 +1491,10 @@ button:hover {
   color: var(--soft);
   padding: 0 9px;
   font-size: 12px;
+}
+
+.v3-ai-list small {
+  color: var(--muted);
 }
 
 .v3-ai-list svg {
@@ -1424,15 +1566,26 @@ button:hover {
   }
 
   .v3-nav-panel nav,
-  .v3-context-grid {
+  .v3-context-grid,
+  .v3-score-grid,
+  .v3-metrics,
+  .v3-quote-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .v3-command-list article {
+  .v3-command-list button {
     grid-template-columns: 26px minmax(0, 1fr) 58px;
   }
 
-  .v3-command-list article > strong {
+  .v3-command-list button > strong {
     display: none;
+  }
+
+  .v3-ai-list span {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  .v3-ai-list small {
+    grid-column: 2;
   }
 }
