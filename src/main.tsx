@@ -18,7 +18,6 @@ import {
   PanelLeftOpen,
   PhoneCall,
   Search,
-  ShieldCheck,
   Sparkles,
   Target,
   UserRoundCheck,
@@ -626,10 +625,11 @@ function App() {
         <nav className="nav-list" aria-label="DIWA navigation">
           <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
           <a className="nav-item" href="#deals" title="Deal Intelligence"><BriefcaseBusiness size={17} /> <span>Deal Intelligence</span></a>
+          <a className="nav-item" href="#activities" title="Activities"><Activity size={17} /> <span>Activities</span></a>
           <a className="nav-item" href="#context" title="Context Timeline"><Layers3 size={17} /> <span>Context Timeline</span></a>
           <a className="nav-item" href="#reports" title="Reports"><FileText size={17} /> <span>Reports</span></a>
-          <a className="nav-item" href="#sources" title="Source Links"><ShieldCheck size={17} /> <span>Source Links</span></a>
-          <a className="nav-item" href="#ai-activity" title="AI Activity"><Bot size={17} /> <span>AI Activity</span></a>
+          <a className="nav-item" href="#scorecards" title="Scorecards"><CheckCircle2 size={17} /> <span>Scorecards</span></a>
+          <a className="nav-item" href="#agents" title="Agents"><Bot size={17} /> <span>Agents</span></a>
           <a className="nav-item" href="#integrations" title="Integrations"><Activity size={17} /> <span>Integrations</span></a>
           <a className="nav-item" href="#knowledge" title="Knowledge"><Brain size={17} /> <span>Knowledge</span></a>
         </nav>
