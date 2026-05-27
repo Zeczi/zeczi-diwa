@@ -63,7 +63,7 @@ button:hover {
 }
 
 .shell.sidebar-collapsed {
-  grid-template-columns: 78px minmax(0, 1fr);
+  grid-template-columns: 82px minmax(0, 1fr);
 }
 
 .sidebar {
@@ -86,12 +86,11 @@ button:hover {
   gap: 8px;
 }
 
-.brand-row {
+.brand-logo-wrap {
   min-height: 44px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-start;
 }
 
 .brand-logo {
@@ -101,16 +100,16 @@ button:hover {
   object-position: left center;
 }
 
-.brand-mark {
+.brand-icon {
   display: none;
-  width: 34px;
-  height: 34px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  object-position: center;
 }
 
 .sidebar-toggle {
-  width: 38px;
-  min-width: 38px;
+  width: 100%;
   padding: 0;
 }
 
@@ -129,19 +128,29 @@ button:hover {
   padding-inline: 12px;
 }
 
-.sidebar-collapsed .brand-row {
+.sidebar-collapsed .brand-logo-wrap {
   justify-content: center;
+}
+
+.sidebar-collapsed .brand-logo-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  justify-self: center;
 }
 
 .sidebar-collapsed .brand-logo,
 .sidebar-collapsed .brand-pill,
 .sidebar-collapsed .nav-item span,
-.sidebar-collapsed .sidebar-panel {
+.sidebar-collapsed .sidebar-panel,
+.sidebar-collapsed .toggle-label {
   display: none;
 }
 
-.sidebar-collapsed .brand-mark {
+.sidebar-collapsed .brand-icon {
   display: block;
+  object-fit: cover;
 }
 
 .nav-list {
@@ -192,6 +201,11 @@ button:hover {
 .sidebar-panel span {
   color: var(--muted);
   font-size: 12px;
+}
+
+.sidebar-foot {
+  display: grid;
+  gap: 10px;
 }
 
 .content {
@@ -566,7 +580,7 @@ button:hover {
     padding-inline: 14px;
   }
 
-  .sidebar-collapsed .brand-row {
+  .sidebar-collapsed .brand-logo-wrap {
     justify-content: space-between;
   }
 
@@ -575,8 +589,15 @@ button:hover {
     display: block;
   }
 
-  .sidebar-collapsed .brand-mark {
+  .sidebar-collapsed .brand-icon {
     display: none;
+  }
+
+  .sidebar-collapsed .brand-logo-wrap {
+    width: auto;
+    height: 44px;
+    border-radius: 0;
+    justify-self: stretch;
   }
 
   .sidebar-collapsed .sidebar-panel {

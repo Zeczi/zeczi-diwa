@@ -101,19 +101,9 @@ function App() {
     <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="brand-row">
+          <div className="brand-logo-wrap">
             <img className="brand-logo" src="/brand/zeczi-logo.png" alt="ZECZI" />
-            <img className="brand-mark" src="/brand/zeczi-mark.svg" alt="Z" />
-            <button
-              className="sidebar-toggle"
-              type="button"
-              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              aria-pressed={sidebarCollapsed}
-              onClick={() => setSidebarCollapsed((current) => !current)}
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-            </button>
+            <img className="brand-icon" src="/brand/zeczi-favicon.png" alt="ZECZI" />
           </div>
           <span className="brand-pill">DIWA</span>
         </div>
@@ -127,10 +117,23 @@ function App() {
           <a className="nav-item" href="#sources" title="Source Links"><ShieldCheck size={17} /> <span>Source Links</span></a>
         </nav>
 
-        <div className="sidebar-panel">
-          <p className="eyebrow">Workspace</p>
-          <strong>Eco Lawn</strong>
-          <span>Prototype tenant</span>
+        <div className="sidebar-foot">
+          <div className="sidebar-panel">
+            <p className="eyebrow">Workspace</p>
+            <strong>Eco Lawn</strong>
+            <span>Prototype tenant</span>
+          </div>
+          <button
+            className="sidebar-toggle"
+            type="button"
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-pressed={sidebarCollapsed}
+            onClick={() => setSidebarCollapsed((current) => !current)}
+            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+            <span className="toggle-label">{sidebarCollapsed ? "Expand" : "Collapse"}</span>
+          </button>
         </div>
       </aside>
 
