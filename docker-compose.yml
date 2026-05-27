@@ -1,0 +1,15 @@
+services:
+  diwa:
+    build:
+      context: .
+    image: zeczi-diwa:local
+    container_name: zeczi-diwa
+    restart: unless-stopped
+    ports:
+      - "${ZECZI_DIWA_HOST_PORT:-5180}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s

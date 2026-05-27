@@ -19,6 +19,16 @@ npm run dev
 npm run build
 ```
 
+## Docker
+
+```bash
+docker compose build
+docker compose up -d
+curl http://127.0.0.1:5180/healthz
+```
+
+The container serves the built React app through nginx. It is intended to sit behind the ZECZI host reverse proxy for staging/live access.
+
 ## Product Direction
 
 DIWA sits above and alongside CRM, communication tools, quoting systems, and operational knowledge bases.
