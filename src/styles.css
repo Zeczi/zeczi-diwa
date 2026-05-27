@@ -101,6 +101,13 @@ button:hover {
   object-position: left center;
 }
 
+.brand-mark {
+  display: none;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
 .sidebar-toggle {
   width: 38px;
   min-width: 38px;
@@ -131,6 +138,10 @@ button:hover {
 .sidebar-collapsed .nav-item span,
 .sidebar-collapsed .sidebar-panel {
   display: none;
+}
+
+.sidebar-collapsed .brand-mark {
+  display: block;
 }
 
 .nav-list {
@@ -562,6 +573,10 @@ button:hover {
   .sidebar-collapsed .brand-logo,
   .sidebar-collapsed .brand-pill {
     display: block;
+  }
+
+  .sidebar-collapsed .brand-mark {
+    display: none;
   }
 
   .sidebar-collapsed .sidebar-panel {

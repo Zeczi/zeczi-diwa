@@ -103,6 +103,7 @@ function App() {
         <div className="brand-block">
           <div className="brand-row">
             <img className="brand-logo" src="/brand/zeczi-logo.png" alt="ZECZI" />
+            <img className="brand-mark" src="/brand/zeczi-mark.svg" alt="Z" />
             <button
               className="sidebar-toggle"
               type="button"
