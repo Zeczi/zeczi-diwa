@@ -331,6 +331,7 @@ const cockpitQueue = [
 function App() {
   const isV2 = !window.location.pathname.startsWith("/v1");
   const [askOpen, setAskOpen] = React.useState(false);
+  const askPanelRef = React.useRef<HTMLDivElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
   });
@@ -338,6 +339,27 @@ function App() {
   React.useEffect(() => {
     window.localStorage.setItem("diwa-sidebar-collapsed", String(sidebarCollapsed));
   }, [sidebarCollapsed]);
+
+  React.useEffect(() => {
+    if (!askOpen) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (askPanelRef.current?.contains(event.target as Node)) return;
+      setAskOpen(false);
+    };
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setAskOpen(false);
+    };
+
+    window.addEventListener("pointerdown", closeOnOutsideClick);
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      window.removeEventListener("pointerdown", closeOnOutsideClick);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [askOpen]);
 
   return (
     <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
@@ -394,7 +416,7 @@ function App() {
               </>
             )}
           </div>
-          <div className="topbar-actions">
+          <div className="topbar-actions" ref={askPanelRef}>
             <button className="icon-button" aria-label="Search"><Search size={18} /></button>
             <button className="primary-button" onClick={() => setAskOpen((current) => !current)} aria-expanded={askOpen}>
               <Sparkles size={16} /> Ask DIWA
@@ -402,8 +424,8 @@ function App() {
             <button className="customer-avatar" aria-label="Customer profile" title="Customer profile">
               <img src="/brand/customer-avatar.jpg" alt="" />
             </button>
+            {askOpen && <AskDiwaPanel />}
           </div>
-          {askOpen && <AskDiwaPanel />}
         </header>
 
         <div className="workspace" id="cockpit">
