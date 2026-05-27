@@ -164,7 +164,7 @@ const navItems = [
   "Settings",
 ];
 
-const dealTabs = ["Summary", "Snapshots", "Timeline", "Quotes", "Scorecards", "Actions"];
+const dealTabs = ["Summary", "Snapshots", "Quotes", "Scorecards", "Actions"];
 
 const v3Deals = [
   {
@@ -352,17 +352,21 @@ const v3Scorecards = [
 ];
 
 const snapshotAgents = ["All", "Agent A", "Agent B", "Agent C"];
+const snapshotTypes = ["All", "Phone Call", "Message", "Meeting", "Assessment", "Lead Form"];
 
 const v3Snapshots = [
   {
     id: "S-1048-04",
     agent: "Agent C",
     event: "Outbound phone call",
+    type: "Phone Call",
     owner: "Rachel",
     stage: "Quote Sent",
+    heat: 89,
     time: "Today, 9:14 am",
     due: "Today",
     summary: "Helen is close to approval but needs a board-ready explanation of safety compliance, install timing and quote revision details.",
+    note: "Outbound call transcript: Helen confirmed the board likes the proposal, but they need safety certification, install timing and the revised quote written in a format they can forward internally. Rachel kept the conversation focused and did not discount.",
     markdown: "## Snapshot S-1048-04\n\n**Agent:** Agent C\n**Event:** Outbound phone call\n**Responsible:** Rachel\n**Stage:** Quote Sent\n**Due:** Today\n\nHelen is close to approval but needs a board-ready explanation of safety compliance, install timing and quote revision details.",
     scorecard: { score: 91, title: "Closing Review", finding: "Rachel identified the real blocker and avoided premature discounting.", coaching: "Send the board-ready pack and book the decision call before the urgency cools." },
   },
@@ -370,11 +374,14 @@ const v3Snapshots = [
     id: "S-1048-03",
     agent: "Agent B",
     event: "Site assessment booked",
+    type: "Assessment",
     owner: "Myles",
     stage: "Prepare Quote",
+    heat: 74,
     time: "8 May, 10:30 am",
     due: "8 May",
     summary: "Site meeting was booked and then completed. Until the assessment was done, the right state was waiting rather than chasing.",
+    note: "Assessment note: Myles attended site, captured access notes and confirmed the surface assumptions. PLOD notes were still needed before quote production could move cleanly.",
     markdown: "## Snapshot S-1048-03\n\n**Agent:** Agent B\n**Event:** Site assessment booked\n**Responsible:** Myles\n**Stage:** Prepare Quote\n\nSite meeting booked and assessment dependency recorded.",
     scorecard: { score: 78, title: "Quote Readiness Review", finding: "Good technical capture, but compliance wording needed sharper documentation.", coaching: "Attach evidence while the site context is fresh." },
   },
@@ -382,11 +389,14 @@ const v3Snapshots = [
     id: "S-1048-02",
     agent: "Agent A",
     event: "Inbound phone call",
+    type: "Phone Call",
     owner: "Kent",
     stage: "Awaiting Info",
+    heat: 67,
     time: "7 May, 3:42 pm",
     due: "7 May",
     summary: "Initial discovery captured timing pressure and board approval, but decision evidence requirements were not fully mapped.",
+    note: "Inbound call note: Kent confirmed the customer had timing pressure before school holidays and board approval was required. The missing detail was exactly what evidence the board needed.",
     markdown: "## Snapshot S-1048-02\n\n**Agent:** Agent A\n**Event:** Inbound phone call\n**Responsible:** Kent\n**Stage:** Awaiting Info\n\nInitial discovery captured timing pressure and board approval.",
     scorecard: { score: 86, title: "Discovery Review", finding: "Customer needed installation before school holidays, but board process was not fully mapped.", coaching: "Confirm who signs off and what evidence they need." },
   },
@@ -394,11 +404,14 @@ const v3Snapshots = [
     id: "S-1048-01",
     agent: "Agent A",
     event: "Lead form completed",
+    type: "Lead Form",
     owner: "Kent",
     stage: "New Lead",
+    heat: 58,
     time: "7 May, 9:08 am",
     due: "7 May",
     summary: "New childcare lead entered the pipeline with playground turf and shock-pad context.",
+    note: "Lead form note: Customer submitted a playground turf enquiry with shock-pad context. Source was Google Ads. Early routing belonged in Agent A.",
     markdown: "## Snapshot S-1048-01\n\n**Agent:** Agent A\n**Event:** Lead form completed\n**Responsible:** Kent\n**Stage:** New Lead\n\nNew childcare lead entered the pipeline with playground turf and shock-pad context.",
     scorecard: { score: 82, title: "Lead Intake Review", finding: "Source and product intent were captured cleanly.", coaching: "Push site/use-case context into the first follow-up faster." },
   },
@@ -1686,10 +1699,18 @@ function V3DealDetailShell({ deal, activeTab, setActiveTab }: { deal: (typeof v3
 
 function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Deals)[number] }) {
   const [snapshotAgent, setSnapshotAgent] = React.useState("All");
-  const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "scorecard"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
+  const [snapshotHuman, setSnapshotHuman] = React.useState("All");
+  const [snapshotType, setSnapshotType] = React.useState("All");
+  const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "scorecard" | "note"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
 
   if (activeTab === "Snapshots") {
-    const snapshots = snapshotAgent === "All" ? v3Snapshots : v3Snapshots.filter((snapshot) => snapshot.agent === snapshotAgent);
+    const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
+    const snapshots = v3Snapshots.filter((snapshot) => {
+      if (snapshotAgent !== "All" && snapshot.agent !== snapshotAgent) return false;
+      if (snapshotHuman !== "All" && snapshot.owner !== snapshotHuman) return false;
+      if (snapshotType !== "All" && snapshot.type !== snapshotType) return false;
+      return true;
+    });
     const copyMarkdown = async (markdown: string) => {
       await navigator.clipboard?.writeText(markdown);
     };
@@ -1703,6 +1724,18 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
               {snapshotAgents.map((agent) => <option value={agent} key={agent}>{agent}</option>)}
             </select>
           </label>
+          <label>
+            <span>Human</span>
+            <select value={snapshotHuman} onChange={(event) => setSnapshotHuman(event.target.value)}>
+              {humans.map((human) => <option value={human} key={human}>{human}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Type</span>
+            <select value={snapshotType} onChange={(event) => setSnapshotType(event.target.value)}>
+              {snapshotTypes.map((type) => <option value={type} key={type}>{type}</option>)}
+            </select>
+          </label>
         </div>
         <div className="v3-snapshot-list">
           {snapshots.map((snapshot) => (
@@ -1710,15 +1743,17 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
               <div className="v3-snapshot-main">
                 <span className="v3-rank">{snapshot.agent}</span>
                 <div>
-                  <strong>{snapshot.event}</strong>
-                  <small>{snapshot.stage} · {snapshot.owner} · {snapshot.time}</small>
+                  <strong>{snapshot.event}<em>{snapshot.stage}</em><em>{snapshot.owner}</em><em>{snapshot.time}</em></strong>
+                  <small>{snapshot.type}</small>
                 </div>
+                <span className="v3-heat"><b>{snapshot.heat}%</b><small>Heat</small></span>
                 <span className="v4-due-cell"><b>{snapshot.due}</b><small>Due</small></span>
               </div>
               <p>{snapshot.summary}</p>
               <div className="v3-snapshot-actions">
                 <button type="button" onClick={() => setSnapshotModal({ kind: "summary", snapshot })}>Summary</button>
                 <button type="button" onClick={() => setSnapshotModal({ kind: "scorecard", snapshot })}>Scorecard {snapshot.scorecard.score}%</button>
+                <button type="button" onClick={() => setSnapshotModal({ kind: "note", snapshot })}>View note</button>
               </div>
             </article>
           ))}
@@ -1729,7 +1764,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
               <div className="v3-panel-head">
                 <div>
                   <p className="eyebrow">{snapshotModal.snapshot.agent} · {snapshotModal.snapshot.event}</p>
-                  <h3>{snapshotModal.kind === "summary" ? "Snapshot Summary" : snapshotModal.snapshot.scorecard.title}</h3>
+                  <h3>{snapshotModal.kind === "summary" ? "Snapshot Summary" : snapshotModal.kind === "note" ? "Source Note" : snapshotModal.snapshot.scorecard.title}</h3>
                 </div>
                 <button type="button" onClick={() => setSnapshotModal(null)}>Close</button>
               </div>
@@ -1738,6 +1773,15 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                   <p>{snapshotModal.snapshot.summary}</p>
                   <pre>{snapshotModal.snapshot.markdown}</pre>
                   <button className="primary-button" type="button" onClick={() => copyMarkdown(snapshotModal.snapshot.markdown)}><Copy size={15} /> Copy markdown</button>
+                </>
+              ) : snapshotModal.kind === "note" ? (
+                <>
+                  <p>{snapshotModal.snapshot.note}</p>
+                  <div className="v3-note-meta">
+                    <span>From: {snapshotModal.snapshot.owner}</span>
+                    <span>Type: {snapshotModal.snapshot.type}</span>
+                    <span>Time: {snapshotModal.snapshot.time}</span>
+                  </div>
                 </>
               ) : (
                 <div className="v3-scorecard-popup">

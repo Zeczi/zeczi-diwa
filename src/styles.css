@@ -1525,8 +1525,9 @@ button:hover {
 }
 
 .v3-snapshot-filter {
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
 }
 
 .v3-snapshot-filter label {
@@ -1543,6 +1544,7 @@ button:hover {
 }
 
 .v3-snapshot-filter select {
+  width: 100%;
   min-height: 32px;
   border: 1px solid #292929;
   border-radius: 7px;
@@ -1571,9 +1573,33 @@ button:hover {
 
 .v3-snapshot-main {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) 66px;
+  grid-template-columns: 62px minmax(0, 1fr) 74px 66px;
   align-items: center;
   gap: 8px;
+}
+
+.v3-snapshot-main strong {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.v3-snapshot-main strong em {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.v3-snapshot-main strong em::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 11px;
+  margin-right: 7px;
+  background: #3a3a3a;
+  vertical-align: -1px;
 }
 
 .v3-snapshot-main small,
@@ -1642,6 +1668,24 @@ button:hover {
 .v3-scorecard-popup > strong {
   color: var(--accent);
   font-size: 28px;
+}
+
+.v3-note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.v3-note-meta span {
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #333;
+  border-radius: 999px;
+  color: var(--soft);
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .v3-timeline-list article > div:first-child,
