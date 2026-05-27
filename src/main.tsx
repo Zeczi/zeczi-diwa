@@ -14,6 +14,8 @@ import {
   Inbox,
   Layers3,
   MessageSquareText,
+  PanelLeftClose,
+  PanelLeftOpen,
   PhoneCall,
   Search,
   ShieldCheck,
@@ -87,21 +89,41 @@ const sources = [
 ];
 
 function App() {
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
+    return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
+  });
+
+  React.useEffect(() => {
+    window.localStorage.setItem("diwa-sidebar-collapsed", String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
+
   return (
-    <main className="shell">
+    <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
       <aside className="sidebar">
         <div className="brand-block">
-          <img className="brand-logo" src="/brand/zeczi-logo.png" alt="ZECZI" />
-          <span>DIWA</span>
+          <div className="brand-row">
+            <img className="brand-logo" src="/brand/zeczi-logo.png" alt="ZECZI" />
+            <button
+              className="sidebar-toggle"
+              type="button"
+              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-pressed={sidebarCollapsed}
+              onClick={() => setSidebarCollapsed((current) => !current)}
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+            </button>
+          </div>
+          <span className="brand-pill">DIWA</span>
         </div>
 
         <nav className="nav-list" aria-label="DIWA navigation">
-          <a className="nav-item active" href="#cockpit"><Gauge size={17} /> Cockpit</a>
-          <a className="nav-item" href="#deals"><BriefcaseBusiness size={17} /> Deal Intelligence</a>
-          <a className="nav-item" href="#context"><Layers3 size={17} /> Context Timeline</a>
-          <a className="nav-item" href="#human"><UserRoundCheck size={17} /> Human Required</a>
-          <a className="nav-item" href="#agents"><Bot size={17} /> Agent Work</a>
-          <a className="nav-item" href="#sources"><ShieldCheck size={17} /> Source Links</a>
+          <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
+          <a className="nav-item" href="#deals" title="Deal Intelligence"><BriefcaseBusiness size={17} /> <span>Deal Intelligence</span></a>
+          <a className="nav-item" href="#context" title="Context Timeline"><Layers3 size={17} /> <span>Context Timeline</span></a>
+          <a className="nav-item" href="#human" title="Human Required"><UserRoundCheck size={17} /> <span>Human Required</span></a>
+          <a className="nav-item" href="#agents" title="Agent Work"><Bot size={17} /> <span>Agent Work</span></a>
+          <a className="nav-item" href="#sources" title="Source Links"><ShieldCheck size={17} /> <span>Source Links</span></a>
         </nav>
 
         <div className="sidebar-panel">

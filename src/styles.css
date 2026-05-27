@@ -59,6 +59,11 @@ button:hover {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 258px minmax(0, 1fr);
+  transition: grid-template-columns 180ms ease;
+}
+
+.shell.sidebar-collapsed {
+  grid-template-columns: 78px minmax(0, 1fr);
 }
 
 .sidebar {
@@ -81,6 +86,14 @@ button:hover {
   gap: 8px;
 }
 
+.brand-row {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .brand-logo {
   width: 154px;
   height: 44px;
@@ -88,7 +101,13 @@ button:hover {
   object-position: left center;
 }
 
-.brand-block span {
+.sidebar-toggle {
+  width: 38px;
+  min-width: 38px;
+  padding: 0;
+}
+
+.brand-pill {
   width: fit-content;
   border: 1px solid rgba(232, 197, 71, 0.28);
   border-radius: 999px;
@@ -97,6 +116,21 @@ button:hover {
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.12em;
+}
+
+.sidebar-collapsed .sidebar {
+  padding-inline: 12px;
+}
+
+.sidebar-collapsed .brand-row {
+  justify-content: center;
+}
+
+.sidebar-collapsed .brand-logo,
+.sidebar-collapsed .brand-pill,
+.sidebar-collapsed .nav-item span,
+.sidebar-collapsed .sidebar-panel {
+  display: none;
 }
 
 .nav-list {
@@ -116,6 +150,16 @@ button:hover {
   padding: 0 10px;
   text-decoration: none;
   font-size: 14px;
+}
+
+.sidebar-collapsed .nav-list {
+  justify-items: center;
+}
+
+.sidebar-collapsed .nav-item {
+  width: 42px;
+  justify-content: center;
+  padding: 0;
 }
 
 .nav-item:hover,
@@ -493,6 +537,10 @@ button:hover {
     grid-template-columns: 1fr;
   }
 
+  .shell.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
   .sidebar {
     position: static;
     height: auto;
@@ -501,6 +549,32 @@ button:hover {
 
   .nav-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sidebar-collapsed .sidebar {
+    padding-inline: 14px;
+  }
+
+  .sidebar-collapsed .brand-row {
+    justify-content: space-between;
+  }
+
+  .sidebar-collapsed .brand-logo,
+  .sidebar-collapsed .brand-pill {
+    display: block;
+  }
+
+  .sidebar-collapsed .sidebar-panel {
+    display: none;
+  }
+
+  .sidebar-collapsed .nav-list {
+    grid-template-columns: repeat(6, minmax(42px, 1fr));
+    justify-items: stretch;
+  }
+
+  .sidebar-collapsed .nav-item {
+    width: auto;
   }
 
   .hero-band,
@@ -531,6 +605,10 @@ button:hover {
   .metric-grid,
   .prompt-grid {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar-collapsed .nav-list {
+    grid-template-columns: repeat(3, minmax(42px, 1fr));
   }
 
   .hero-band h2 {
