@@ -982,6 +982,52 @@ function CockpitV3() {
               ))}
             </div>
           </section>
+
+          <section className="panel v3-manager" id="v3-reports">
+            <div className="v3-panel-head tight">
+              <p className="eyebrow">Manager Briefing</p>
+              <span className="pill">Generated</span>
+            </div>
+            <p>North Shore is the biggest cash risk because follow-up is overdue. Evergreen needs a human response today. Westfield is an internal blockage, not a customer problem. Barker should stay parked until finance timing becomes relevant.</p>
+            <div className="v3-report-grid">
+              <span><strong>18%</strong><small>Human edit rate</small></span>
+              <span><strong>74%</strong><small>Approval rate</small></span>
+              <span><strong>31%</strong><small>Response rate</small></span>
+            </div>
+          </section>
+
+          <section className="panel v3-knowledge" id="v3-knowledge">
+            <div className="v3-panel-head tight">
+              <p className="eyebrow">Knowledge</p>
+              <span className="v2-live">Context assets</span>
+            </div>
+            <div className="v3-asset-grid">
+              {["Personas", "Pain points", "Objections", "Product details", "Quote rules", "Escalation logic", "Tone guidance", "Sales scripts", "Scorecard frameworks", "Closing framework"].map((asset) => (
+                <span key={asset}>{asset}</span>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel v3-settings" id="v3-settings">
+            <div className="v3-panel-head tight">
+              <p className="eyebrow">Implementation Admin</p>
+              <span className="pill">MVP map</span>
+            </div>
+            <div className="v3-settings-table">
+              {[
+                ["CRM", "Pipedrive", "Connected"],
+                ["Communication", "Gmail, VoIP, WhatsApp", "Partial"],
+                ["Quoting", "Measure or custom workflow", "Planned"],
+                ["Permissions", "Roles and approval rules", "Designing"],
+              ].map(([layer, system, status]) => (
+                <div key={layer}>
+                  <strong>{layer}</strong>
+                  <span>{system}</span>
+                  <em>{status}</em>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
     </section>
