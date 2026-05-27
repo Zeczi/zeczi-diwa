@@ -203,6 +203,18 @@ button:hover {
   font-size: 12px;
 }
 
+.today-actions div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.today-actions strong {
+  color: var(--accent);
+  font-size: 18px;
+}
+
 .sidebar-foot {
   display: grid;
   gap: 10px;
@@ -1711,7 +1723,7 @@ button:hover {
 }
 
 .v4-stage-strip button {
-  min-height: 56px;
+  min-height: 68px;
   display: grid;
   align-content: center;
   justify-items: start;
@@ -1746,6 +1758,65 @@ button:hover {
   color: var(--accent);
   font-size: 20px;
   line-height: 1;
+}
+
+.v4-stage-strip em,
+.v4-status-row em {
+  color: var(--soft);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.v4-status-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.v4-status-row button {
+  min-height: 56px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 2px;
+  border-color: #292929;
+  background: #111;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.v4-status-row span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.v4-status-row strong {
+  color: var(--text);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.v4-status-row .critical {
+  border-color: rgba(242, 95, 92, 0.52);
+}
+
+.v4-status-row .ready {
+  border-color: rgba(67, 209, 124, 0.42);
+}
+
+.v4-status-row .hot {
+  border-color: rgba(232, 197, 71, 0.52);
+}
+
+.v4-status-row .drifting {
+  border-color: rgba(245, 158, 11, 0.42);
+}
+
+.v4-status-row .stale {
+  opacity: 0.78;
 }
 
 .v4-workspace {

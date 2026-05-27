@@ -107,20 +107,28 @@ const stageSignals = [
 ];
 
 const pipelineStages = [
-  { id: "All", label: "All", count: 392 },
-  { id: "New Lead", label: "New Lead", count: 65 },
-  { id: "Attempting", label: "Attempting", count: 39 },
-  { id: "Awaiting Info", label: "Awaiting", count: 81 },
-  { id: "Early Human Required", label: "Human Required", count: 4, tone: "critical" },
-  { id: "Prepare Quote", label: "Prepare Quote", count: 28 },
-  { id: "Quote Sent", label: "Quote Sent", count: 17 },
-  { id: "BD Expired", label: "BD Expired", count: 11 },
-  { id: "AI Long-Tail", label: "AI Long-Tail", count: 101, tone: "quiet" },
-  { id: "AI Follow-Up", label: "AI Follow-Up", count: 68, tone: "quiet" },
-  { id: "Closing", label: "Closing", count: 9 },
-  { id: "Late Human Required", label: "Human Required", count: 3, tone: "critical" },
-  { id: "Finance", label: "Finance", count: 7 },
-  { id: "AAD", label: "AAD", count: 14 },
+  { id: "All", label: "All", count: 392, value: "$3.62m" },
+  { id: "New Lead", label: "New Lead", count: 65, value: "$389k" },
+  { id: "Attempting", label: "Attempting", count: 39, value: "$242k" },
+  { id: "Awaiting Info", label: "Awaiting", count: 81, value: "$378k" },
+  { id: "Early Human Required", label: "Human Required", count: 4, value: "$58k", tone: "critical" },
+  { id: "Prepare Quote", label: "Prepare Quote", count: 28, value: "$92k" },
+  { id: "Quote Sent", label: "Quote Sent", count: 17, value: "$200k" },
+  { id: "BD Expired", label: "BD Expired", count: 11, value: "$146k" },
+  { id: "AI Long-Tail", label: "AI Long-Tail", count: 101, value: "$1.67m", tone: "quiet" },
+  { id: "AI Follow-Up", label: "AI Follow-Up", count: 68, value: "$697k", tone: "quiet" },
+  { id: "Closing", label: "Closing", count: 9, value: "$318k" },
+  { id: "Late Human Required", label: "Human Required", count: 3, value: "$74k", tone: "critical" },
+  { id: "Finance", label: "Finance", count: 7, value: "$121k" },
+  { id: "AAD", label: "AAD", count: 14, value: "$227k" },
+];
+
+const cockpitStatusRow = [
+  { label: "Critical", count: 7, value: "$132k", tone: "critical" },
+  { label: "Ready To Close", count: 9, value: "$318k", tone: "ready" },
+  { label: "Hot", count: 17, value: "$200k", tone: "hot" },
+  { label: "Drifting", count: 81, value: "$378k", tone: "drifting" },
+  { label: "Stale", count: 112, value: "$1.81m", tone: "stale" },
 ];
 
 const v3PipelineStages = [
@@ -637,6 +645,11 @@ function App() {
         </nav>
 
         <div className="sidebar-foot">
+          <div className="sidebar-panel today-actions">
+            <p className="eyebrow">Today&apos;s Actions</p>
+            <div><span>To Do</span><strong>150</strong></div>
+            <div><span>Completed</span><strong>25</strong></div>
+          </div>
           <div className="sidebar-panel">
             <p className="eyebrow">Workspace</p>
             <strong>Eco Lawn</strong>
@@ -858,6 +871,17 @@ function CockpitV4() {
           >
             <span>{stage.label}</span>
             <strong>{stage.count}</strong>
+            <em>{stage.value}</em>
+          </button>
+        ))}
+      </div>
+
+      <div className="v4-status-row" aria-label="Cockpit status filters">
+        {cockpitStatusRow.map((status) => (
+          <button className={status.tone} type="button" key={status.label}>
+            <span>{status.label}</span>
+            <strong>{status.count}</strong>
+            <em>{status.value}</em>
           </button>
         ))}
       </div>
