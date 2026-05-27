@@ -730,6 +730,7 @@ button:hover {
 .v2-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.55fr);
+  grid-template-rows: auto auto auto;
   gap: 10px;
   align-items: start;
 }
@@ -771,6 +772,7 @@ button:hover {
 
 .v2-queue {
   min-width: 0;
+  grid-row: 1 / span 2;
 }
 
 .v2-table {
@@ -778,6 +780,9 @@ button:hover {
   border: 1px solid #292929;
   border-radius: 7px;
   overflow: hidden;
+  max-height: 452px;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .v2-row {
@@ -874,13 +879,18 @@ button:hover {
 }
 
 .v2-stage-panel {
-  grid-column: 1 / -1;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .stage-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
+}
+
+.v2-stage-panel .stage-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .stage-tile {
@@ -927,6 +937,16 @@ button:hover {
 
   .v2-layout {
     grid-template-columns: 1fr;
+  }
+
+  .v2-queue,
+  .v2-stage-panel {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .v2-stage-panel .stage-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .v2-row {

@@ -106,14 +106,230 @@ const stageSignals = [
 ];
 
 const cockpitQueue = [
-  { rank: 1, customer: "Keegan Shillock", org: "Stack Construction", value: "$48.6k", state: "Quote coordination", next: "Assign one owner and confirm quote position", owner: "Miles / Sean", risk: "High", age: "Today" },
-  { rank: 2, customer: "Commercial facilities lead", org: "Board pack", value: "$112k", state: "Long-tail decision", next: "Hold until board window then trigger reminder", owner: "Agent", risk: "Medium", age: "2d" },
-  { rank: 3, customer: "Homeowner quote sent", org: "Residential premium", value: "$18.9k", state: "Quote sent", next: "Send finance and install-timing follow-up", owner: "Rachel", risk: "Medium", age: "1d" },
-  { rank: 4, customer: "RFQ inbox", org: "Native Gmail intake", value: "TBD", state: "Classifying", next: "Extract turf / shock-pad scope and route", owner: "n8n", risk: "Low", age: "8m" },
+  {
+    rank: 1,
+    customer: "Toby Mills",
+    org: "Toby Mills - 5 Oaia Road, Muriwai",
+    value: "$8,640.20",
+    state: "Quote Sent",
+    next: "Putting green opened email? Try call again",
+    owner: "Rachel",
+    risk: "High",
+    age: "2026-05-28"
+  },
+  {
+    rank: 2,
+    customer: "Krystal Xu",
+    org: "129-131 Coronation Road, Mangere Bridge",
+    value: "$0",
+    state: "Prepare Quote",
+    next: "Online quote",
+    owner: "Kent",
+    risk: "High",
+    age: "2026-05-28"
+  },
+  {
+    rank: 3,
+    customer: "Matt Bonham",
+    org: "11 Glenreagh Place, Torbay",
+    value: "$3,716.45",
+    state: "Quote Sent",
+    next: "AR to EOM?",
+    owner: "Rachel",
+    risk: "High",
+    age: "2026-05-29"
+  },
+  {
+    rank: 4,
+    customer: "Matt Bonham",
+    org: "MABON LTD",
+    value: "$3,112.95",
+    state: "Quote Sent",
+    next: "Decision? Reviewing other quote?",
+    owner: "Rachel",
+    risk: "High",
+    age: "2026-05-27"
+  },
+  {
+    rank: 5,
+    customer: "Damon Brown",
+    org: "RCC Construction Services Ltd",
+    value: "$10,305.72",
+    state: "Quote Sent",
+    next: "20K tender?",
+    owner: "Rachel",
+    risk: "High",
+    age: "2026-06-30"
+  },
+  {
+    rank: 6,
+    customer: "Tarun Lalwani",
+    org: "23A Brabham Place, Avondale",
+    value: "$3,412.71",
+    state: "Prepare Quote",
+    next: "Avondale site visit",
+    owner: "Kent",
+    risk: "High",
+    age: "2026-05-27"
+  },
+  {
+    rank: 7,
+    customer: "Sam Greenwood",
+    org: "41 Palmerston Road, Birkenhead",
+    value: "$5,263.82",
+    state: "Open",
+    next: "GW - 39.63 m2 - Birkenhead",
+    owner: "Gareth",
+    risk: "High",
+    age: "2026-05-29"
+  },
+  {
+    rank: 8,
+    customer: "Cameron Johnson",
+    org: "14B Patterson Street, Sandringham",
+    value: "$4,072.83",
+    state: "Open",
+    next: "GW - 21.43 m2 - Sandringham",
+    owner: "Gareth",
+    risk: "Medium",
+    age: "2026-05-26"
+  },
+  {
+    rank: 9,
+    customer: "Tim Neville",
+    org: "New Shoots Childrens Centre",
+    value: "$3,200",
+    state: "Prepare Quote",
+    next: "Set next activity",
+    owner: "Sean",
+    risk: "High",
+    age: "2026-05-28"
+  },
+  {
+    rank: 10,
+    customer: "Tim Neville",
+    org: "New Shoots Childrens Centre",
+    value: "$3,200",
+    state: "Prepare Quote",
+    next: "Set next activity",
+    owner: "Sean",
+    risk: "High",
+    age: "2026-05-28"
+  },
+  {
+    rank: 11,
+    customer: "Tim Neville",
+    org: "New Shoots Childrens Centre",
+    value: "$3,200",
+    state: "Prepare Quote",
+    next: "Set next activity",
+    owner: "Sean",
+    risk: "High",
+    age: "2026-05-28"
+  },
+  {
+    rank: 12,
+    customer: "Tim Neville",
+    org: "New Shoots Childrens Centre",
+    value: "$0",
+    state: "Prepare Quote",
+    next: "Set next activity",
+    owner: "Sean",
+    risk: "High",
+    age: "2026-05-28"
+  },
+  {
+    rank: 13,
+    customer: "Mike Cooper",
+    org: "Simik RPM NZ Limited",
+    value: "$7,391.53",
+    state: "Open",
+    next: "Touch base on drainage",
+    owner: "Gareth",
+    risk: "Medium",
+    age: "2026-05-28"
+  },
+  {
+    rank: 14,
+    customer: "Caitlin Riedstra",
+    org: "2 Commins Road, Onerahi",
+    value: "$909.53",
+    state: "AAD",
+    next: "Product choice / timing",
+    owner: "Rachel",
+    risk: "High",
+    age: "2026-05-27"
+  },
+  {
+    rank: 15,
+    customer: "Richard Reynolds",
+    org: "Body Corporate 13105",
+    value: "$41,466.87",
+    state: "Open",
+    next: "TI - 612.69 m2 - Saint Heliers",
+    owner: "Gareth",
+    risk: "Medium",
+    age: "2026-06-08"
+  },
+  {
+    rank: 16,
+    customer: "Joe O'Sullivan",
+    org: "115 St Heliers Bay Rd",
+    value: "$4,879.82",
+    state: "Open",
+    next: "Review latest context and set next action",
+    owner: "Gareth",
+    risk: "Low",
+    age: "2026-05-22"
+  },
+  {
+    rank: 17,
+    customer: "Nick White",
+    org: "44 Bartlett Drive, Silverdale",
+    value: "$3,852.29",
+    state: "Open",
+    next: "2nd - GW - 15.93 m2 - Silverdale",
+    owner: "Gareth",
+    risk: "Medium",
+    age: "2026-05-27"
+  },
+  {
+    rank: 18,
+    customer: "Eric Wang",
+    org: "32D Vermeer Place, West Harbour",
+    value: "$1,891.37",
+    state: "Open",
+    next: "Check details and send invoice",
+    owner: "Gareth",
+    risk: "High",
+    age: "2026-05-27"
+  },
+  {
+    rank: 19,
+    customer: "Emily Hunt",
+    org: "11D Sloane Street, Glen Innes",
+    value: "$2,135.01",
+    state: "Open",
+    next: "Check details and send invoice",
+    owner: "Gareth",
+    risk: "High",
+    age: "2026-05-27"
+  },
+  {
+    rank: 20,
+    customer: "Roy Kumar",
+    org: "25 Quattro Avenue, Flat Bush",
+    value: "$7,205.30",
+    state: "AI Follow-up",
+    next: "Ready to revisit in spring/summer",
+    owner: "Rachel",
+    risk: "Medium",
+    age: "2026-09-01"
+  }
 ];
 
 function App() {
-  const isV2 = window.location.pathname.startsWith("/v2");
+  const isV2 = !window.location.pathname.startsWith("/v1");
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
   });
