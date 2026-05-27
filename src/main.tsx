@@ -105,6 +105,36 @@ const stageSignals = [
   { stage: "Long-tail", count: 101, value: "$1.67m", alert: "hold" },
 ];
 
+const pipelineStages = [
+  "New Lead",
+  "Attempting",
+  "Awaiting",
+  "Human Required",
+  "Prepare Quote",
+  "Quote Sent",
+  "AI Follow-Up",
+  "Closing",
+  "Finance",
+  "AAD",
+  "Variation",
+];
+
+const navItems = [
+  "Command Centre",
+  "Deals",
+  "Human Required",
+  "Hot Deals",
+  "Follow-Up",
+  "Quote Bottlenecks",
+  "Long-Tail",
+  "AI Activity",
+  "Reports",
+  "Knowledge",
+  "Settings",
+];
+
+const dealTabs = ["Summary", "Timeline", "Quotes", "Scorecards", "Actions"];
+
 const cockpitQueue = [
   {
     rank: 1,
@@ -329,7 +359,9 @@ const cockpitQueue = [
 ];
 
 function App() {
-  const isV2 = !window.location.pathname.startsWith("/v1");
+  const isV1 = window.location.pathname.startsWith("/v1");
+  const isV3 = window.location.pathname.startsWith("/v3");
+  const isV2 = !isV1 && !isV3;
   const [askOpen, setAskOpen] = React.useState(false);
   const askPanelRef = React.useRef<HTMLDivElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
@@ -401,10 +433,15 @@ function App() {
         </div>
       </aside>
 
-      <section className={`content ${isV2 ? "content-v2" : ""}`}>
-        <header className={`topbar ${isV2 ? "topbar-v2" : ""}`}>
+      <section className={`content ${isV2 || isV3 ? "content-v2" : ""} ${isV3 ? "content-v3" : ""}`}>
+        <header className={`topbar ${isV2 || isV3 ? "topbar-v2" : ""}`}>
           <div>
-            {isV2 ? (
+            {isV3 ? (
+              <>
+                <p className="eyebrow">DIWA Cockpit v3</p>
+                <h1>Command centre for deal context.</h1>
+              </>
+            ) : isV2 ? (
               <>
                 <p className="eyebrow">DIWA Cockpit v2</p>
                 <h1>Context is operational intelligence.</h1>
@@ -429,7 +466,9 @@ function App() {
         </header>
 
         <div className="workspace" id="cockpit">
-          {isV2 ? (
+          {isV3 ? (
+            <CockpitV3 />
+          ) : isV2 ? (
             <CockpitV2 />
           ) : (
             <>
@@ -615,6 +654,131 @@ function AskDiwaPanel() {
         <span>Gmail/RFQ</span>
         <span>n8n actions</span>
       </div>
+    </section>
+  );
+}
+
+function CockpitV3() {
+  const [activeTab, setActiveTab] = React.useState(dealTabs[0]);
+  const commandDeals = React.useMemo(() => cockpitQueue.slice(0, 8), []);
+  const selectedDeal = commandDeals[0];
+
+  return (
+    <section className="cockpit-v3" aria-label="DIWA cockpit v3">
+      <aside className="v3-nav-panel">
+        <div className="v3-nav-head">
+          <strong>Command Centre</strong>
+          <span>Eco Lawn</span>
+        </div>
+        <nav aria-label="DIWA v3 sections">
+          {navItems.map((item) => (
+            <a className={item === "Command Centre" ? "active" : ""} href={`#v3-${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
+              {item}
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      <section className="v3-main">
+        <div className="v3-pipeline-strip" aria-label="Pipeline stages">
+          {pipelineStages.map((stage, index) => (
+            <button className={stage === "Human Required" ? "critical" : index > 5 ? "quiet" : ""} type="button" key={stage}>
+              <span>{stage}</span>
+              <strong>{stage === "Human Required" ? 4 : stage === "Quote Sent" ? 17 : stage === "AI Follow-Up" ? 68 : index * 7 + 12}</strong>
+            </button>
+          ))}
+        </div>
+
+        <div className="v3-grid">
+          <section className="panel v3-command" id="v3-command-centre">
+            <div className="v3-panel-head">
+              <div>
+                <p className="eyebrow">Command Queue</p>
+                <h3>Highest leverage moves</h3>
+              </div>
+              <span className="v2-live">8 visible</span>
+            </div>
+            <div className="v3-command-list">
+              {commandDeals.map((deal) => (
+                <article className={deal.rank === 1 ? "selected" : ""} key={deal.rank}>
+                  <span className="v3-rank">{deal.rank}</span>
+                  <div>
+                    <strong>{deal.customer}</strong>
+                    <small>{deal.org}</small>
+                  </div>
+                  <span className={`v3-risk ${deal.risk.toLowerCase()}`}>{deal.risk}</span>
+                  <strong>{deal.value}</strong>
+                  <small>{deal.next}</small>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel v3-deal-detail" id="v3-deals">
+            <div className="v3-panel-head">
+              <div>
+                <p className="eyebrow">Selected Deal</p>
+                <h3>{selectedDeal.customer}</h3>
+              </div>
+              <span className="pill warn">Human watch</span>
+            </div>
+            <div className="v3-tabs" role="tablist" aria-label="Deal views">
+              {dealTabs.map((tab) => (
+                <button className={activeTab === tab ? "active" : ""} type="button" onClick={() => setActiveTab(tab)} key={tab}>
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="v3-detail-body">
+              <div>
+                <span>Current view</span>
+                <strong>{activeTab}</strong>
+              </div>
+              <p>{selectedDeal.next}</p>
+              <div className="v3-context-grid">
+                <span><strong>{selectedDeal.value}</strong><small>Deal value</small></span>
+                <span><strong>{selectedDeal.state}</strong><small>Stage</small></span>
+                <span><strong>{selectedDeal.owner}</strong><small>Owner</small></span>
+                <span><strong>{selectedDeal.age}</strong><small>Next date</small></span>
+              </div>
+            </div>
+          </section>
+
+          <section className="panel v3-human" id="v3-human-required">
+            <div className="v3-panel-head tight">
+              <p className="eyebrow">Human Required</p>
+              <span className="pill warn">4</span>
+            </div>
+            <div className="v3-human-card">
+              <AlertTriangle size={17} />
+              <div>
+                <strong>Commercial judgement required</strong>
+                <span>Automation should pause where quote assumptions or margin risk are unclear.</span>
+              </div>
+            </div>
+            <div className="v3-human-card">
+              <PhoneCall size={17} />
+              <div>
+                <strong>Call before message</strong>
+                <span>High-value quote-sent deals need human tone before DIWA drafts follow-up.</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="panel v3-ai" id="v3-ai-activity">
+            <div className="v3-panel-head tight">
+              <p className="eyebrow">AI Activity</p>
+              <span className="v2-live">Live</span>
+            </div>
+            <div className="v3-ai-list">
+              <span><Bot size={15} /> 31 safe actions queued</span>
+              <span><Brain size={15} /> 12 deal briefs refreshed</span>
+              <span><MessageSquareText size={15} /> 7 follow-ups drafted</span>
+              <span><ShieldCheck size={15} /> 3 blocked by source confidence</span>
+            </div>
+          </section>
+        </div>
+      </section>
     </section>
   );
 }
