@@ -361,19 +361,34 @@ const richScorecards = [
     stage: "Prepare Quote",
     score: 90,
     confidence: "high",
+    summary: "Elite site assessment with strong technical authority, transparent quoting and clear close control. The only meaningful gap is deeper emotional pain discovery early in the visit.",
+    weaknesses: ["Personal/lifestyle impact was not explored deeply enough before the technical solution was presented."],
+    nextImprovement: "Ask one stronger opening discovery question: why is fixing this area a priority now, and what changes for the household if it is solved?",
+    dealIntelligence: {
+      intent: "High. Customer wants the work done quickly and is actively comparing professional options.",
+      sentiment: "Positive and engaged. Customer accepted the logic of artificial turf and liked the transparent quote.",
+      urgency: "Strong. Customer said they were trying to get it done fast and responded well to the 7-day discount window.",
+      objections: "Comparison quotes, durability questions, product choice and installation timing.",
+      missingInfo: "Wife's final preference and whether the operations gap is still available.",
+      nextAction: "Send the quote with the improved discount position, confirm the install gap, and follow up after the wife reviews the samples.",
+      humanRequired: "Yes. Human follow-up should confirm timing and protect the close while intent is warm.",
+    },
     why: "Myles combined technical authority, transparent live quoting, strong sample framing and a clear follow-up path.",
     coaching: "Masterclass site assessment. To reach 100, push deeper on emotional pain early: why fixing this area matters now.",
     criteria: [
-      ["Trust Rapport Opening", "10/10", "Professional greeting and immediate project-context identification."],
-      ["Emotional Pain Discovery", "10/20", "Functional pain was clear, but personal/lifestyle impact could go deeper."],
-      ["Solution Positioning", "15/15", "Excellent sample framing: natural light, grain direction, sand infill and product comparison."],
-      ["Quote Transparency", "15/15", "Live quote shown with GST clarity, interactive product swaps and transparent line items."],
-      ["Objection Handling", "10/10", "Handled comparison quotes by framing professional turf companies versus non-specialists."],
-      ["Closing Discipline", "5/5", "Confirmed decision structure and contact details before leaving."],
+      ["Trust Rapport Opening", "10/10", "00:00:00 Myles: 'Good morning. Nice to meet you. New build, new purchase?' Immediate professional greeting and project-context identification established authority early."],
+      ["Emotional Pain Discovery", "10/20", "00:00:29 Myles identified the functional pain: weeds, lack of sun and natural lawn failure. He did not push as deeply into personal frustration or lifestyle impact."],
+      ["Solution Positioning Sample Framing", "15/15", "00:07:21 Myles gave excellent guidance on sample evaluation: outdoors, natural light, grain direction, label upright and sand infill context."],
+      ["Measurement Live Quote Transparency", "15/15", "Speaker 1 showed the quote, GST, line items, interactive product swaps and the full total clearly."],
+      ["Product Swap Navigation Education", "10/10", "00:05:08 Myles explained polyethylene versus nylon, price differences and how the customer can change products in the quote."],
+      ["Offer Seed Planting", "10/10", "Speaker 1 used a genuine schedule gap to frame a 7-day acceptance incentive and lift the discount from 15% to 20%."],
+      ["Objection Handling Reassurance", "10/10", "00:09:12 Myles handled comparison quotes by framing professional turf companies versus gardeners or builders."],
+      ["Handover To Human Closer", "5/5", "Speaker 1 named follow-up from himself or Rachel and set a near-term follow-up window."],
+      ["Closing Discipline", "5/5", "00:11:47 Myles confirmed decision structure and contact details before leaving."],
     ],
     strengths: ["Expert sample framing", "Transparent pricing", "Strategic urgency", "Clear handover to Rachel"],
     improvements: ["Ask more open-ended questions about personal frustration and desired lifestyle outcome."],
-    eventNote: "Site visit transcript: Myles explained the groundworks, product differences, drainage, sample evaluation, quote transparency, discount window and follow-up process. Customer wanted to move quickly and would compare two professional quotes.",
+    eventNote: "00:00:00 Myles: Good morning. Nice to meet you. New build, new purchase?\n\n00:00:29 Myles: An area like this is never going to thrive as a natural lawn. It is always going to turn back into weed, given how little sunlight it will get.\n\n00:03:09 Myles: Our guys are professional installers, so we have to charge their hourly rate. Can I show you some samples?\n\n00:05:08 Myles: This one is made of polyethylene. Whereas this one is made of nylon. The nylon is extremely robust, very durable, very strong.\n\n00:07:21 Myles: Always look at the samples outdoors in natural light. Blade pointing towards you with the label upright.\n\n00:09:12 Myles: If you are getting another quote, make sure you are getting it from another professional turf company, not a gardener or a builder.\n\n00:11:13 Myles: It is usually four to six weeks, but I think we have a gap opened up in about two weeks. Are you trying to get something done quickly?\n\n00:11:47 Myles: Is there anybody else involved in the decision?\n\nSpeaker 1: The quote is transparent, includes GST, and if accepted within seven days we can bump the discount to twenty percent.",
   },
   {
     id: "SC-1048",
@@ -384,6 +399,18 @@ const richScorecards = [
     stage: "Quote Sent",
     score: 91,
     confidence: "high",
+    summary: "Strong closing call with clear blocker identification and good margin discipline. The follow-up should be turned into a board-ready summary immediately.",
+    weaknesses: ["Decision call was not fully locked before ending the interaction."],
+    nextImprovement: "Book the decision call before sending the board pack so the written summary has a clear commercial landing point.",
+    dealIntelligence: {
+      intent: "High. Customer is engaged and close if board concerns are answered.",
+      sentiment: "Very positive, but dependent on confidence and documentation.",
+      urgency: "Today. The follow-up window is active and should not drift.",
+      objections: "Safety compliance, installation timing, board approval.",
+      missingInfo: "Exact board approval process and final sign-off date.",
+      nextAction: "Send board-ready response, then book a decision call.",
+      humanRequired: "Yes. Human judgement needed on safety wording and close timing.",
+    },
     why: "Rachel identified the real blocker: board-ready safety and timing language, not price.",
     coaching: "Excellent close-control. Next step is to send the board-ready summary and secure a decision call.",
     criteria: [
@@ -804,6 +831,7 @@ function App() {
   const isV4 = window.location.pathname.startsWith("/v4");
   const isV3 = window.location.pathname.startsWith("/v3");
   const isV2 = !isV1 && !isV3 && !isV4;
+  const useV4Experience = isV3 || isV4;
   const [askOpen, setAskOpen] = React.useState(false);
   const [profileOpen, setProfileOpen] = React.useState(false);
   const askPanelRef = React.useRef<HTMLDivElement | null>(null);
@@ -888,10 +916,10 @@ function App() {
         </div>
       </aside>
 
-      <section className={`content ${isV2 || isV3 || isV4 ? "content-v2" : ""} ${isV3 || isV4 ? "content-v3" : ""} ${isV4 ? "content-v4" : ""}`}>
+      <section className={`content ${isV2 || isV3 || isV4 ? "content-v2" : ""} ${isV3 || isV4 ? "content-v3" : ""} ${useV4Experience ? "content-v4" : ""}`}>
         <header className={`topbar ${isV2 || isV3 || isV4 ? "topbar-v2" : ""}`}>
           <div>
-            {isV4 ? (
+            {useV4Experience ? (
               <>
                 <p className="eyebrow">DIWA Cockpit v4</p>
                 <h1>Pipeline stages drive the workspace.</h1>
@@ -927,10 +955,8 @@ function App() {
         </header>
 
         <div className="workspace" id="cockpit">
-          {isV4 ? (
+          {useV4Experience ? (
             <CockpitV4 />
-          ) : isV3 ? (
-            <CockpitV3 />
           ) : isV2 ? (
             <CockpitV2 />
           ) : (
@@ -2104,31 +2130,105 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
             <section className="v3-modal v3-scorecard-modal" role="dialog" aria-modal="true" aria-label="Full scorecard" onClick={(event) => event.stopPropagation()}>
               <div className="v3-panel-head">
                 <div>
-                  <p className="eyebrow">{scorecardModal.event} · {scorecardModal.human}</p>
-                  <h3>{scorecardModal.title}</h3>
+                  <p className="eyebrow">Meeting Scorecard · {scorecardModal.event} · {scorecardModal.agent}</p>
+                  <h3>{scorecardModal.id} · {scorecardModal.title}</h3>
                 </div>
                 <button type="button" onClick={() => setScorecardModal(null)}>Close</button>
               </div>
-              <div className="v3-scorecard-hero">
-                <strong>{scorecardModal.score}/100</strong>
-                <span>Confidence {scorecardModal.confidence}</span>
-                <p>{scorecardModal.why}</p>
-              </div>
-              <div className="v3-criteria-table">
-                {scorecardModal.criteria.map(([criterion, score, evidence]) => (
-                  <div key={criterion}>
-                    <strong>{criterion}</strong>
-                    <span>{score}</span>
-                    <p>{evidence}</p>
+              <div className="v3-scorecard-review">
+                <section className="v3-scorecard-hero">
+                  <div>
+                    <span>Overall score</span>
+                    <strong>{scorecardModal.score ?? "N/A"}/100</strong>
                   </div>
-                ))}
+                  <div>
+                    <span>Status</span>
+                    <h4>{scorecardModal.title ?? "Scorecard unavailable"}</h4>
+                    <p>{scorecardModal.summary ?? scorecardModal.why ?? "No scorecard summary is available yet."}</p>
+                  </div>
+                  <div className="v3-scorecard-meta">
+                    <span>Human: {scorecardModal.human ?? "Unknown"}</span>
+                    <span>Stage: {scorecardModal.stage ?? "Unknown"}</span>
+                    <span>Confidence: {scorecardModal.confidence ?? "Unknown"}</span>
+                  </div>
+                </section>
+
+                <section className="v3-scorecard-summary-grid" aria-label="Scorecard summary">
+                  <article>
+                    <strong>Key strengths</strong>
+                    {(scorecardModal.strengths?.length ? scorecardModal.strengths : ["No strengths captured yet."]).map((item) => <span key={item}>{item}</span>)}
+                  </article>
+                  <article>
+                    <strong>Key weaknesses</strong>
+                    {(scorecardModal.weaknesses?.length ? scorecardModal.weaknesses : scorecardModal.improvements ?? ["No weaknesses captured yet."]).map((item) => <span key={item}>{item}</span>)}
+                  </article>
+                  <article>
+                    <strong>Recommended next improvement</strong>
+                    <p>{(scorecardModal as { nextImprovement?: string }).nextImprovement ?? scorecardModal.coaching ?? "No recommendation captured yet."}</p>
+                  </article>
+                </section>
+
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Detailed Score Breakdown</p>
+                    <h4>Criteria, scoring and evidence</h4>
+                  </div>
+                  <div className="v3-criteria-table expanded">
+                    {scorecardModal.criteria?.length ? scorecardModal.criteria.map(([criterion, score, evidence]) => (
+                      <div key={criterion}>
+                        <strong>{criterion}</strong>
+                        <span>{score}</span>
+                        <p>{evidence || "No evidence captured for this criterion."}</p>
+                      </div>
+                    )) : (
+                      <div><strong>No criteria yet</strong><span>N/A</span><p>This scorecard has no detailed criteria payload.</p></div>
+                    )}
+                  </div>
+                </section>
+
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Sales Coaching</p>
+                    <h4>What to repeat and what to improve</h4>
+                  </div>
+                  <div className="v3-scorecard-columns">
+                    <article><strong>Did well</strong>{(scorecardModal.strengths?.length ? scorecardModal.strengths : ["No positive coaching captured yet."]).map((item) => <span key={item}>{item}</span>)}</article>
+                    <article><strong>Missed / next time</strong>{(scorecardModal.improvements?.length ? scorecardModal.improvements : ["No improvement notes captured yet."]).map((item) => <span key={item}>{item}</span>)}</article>
+                  </div>
+                  <article className="v3-scorecard-coaching"><strong>Coaching Summary</strong><p>{scorecardModal.coaching ?? "No coaching summary captured yet."}</p></article>
+                </section>
+
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Deal Intelligence</p>
+                    <h4>Signals and recommended action</h4>
+                  </div>
+                  <div className="v3-deal-intel-grid">
+                    {Object.entries((scorecardModal as { dealIntelligence?: Record<string, string> }).dealIntelligence ?? {
+                      intent: "No buyer intent signal captured.",
+                      sentiment: "No sentiment signal captured.",
+                      urgency: "No urgency signal captured.",
+                      objections: "No objections captured.",
+                      missingInfo: "No missing information captured.",
+                      nextAction: "No recommended next action captured.",
+                      humanRequired: "Unknown.",
+                    }).map(([label, value]) => (
+                      <article key={label}>
+                        <span>{label.replace(/([A-Z])/g, " $1")}</span>
+                        <p>{value}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Event Note</p>
+                    <h4>Transcript and source context</h4>
+                  </div>
+                  <pre className="v3-scorecard-event-note">{scorecardModal.eventNote || "No event note or transcript has been attached to this scorecard yet."}</pre>
+                </section>
               </div>
-              <div className="v3-scorecard-columns">
-                <article><strong>Strengths</strong>{scorecardModal.strengths.map((item) => <span key={item}>{item}</span>)}</article>
-                <article><strong>Improvements</strong>{scorecardModal.improvements.map((item) => <span key={item}>{item}</span>)}</article>
-              </div>
-              <article className="v3-scorecard-coaching"><strong>Coaching Summary</strong><p>{scorecardModal.coaching}</p></article>
-              <article className="v3-scorecard-coaching"><strong>Event Note</strong><p>{scorecardModal.eventNote}</p></article>
             </section>
           </div>
         )}
