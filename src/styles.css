@@ -622,14 +622,20 @@ button:hover {
 
 .pill {
   min-height: 24px;
+  max-width: 100%;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border: 1px solid #3a3a3a;
   border-radius: 999px;
   color: var(--soft);
   padding: 0 9px;
   font-size: 12px;
   font-weight: 750;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 
 .pill.high,
@@ -1273,9 +1279,14 @@ button:hover {
   margin-bottom: 8px;
 }
 
+.v3-panel-head > div {
+  min-width: 0;
+}
+
 .v3-panel-head h3 {
   margin: 0;
   font-size: 15px;
+  overflow-wrap: anywhere;
 }
 
 .v3-panel-head.tight {
@@ -1401,6 +1412,10 @@ button:hover {
   padding: 10px;
 }
 
+.v3-deal-detail {
+  container-type: inline-size;
+}
+
 .v3-tabs {
   display: flex;
   gap: 6px;
@@ -1456,11 +1471,18 @@ button:hover {
 
 .v3-context-grid span,
 .v3-score-grid span {
+  min-width: 0;
   display: grid;
   gap: 1px;
   border: 1px solid #292929;
   border-radius: 6px;
   padding: 7px;
+}
+
+.v3-context-grid strong,
+.v3-score-grid strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .v3-persona-card,
@@ -2371,6 +2393,51 @@ button:hover {
 
   .v4-queue .v3-heat,
   .v4-queue .v4-due-cell {
+    justify-self: start;
+  }
+}
+
+@container (max-width: 390px) {
+  .v3-deal-detail .v3-panel-head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .v3-deal-detail .v3-panel-head .pill {
+    min-height: 22px;
+    max-width: 100%;
+    padding-inline: 7px;
+    font-size: 11px;
+  }
+
+  .v3-deal-detail .v3-context-grid,
+  .v3-deal-detail .v3-score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .v3-deal-detail .v3-detail-body > div:first-child {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .v3-deal-detail .v3-tabs button {
+    min-height: 28px;
+    padding-inline: 9px;
+    font-size: 11px;
+  }
+}
+
+@container (max-width: 300px) {
+  .v3-deal-detail .v3-context-grid,
+  .v3-deal-detail .v3-score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-deal-detail .v3-panel-head {
+    display: grid;
+  }
+
+  .v3-deal-detail .v3-panel-head .pill {
     justify-self: start;
   }
 }
