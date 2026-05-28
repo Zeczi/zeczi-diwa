@@ -2060,8 +2060,8 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
     ["Timeline", deal.expectedTiming],
     ["Budget", deal.budgetSignal],
     ["Sentiment", "Positive, but depends on confidence, safety evidence and board-ready wording."],
-    ["Buying signals", "Quote viewed twice; timing pressure confirmed; customer engaged on compliance and install window."],
   ];
+  const buyingSignals = ["Quote viewed twice", "Timing pressure confirmed", "Compliance questions raised", "Install window discussed", "Board pack needed"];
   const summaryObjectionDetails = [
     ["Safety compliance", "high", "Board needs written confidence around certification and playground suitability."],
     ["Install timing", "high", "Customer wants completion before school holidays; availability must be confirmed."],
@@ -2495,13 +2495,13 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
       <section className="v3-summary-persona-grid">
         <article>
           <span>MacroPersona</span>
-          <strong>Commercial Care Operator</strong>
+          <strong>Commercial</strong>
           <p>Institutional buyer balancing safety, timing, board confidence and operational disruption.</p>
         </article>
         <article>
           <span>MicroPersona</span>
-          <strong>Evidence-led Decision Owner</strong>
-          <p>Helen wants a tidy written pack she can trust and pass to the board without rework.</p>
+          <strong>Early Childcare Centre</strong>
+          <p>Helen needs a tidy written pack she can trust and pass to the board without rework.</p>
         </article>
       </section>
 
@@ -2515,7 +2515,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
           <span><strong>{money(deal.value)}</strong><small>Deal value</small></span>
           <span><strong>{deal.owner}</strong><small>Owner</small></span>
           <span><strong>{deal.due}</strong><small>Due</small></span>
-          <span><strong>{deal.quoteViewed}</strong><small>Quote engagement</small></span>
+          <span><strong>Views 2</strong><small>Quote engagement</small></span>
         </div>
       </section>
 
@@ -2527,6 +2527,10 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
         <article>
           <div className="v3-scorecard-section-head"><p className="eyebrow">Customer</p><h4>Decision context</h4></div>
           {summaryCustomer.map(([label, value]) => <p key={label}><b>{label}</b><span>{value}</span></p>)}
+          <div className="v3-buying-signals">
+            <b>Buying signals</b>
+            <div>{buyingSignals.map((signal) => <span key={signal}>{signal}</span>)}</div>
+          </div>
         </article>
       </section>
 
@@ -2553,18 +2557,23 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
         </div>
       </section>
 
-      <section className="v3-summary-two-col">
-        <article>
-          <div className="v3-scorecard-section-head"><p className="eyebrow">Next Steps</p><h4>Recommended action</h4></div>
-          <p>{deal.nextAction}</p>
+      <section className="v3-summary-section">
+        <div className="v3-scorecard-section-head">
+          <p className="eyebrow">Quote Snapshot</p>
+          <h4>{deal.quote}</h4>
+        </div>
+        <div className="v3-quote-snapshot-grid">
+          <span><strong>{money(deal.quoteValue)}</strong><small>Total value</small></span>
+          <span><strong>{deal.quoteStatus}</strong><small>Status</small></span>
+          <span><strong>2</strong><small>Views</small></span>
+          <span><strong>Board pack</strong><small>Required format</small></span>
+        </div>
+        <div className="v3-quote-detail-list">
+          <p><b>Current quote state</b><span>Revision requested. The next send should be board-ready rather than a loose follow-up.</span></p>
+          <p><b>Commercial hook</b><span>Safety compliance, install timing and clear acceptance path matter more than discounting.</span></p>
+          <p><b>Risk</b><span>If timing or certification language is vague, the board approval loop will drag.</span></p>
           <p><b>Confidence note</b><span>High source confidence from recent call, quote views and clear customer timing pressure.</span></p>
-        </article>
-        <article>
-          <div className="v3-scorecard-section-head"><p className="eyebrow">Quote Info</p><h4>{deal.quote}</h4></div>
-          <p><b>Value</b><span>{money(deal.quoteValue)}</span></p>
-          <p><b>Status</b><span>{deal.quoteStatus}</span></p>
-          <p><b>Engagement</b><span>{deal.quoteViewed}</span></p>
-        </article>
+        </div>
       </section>
 
       <section className="v3-summary-section">
