@@ -1992,7 +1992,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
   const [snapshotAgent, setSnapshotAgent] = React.useState("All");
   const [snapshotHuman, setSnapshotHuman] = React.useState("All");
   const [snapshotType, setSnapshotType] = React.useState("All");
-  const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "scorecard" | "note"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
+  const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "note"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
   const [scorecardModal, setScorecardModal] = React.useState<(typeof richScorecards)[number] | null>(null);
   const [eventNoteOpen, setEventNoteOpen] = React.useState(false);
   const copyScorecardMarkdown = async (card: (typeof richScorecards)[number]) => {
@@ -2093,7 +2093,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
               <p>{snapshot.summary}</p>
               <div className="v3-snapshot-actions">
                 <button type="button" onClick={() => setSnapshotModal({ kind: "summary", snapshot })}>Summary</button>
-                <button type="button" onClick={() => openSnapshotScorecard(snapshot)}>Scorecard {snapshot.scorecard.score}%</button>
+                <button type="button" onClick={() => openSnapshotScorecard(snapshot)}>Open scorecard {snapshot.scorecard.score}%</button>
                 <button type="button" onClick={() => setSnapshotModal({ kind: "note", snapshot })}>View note</button>
               </div>
             </article>
@@ -2105,7 +2105,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
               <div className="v3-panel-head">
                 <div>
                   <p className="eyebrow">{snapshotModal.snapshot.agent} · {snapshotModal.snapshot.event}</p>
-                  <h3>{snapshotModal.kind === "summary" ? "Snapshot Summary" : snapshotModal.kind === "note" ? "Source Note" : snapshotModal.snapshot.scorecard.title}</h3>
+                  <h3>{snapshotModal.kind === "summary" ? "Snapshot Summary" : "Source Note"}</h3>
                 </div>
                 <button type="button" onClick={() => setSnapshotModal(null)}>Close</button>
               </div>
@@ -2115,7 +2115,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                   <pre>{snapshotModal.snapshot.markdown}</pre>
                   <button className="primary-button" type="button" onClick={() => copyMarkdown(snapshotModal.snapshot.markdown)}><Copy size={15} /> Copy markdown</button>
                 </>
-              ) : snapshotModal.kind === "note" ? (
+              ) : (
                 <>
                   <p>{snapshotModal.snapshot.note}</p>
                   <div className="v3-note-meta">
@@ -2124,12 +2124,6 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     <span>Time: {snapshotModal.snapshot.time}</span>
                   </div>
                 </>
-              ) : (
-                <div className="v3-scorecard-popup">
-                  <strong>{snapshotModal.snapshot.scorecard.score}%</strong>
-                  <p>{snapshotModal.snapshot.scorecard.finding}</p>
-                  <p><b>Coaching:</b> {snapshotModal.snapshot.scorecard.coaching}</p>
-                </div>
               )}
             </section>
           </div>
