@@ -2154,12 +2154,11 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     <em>Score</em>
                   </div>
                   <div>
-                    <span>Deal</span>
-                    <h4>{deal.name}</h4>
+                    <span>Status</span>
+                    <h4>{scorecardModal.title ?? "Scorecard unavailable"}</h4>
                     <p>{scorecardModal.summary ?? scorecardModal.why ?? "No scorecard summary is available yet."}</p>
                   </div>
                   <div className="v3-scorecard-meta">
-                    <span>Scorecard: {scorecardModal.title ?? "Untitled"}</span>
                     <span>Occurred: {getScorecardOccurredAt(scorecardModal)}</span>
                     <span>Human: {scorecardModal.human ?? "Unknown"}</span>
                     <span>Stage: {scorecardModal.stage ?? "Unknown"}</span>
@@ -2283,12 +2282,11 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     <em>Score</em>
                   </div>
                   <div>
-                    <span>Deal</span>
-                    <h4>{deal.name}</h4>
+                    <span>Status</span>
+                    <h4>{scorecardModal.title ?? "Scorecard unavailable"}</h4>
                     <p>{scorecardModal.summary ?? scorecardModal.why ?? "No scorecard summary is available yet."}</p>
                   </div>
                   <div className="v3-scorecard-meta">
-                    <span>Scorecard: {scorecardModal.title ?? "Untitled"}</span>
                     <span>Occurred: {getScorecardOccurredAt(scorecardModal)}</span>
                     <span>Human: {scorecardModal.human ?? "Unknown"}</span>
                     <span>Stage: {scorecardModal.stage ?? "Unknown"}</span>
