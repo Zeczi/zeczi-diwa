@@ -506,6 +506,15 @@ function normaliseStatusLabel(label: string) {
   return label.toLowerCase().replace(/\s+/g, "-");
 }
 
+function getScoreTone(score: number | string) {
+  const numeric = typeof score === "number" ? score : Number(String(score).split("/")[0]);
+  if (Number.isNaN(numeric)) return "unknown";
+  if (numeric >= 85) return "green";
+  if (numeric >= 70) return "yellow";
+  if (numeric >= 50) return "orange";
+  return "red";
+}
+
 function getHeatBand(deal: (typeof v3Deals)[number]) {
   if (deal.closeLikelihood > 85) return "Ready to Close";
   if (deal.closeLikelihood >= 70) return "Hot";
@@ -1981,6 +1990,38 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
   const [snapshotType, setSnapshotType] = React.useState("All");
   const [snapshotModal, setSnapshotModal] = React.useState<{ kind: "summary" | "scorecard" | "note"; snapshot: (typeof v3Snapshots)[number] } | null>(null);
   const [scorecardModal, setScorecardModal] = React.useState<(typeof richScorecards)[number] | null>(null);
+  const [eventNoteOpen, setEventNoteOpen] = React.useState(false);
+  const copyScorecardMarkdown = async (card: (typeof richScorecards)[number]) => {
+    const markdown = [
+      "# Meeting Scorecard - " + card.id + " - " + card.title,
+      "",
+      "**Score:** " + card.score + "/100",
+      "**Event:** " + card.event,
+      "**Human:** " + card.human,
+      "**Agent:** " + card.agent,
+      "**Stage:** " + card.stage,
+      "**Confidence:** " + card.confidence,
+      "",
+      "## Summary",
+      card.summary ?? card.why,
+      "",
+      "## Criteria",
+      ...(card.criteria ?? []).map(([criterion, score, evidence]) => "- **" + criterion + " (" + score + ")** " + evidence),
+      "",
+      "## Strengths",
+      ...(card.strengths ?? []).map((item) => "- " + item),
+      "",
+      "## Improvements",
+      ...(card.improvements ?? []).map((item) => "- " + item),
+      "",
+      "## Coaching Summary",
+      card.coaching,
+      "",
+      "## Event Note",
+      card.eventNote,
+    ].join("\n");
+    await navigator.clipboard?.writeText(markdown);
+  };
 
   if (activeTab === "Snapshots") {
     const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
@@ -2111,16 +2152,19 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
     return (
       <div className="v3-scorecard-list rich">
         {richScorecards.map((card) => (
-          <article key={card.id}>
-            <div>
-              <strong>{card.title}</strong>
-              <span>{card.score}/100</span>
+          <article className="v3-scorecard-row" key={card.id}>
+            <div className="v3-scorecard-row-main">
+              <span className="v3-rank">{card.agent}</span>
+              <div>
+                <strong>{card.event}<em>{card.human}</em><em>{card.stage}</em><em>confidence {card.confidence}</em></strong>
+                <small>{card.id} · {card.title}</small>
+              </div>
+              <span className={`v3-score-badge ${getScoreTone(card.score)}`}><b>{card.score}</b><small>/100</small></span>
             </div>
-            <small>{card.event} · {card.human} · {card.agent} · {card.stage} · confidence {card.confidence}</small>
             <p><b>Why this scorecard:</b> {card.why}</p>
             <p><b>Coaching:</b> {card.coaching}</p>
             <div className="v3-snapshot-actions">
-              <button type="button" onClick={() => setScorecardModal(card)}>Open scorecard</button>
+              <button type="button" onClick={() => { setScorecardModal(card); setEventNoteOpen(false); }}>Open scorecard</button>
               <button type="button" onClick={() => setSnapshotModal({ kind: "note", snapshot: v3Snapshots[1] })}>View event note</button>
             </div>
           </article>
@@ -2133,13 +2177,17 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                   <p className="eyebrow">Meeting Scorecard · {scorecardModal.event} · {scorecardModal.agent}</p>
                   <h3>{scorecardModal.id} · {scorecardModal.title}</h3>
                 </div>
-                <button type="button" onClick={() => setScorecardModal(null)}>Close</button>
+                <div className="v3-scorecard-tools">
+                  <button type="button" onClick={() => copyScorecardMarkdown(scorecardModal)}><Copy size={15} /> Copy markdown</button>
+                  <button type="button" onClick={() => window.print()}><FileText size={15} /> Print</button>
+                  <button type="button" onClick={() => setScorecardModal(null)}>Close</button>
+                </div>
               </div>
               <div className="v3-scorecard-review">
-                <section className="v3-scorecard-hero">
+                <section className={`v3-scorecard-hero ${getScoreTone(scorecardModal.score)}`}>
                   <div>
                     <span>Overall score</span>
-                    <strong>{scorecardModal.score ?? "N/A"}/100</strong>
+                    <strong>{scorecardModal.score ?? "N/A"}<small>/100</small></strong>
                   </div>
                   <div>
                     <span>Status</span>
@@ -2177,7 +2225,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     {scorecardModal.criteria?.length ? scorecardModal.criteria.map(([criterion, score, evidence]) => (
                       <div key={criterion}>
                         <strong>{criterion}</strong>
-                        <span>{score}</span>
+                        <span className={`v3-score-pill ${getScoreTone(score)}`}>{score}</span>
                         <p>{evidence || "No evidence captured for this criterion."}</p>
                       </div>
                     )) : (
@@ -2226,7 +2274,13 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     <p className="eyebrow">Event Note</p>
                     <h4>Transcript and source context</h4>
                   </div>
-                  <pre className="v3-scorecard-event-note">{scorecardModal.eventNote || "No event note or transcript has been attached to this scorecard yet."}</pre>
+                  <div className="v3-event-note-actions">
+                    <button type="button" onClick={() => setEventNoteOpen((open) => !open)}>{eventNoteOpen ? "Hide event note" : "View event note"}</button>
+                    <button type="button" onClick={() => setEventNoteOpen(true)}><PhoneCall size={15} /> Listen if available</button>
+                  </div>
+                  {eventNoteOpen && (
+                    <pre className="v3-scorecard-event-note">{scorecardModal.eventNote || "No event note or transcript has been attached to this scorecard yet."}</pre>
+                  )}
                 </section>
               </div>
             </section>
