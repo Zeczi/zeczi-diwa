@@ -2046,6 +2046,32 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
   const getScorecardOccurredAt = (card: (typeof richScorecards)[number]) =>
     v3Snapshots.find((snapshot) => snapshot.agent === card.agent && snapshot.owner === card.human)?.time ??
     card.event;
+  const summarySite = [
+    ["Surface", "Existing play area needing compliant synthetic turf system."],
+    ["Ground", "Assessment complete; scope needs board-safe wording before final send."],
+    ["Drainage", "Shock-pad and playground safety details need to be clearly documented."],
+    ["Access", "Childcare site access and install timing must be confirmed before commitment."],
+    ["Hazards", "Compliance language and board approval are the main execution risks."],
+    ["Complexity", "Medium"],
+  ];
+  const summaryCustomer = [
+    ["Use case", deal.product],
+    ["Decision maker", deal.decisionMaker],
+    ["Timeline", deal.expectedTiming],
+    ["Budget", deal.budgetSignal],
+    ["Sentiment", "Positive, but depends on confidence, safety evidence and board-ready wording."],
+    ["Buying signals", "Quote viewed twice; timing pressure confirmed; customer engaged on compliance and install window."],
+  ];
+  const summaryObjectionDetails = [
+    ["Safety compliance", "high", "Board needs written confidence around certification and playground suitability."],
+    ["Install timing", "high", "Customer wants completion before school holidays; availability must be confirmed."],
+    ["Board approval", "medium", "Helen is engaged, but final approval needs a clean internal summary."],
+  ];
+  const summaryComms = [
+    ["Today, 9:14 am", "Phone", "Rachel call captured compliance and timing blocker."],
+    ["Today, 9:22 am", "AI draft", "Board-ready response drafted but held for human review."],
+    ["Yesterday, 4:18 pm", "Quote", "Revision added safety/timing assumptions."],
+  ];
 
   if (activeTab === "Snapshots") {
     const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
@@ -2436,31 +2462,120 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
   }
 
   return (
-    <div className="v3-detail-body">
-      <div>
-        <span>Current snapshot</span>
-        <strong>{deal.id}</strong>
-      </div>
-      <p>{deal.snapshot}</p>
-      <div className="v3-context-grid">
-        <span><strong>{money(deal.value)}</strong><small>Deal value</small></span>
-        <span><strong>{deal.stage}</strong><small>Stage</small></span>
-        <span><strong>{deal.owner}</strong><small>Owner</small></span>
-        <span><strong>{deal.due}</strong><small>Due</small></span>
-      </div>
+    <div className="v3-detail-body rich-summary">
+      <section className="v3-summary-hero">
+        <div>
+          <p className="eyebrow">Current Snapshot · {deal.id}</p>
+          <h3>{deal.name}</h3>
+          <p>{deal.snapshot}</p>
+        </div>
+        <aside>
+          <span>{deal.stage}</span>
+          <strong>{deal.priority}/100</strong>
+          <small>Priority · updated {deal.lastMeaningful}</small>
+        </aside>
+      </section>
+
       <div className="v3-score-grid">
         <span><strong>{deal.intent}%</strong><small>Intent</small></span>
         <span><strong>{deal.sentiment}%</strong><small>Sentiment</small></span>
         <span><strong>{deal.urgency}%</strong><small>Urgency</small></span>
         <span><strong>{deal.closeLikelihood}%</strong><small>Close</small></span>
       </div>
-      <article className="v3-persona-card">
-        <strong>Recommended next action</strong>
-        <p>{deal.nextAction}</p>
-        <strong>Persona</strong>
-        <p>{deal.persona}</p>
-        <div>{deal.objections.map((item) => <span key={item}>{item}</span>)}</div>
-      </article>
+
+      <section className="v3-human-review">
+        <strong>Human review required</strong>
+        <ul>
+          <li>Safety/compliance wording needs human approval before customer send.</li>
+          <li>Installation timing before school holidays must be confirmed before over-promising.</li>
+          <li>Board approval means the next response needs to be clear enough to forward internally.</li>
+        </ul>
+      </section>
+
+      <section className="v3-summary-persona-grid">
+        <article>
+          <span>MacroPersona</span>
+          <strong>Commercial Care Operator</strong>
+          <p>Institutional buyer balancing safety, timing, board confidence and operational disruption.</p>
+        </article>
+        <article>
+          <span>MicroPersona</span>
+          <strong>Evidence-led Decision Owner</strong>
+          <p>Helen wants a tidy written pack she can trust and pass to the board without rework.</p>
+        </article>
+      </section>
+
+      <section className="v3-summary-section">
+        <div className="v3-scorecard-section-head">
+          <p className="eyebrow">Deal Heat</p>
+          <h4>{deal.category}</h4>
+        </div>
+        <p>{deal.why}</p>
+        <div className="v3-context-grid">
+          <span><strong>{money(deal.value)}</strong><small>Deal value</small></span>
+          <span><strong>{deal.owner}</strong><small>Owner</small></span>
+          <span><strong>{deal.due}</strong><small>Due</small></span>
+          <span><strong>{deal.quoteViewed}</strong><small>Quote engagement</small></span>
+        </div>
+      </section>
+
+      <section className="v3-summary-two-col">
+        <article>
+          <div className="v3-scorecard-section-head"><p className="eyebrow">Site</p><h4>Physical and install context</h4></div>
+          {summarySite.map(([label, value]) => <p key={label}><b>{label}</b><span>{value}</span></p>)}
+        </article>
+        <article>
+          <div className="v3-scorecard-section-head"><p className="eyebrow">Customer</p><h4>Decision context</h4></div>
+          {summaryCustomer.map(([label, value]) => <p key={label}><b>{label}</b><span>{value}</span></p>)}
+        </article>
+      </section>
+
+      <section className="v3-summary-section">
+        <div className="v3-scorecard-section-head">
+          <p className="eyebrow">Revised Scope</p>
+          <h4>{deal.product}</h4>
+        </div>
+        <p>Prepare a board-ready playground turf and shock-pad proposal covering safety compliance, install timing, quote revision detail and acceptance path. The output should be clean enough for Helen to forward internally.</p>
+      </section>
+
+      <section className="v3-summary-section">
+        <div className="v3-scorecard-section-head">
+          <p className="eyebrow">Objections and Hesitations</p>
+          <h4>What could slow the close</h4>
+        </div>
+        <div className="v3-objection-grid">
+          {summaryObjectionDetails.map(([label, severity, detail]) => (
+            <article key={label}>
+              <strong>{label}<em>{severity}</em></strong>
+              <p>{detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="v3-summary-two-col">
+        <article>
+          <div className="v3-scorecard-section-head"><p className="eyebrow">Next Steps</p><h4>Recommended action</h4></div>
+          <p>{deal.nextAction}</p>
+          <p><b>Confidence note</b><span>High source confidence from recent call, quote views and clear customer timing pressure.</span></p>
+        </article>
+        <article>
+          <div className="v3-scorecard-section-head"><p className="eyebrow">Quote Info</p><h4>{deal.quote}</h4></div>
+          <p><b>Value</b><span>{money(deal.quoteValue)}</span></p>
+          <p><b>Status</b><span>{deal.quoteStatus}</span></p>
+          <p><b>Engagement</b><span>{deal.quoteViewed}</span></p>
+        </article>
+      </section>
+
+      <section className="v3-summary-section">
+        <div className="v3-scorecard-section-head">
+          <p className="eyebrow">Recent Communication History</p>
+          <h4>Latest meaningful artefacts</h4>
+        </div>
+        <div className="v3-summary-comms">
+          {summaryComms.map(([date, type, detail]) => <p key={date + type}><b>{date}</b><span>{type}</span><em>{detail}</em></p>)}
+        </div>
+      </section>
     </div>
   );
 }
