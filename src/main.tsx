@@ -2043,6 +2043,9 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
     setScorecardModal(matchingCard);
     setEventNoteOpen(true);
   };
+  const getScorecardOccurredAt = (card: (typeof richScorecards)[number]) =>
+    v3Snapshots.find((snapshot) => snapshot.agent === card.agent && snapshot.owner === card.human)?.time ??
+    card.event;
 
   if (activeTab === "Snapshots") {
     const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
@@ -2133,8 +2136,8 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
             <section className="v3-modal v3-scorecard-modal" role="dialog" aria-modal="true" aria-label="Full scorecard" onClick={(event) => event.stopPropagation()}>
               <div className="v3-panel-head">
                 <div>
-                  <p className="eyebrow">Meeting Scorecard · {scorecardModal.event} · {scorecardModal.agent}</p>
-                  <h3>{scorecardModal.id} · {scorecardModal.title}</h3>
+                  <p className="eyebrow">Meeting Scorecard · {scorecardModal.agent} · {getScorecardOccurredAt(scorecardModal)}</p>
+                  <h3>{deal.id} · {deal.customer} · {deal.company}</h3>
                 </div>
                 <div className="v3-scorecard-tools">
                   <button type="button" onClick={() => copyScorecardMarkdown(scorecardModal)}><Copy size={15} /> Copy markdown</button>
@@ -2151,11 +2154,13 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     <em>Score</em>
                   </div>
                   <div>
-                    <span>Status</span>
-                    <h4>{scorecardModal.title ?? "Scorecard unavailable"}</h4>
+                    <span>Deal</span>
+                    <h4>{deal.name}</h4>
                     <p>{scorecardModal.summary ?? scorecardModal.why ?? "No scorecard summary is available yet."}</p>
                   </div>
                   <div className="v3-scorecard-meta">
+                    <span>Scorecard: {scorecardModal.title ?? "Untitled"}</span>
+                    <span>Occurred: {getScorecardOccurredAt(scorecardModal)}</span>
                     <span>Human: {scorecardModal.human ?? "Unknown"}</span>
                     <span>Stage: {scorecardModal.stage ?? "Unknown"}</span>
                     <span>Confidence: {scorecardModal.confidence ?? "Unknown"}</span>
@@ -2260,8 +2265,8 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
             <section className="v3-modal v3-scorecard-modal" role="dialog" aria-modal="true" aria-label="Full scorecard" onClick={(event) => event.stopPropagation()}>
               <div className="v3-panel-head">
                 <div>
-                  <p className="eyebrow">Meeting Scorecard · {scorecardModal.event} · {scorecardModal.agent}</p>
-                  <h3>{scorecardModal.id} · {scorecardModal.title}</h3>
+                  <p className="eyebrow">Meeting Scorecard · {scorecardModal.agent} · {getScorecardOccurredAt(scorecardModal)}</p>
+                  <h3>{deal.id} · {deal.customer} · {deal.company}</h3>
                 </div>
                 <div className="v3-scorecard-tools">
                   <button type="button" onClick={() => copyScorecardMarkdown(scorecardModal)}><Copy size={15} /> Copy markdown</button>
@@ -2278,11 +2283,13 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                     <em>Score</em>
                   </div>
                   <div>
-                    <span>Status</span>
-                    <h4>{scorecardModal.title ?? "Scorecard unavailable"}</h4>
+                    <span>Deal</span>
+                    <h4>{deal.name}</h4>
                     <p>{scorecardModal.summary ?? scorecardModal.why ?? "No scorecard summary is available yet."}</p>
                   </div>
                   <div className="v3-scorecard-meta">
+                    <span>Scorecard: {scorecardModal.title ?? "Untitled"}</span>
+                    <span>Occurred: {getScorecardOccurredAt(scorecardModal)}</span>
                     <span>Human: {scorecardModal.human ?? "Unknown"}</span>
                     <span>Stage: {scorecardModal.stage ?? "Unknown"}</span>
                     <span>Confidence: {scorecardModal.confidence ?? "Unknown"}</span>
