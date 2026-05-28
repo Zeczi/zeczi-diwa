@@ -969,7 +969,7 @@ function App() {
 
         <div className="workspace" id="cockpit">
           {useV4Experience ? (
-            <CockpitV4 />
+            <CockpitV4 summaryTrial={isV3} />
           ) : isV2 ? (
             <CockpitV2 />
           ) : (
@@ -1099,7 +1099,7 @@ function App() {
   );
 }
 
-function CockpitV4() {
+function CockpitV4({ summaryTrial = false }: { summaryTrial?: boolean }) {
   const [workspaceColumns, setWorkspaceColumns] = React.useState([0.92, 1, 0.72]);
   const [activeStage, setActiveStage] = React.useState<string | null>(null);
   const [activeStatus, setActiveStatus] = React.useState<string | null>(null);
@@ -1253,7 +1253,7 @@ function CockpitV4() {
 
         <button className="v4-resize-handle" type="button" aria-label="Resize Command Queue and Deal Detail" onPointerDown={(event) => startResize(0, event)} />
 
-        <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <V3DealDetailShell deal={selectedDeal} activeTab={activeTab} setActiveTab={setActiveTab} summaryTrial={summaryTrial} />
 
         <button className="v4-resize-handle" type="button" aria-label="Resize Deal Detail and Next Best Action" onPointerDown={(event) => startResize(1, event)} />
 
@@ -1973,7 +1973,7 @@ function V3SelectedView({
   );
 }
 
-function V3DealDetailShell({ deal, activeTab, setActiveTab }: { deal: (typeof v3Deals)[number]; activeTab: string; setActiveTab: React.Dispatch<React.SetStateAction<string>> }) {
+function V3DealDetailShell({ deal, activeTab, setActiveTab, summaryTrial = false }: { deal: (typeof v3Deals)[number]; activeTab: string; setActiveTab: React.Dispatch<React.SetStateAction<string>>; summaryTrial?: boolean }) {
   return (
     <section className="panel v3-deal-detail">
       <div className="v3-panel-head">
@@ -1983,12 +1983,12 @@ function V3DealDetailShell({ deal, activeTab, setActiveTab }: { deal: (typeof v3
       <div className="v3-tabs" role="tablist" aria-label="Deal views">
         {dealTabs.map((tab) => <button className={activeTab === tab ? "active" : ""} type="button" onClick={() => setActiveTab(tab)} key={tab}>{tab}</button>)}
       </div>
-      <V3DealTab activeTab={activeTab} deal={deal} />
+      <V3DealTab activeTab={activeTab} deal={deal} summaryTrial={summaryTrial} />
     </section>
   );
 }
 
-function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Deals)[number] }) {
+function V3DealTab({ activeTab, deal, summaryTrial = false }: { activeTab: string; deal: (typeof v3Deals)[number]; summaryTrial?: boolean }) {
   const [snapshotAgent, setSnapshotAgent] = React.useState("All");
   const [snapshotHuman, setSnapshotHuman] = React.useState("All");
   const [snapshotType, setSnapshotType] = React.useState("All");
@@ -2068,9 +2068,9 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
     ["Board approval", "medium", "Helen is engaged, but final approval needs a clean internal summary."],
   ];
   const summaryComms = [
-    ["Today, 9:14 am", "Phone", "Rachel call captured compliance and timing blocker."],
-    ["Today, 9:22 am", "AI draft", "Board-ready response drafted but held for human review."],
-    ["Yesterday, 4:18 pm", "Quote", "Revision added safety/timing assumptions."],
+    ["Today, 9:14 am", "Phone", "Rachel call captured compliance and timing blocker.", "View call note"],
+    ["Today, 9:22 am", "AI draft", "Board-ready response drafted but held for human review.", "View AI note"],
+    ["Yesterday, 4:18 pm", "Quote", "Revision added safety/timing assumptions.", "View quote note"],
   ];
 
   if (activeTab === "Snapshots") {
@@ -2462,7 +2462,7 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
   }
 
   return (
-    <div className="v3-detail-body rich-summary">
+    <div className={`v3-detail-body rich-summary ${summaryTrial ? "summary-trial-v3" : ""}`}>
       <section className="v3-summary-hero">
         <div>
           <p className="eyebrow">Current Snapshot · {deal.id}</p>
@@ -2582,7 +2582,14 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
           <h4>Latest meaningful artefacts</h4>
         </div>
         <div className="v3-summary-comms">
-          {summaryComms.map(([date, type, detail]) => <p key={date + type}><b>{date}</b><span>{type}</span><em>{detail}</em></p>)}
+          {summaryComms.map(([date, type, detail, noteLabel]) => (
+            <p key={date + type}>
+              <b>{date}</b>
+              <span>{type}</span>
+              <em>{detail}</em>
+              {summaryTrial && <button type="button">{noteLabel}</button>}
+            </p>
+          ))}
         </div>
       </section>
     </div>
