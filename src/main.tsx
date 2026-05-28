@@ -502,6 +502,7 @@ function getQueueSignal(deal: (typeof v3Deals)[number]) {
 
 function getRecommendedChannel(deal: (typeof v3Deals)[number]) {
   const text = `${deal.nextAction} ${deal.preferredChannel}`.toLowerCase();
+  if (text.includes("call") || text.includes("phone")) return "Call";
   if (text.includes("whatsapp")) return "WhatsApp";
   if (text.includes("sms")) return "SMS";
   if (text.includes("email") || text.includes("draft") || text.includes("send")) return "Email";
@@ -1258,6 +1259,8 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
   const [diwaInstruction, setDiwaInstruction] = React.useState("");
   const [fromPersona, setFromPersona] = React.useState(deal.owner);
   const [signatureEnabled, setSignatureEnabled] = React.useState(true);
+  const [callWindowOpen, setCallWindowOpen] = React.useState(false);
+  const isCallChannel = activeChannel === "Call";
 
   React.useEffect(() => {
     setActiveChannel(recommendedChannel);
@@ -1267,19 +1270,21 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
     setScheduleOpen(false);
     setDiwaAdjustOpen(false);
     setDiwaInstruction("");
+    setCallWindowOpen(false);
   }, [deal.id, recommendedChannel]);
 
   React.useEffect(() => {
     setComposerText(channelCopy[activeChannel]);
-    setSendState(`Ready to send via ${activeChannel}. Open tracking is always on.`);
+    setSendState(activeChannel === "Call" ? "Ready to call. Script and DIWA coaching are available." : `Ready to send via ${activeChannel}. Open tracking is always on.`);
     setScheduleOpen(false);
+    setCallWindowOpen(false);
   }, [activeChannel]);
 
   const personas = [deal.owner, "Gareth", "Rachel", "Miles", "Kent", "ZECZI Agent"]
     .filter((persona, index, list) => persona && list.indexOf(persona) === index);
 
   const applyDiwaAdjustment = () => {
-    const instruction = diwaInstruction.trim() || "Tighten tone and make the next step clearer.";
+    const instruction = diwaInstruction.trim() || (isCallChannel ? "Sharpen the call structure and coaching prompts." : "Tighten tone and make the next step clearer.");
     setComposerText(`${composerText}\n\n[DIWA adjustment staged: ${instruction}]`);
     setSendState("Draft adjusted. New context will be attached to the next deal snapshot.");
     setDiwaAdjustOpen(false);
@@ -1332,62 +1337,121 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
         </div>
         <pre>{composerText}</pre>
 
-        <div className="v4-composer-options" aria-label="Composer options">
-          <label>
-            <span>Send as</span>
-            <select value={fromPersona} onChange={(event) => setFromPersona(event.target.value)}>
-              {personas.map((persona) => <option key={persona}>{persona}</option>)}
-            </select>
-          </label>
-          <label className="v4-toggle-line">
-            <input type="checkbox" checked readOnly />
-            <span>Open tracking always on</span>
-          </label>
-          <label className="v4-toggle-line">
-            <input type="checkbox" checked={signatureEnabled} onChange={(event) => setSignatureEnabled(event.target.checked)} />
-            <span>Signature</span>
-          </label>
-        </div>
+        {isCallChannel ? (
+          <div className="v4-call-actions">
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => setSendState(`Quick call staged to ${deal.phone}. Dialpad handoff will log the actual caller.`)}
+            >
+              <PhoneCall size={15} /> Quick call
+            </button>
+            <button type="button" onClick={() => setCallWindowOpen(true)}>
+              <PanelLeftOpen size={15} /> Open call window
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="v4-composer-options" aria-label="Composer options">
+              <label>
+                <span>Send as</span>
+                <select value={fromPersona} onChange={(event) => setFromPersona(event.target.value)}>
+                  {personas.map((persona) => <option key={persona}>{persona}</option>)}
+                </select>
+              </label>
+              <label className="v4-toggle-line">
+                <input type="checkbox" checked readOnly />
+                <span>Open tracking always on</span>
+              </label>
+              <label className="v4-toggle-line">
+                <input type="checkbox" checked={signatureEnabled} onChange={(event) => setSignatureEnabled(event.target.checked)} />
+                <span>Signature</span>
+              </label>
+            </div>
 
-        <div className="v4-send-row">
-          <button
-            className="primary-button"
-            type="button"
-            onClick={() => {
-              setSendState(`${activeChannel} ready to send as ${fromPersona}. Activity will log the real sender.`);
-              setScheduleOpen(false);
-            }}
-          >
-            <Send size={15} /> Send
-          </button>
-          <button
-            className="v4-schedule-button"
-            type="button"
-            aria-label="Open send options"
-            onClick={() => setScheduleOpen((open) => !open)}
-          >
-            <Clock3 size={15} />
-          </button>
-          {scheduleOpen && (
-            <div className="v4-send-menu">
+            <div className="v4-send-row">
               <button
+                className="primary-button"
                 type="button"
                 onClick={() => {
-                  setSendState(`${activeChannel} scheduled as ${fromPersona}. Activity will log the real sender.`);
+                  setSendState(`${activeChannel} ready to send as ${fromPersona}. Activity will log the real sender.`);
                   setScheduleOpen(false);
                 }}
               >
-                Schedule send
+                <Send size={15} /> Send
               </button>
+              <button
+                className="v4-schedule-button"
+                type="button"
+                aria-label="Open send options"
+                onClick={() => setScheduleOpen((open) => !open)}
+              >
+                <Clock3 size={15} />
+              </button>
+              {scheduleOpen && (
+                <div className="v4-send-menu">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSendState(`${activeChannel} scheduled as ${fromPersona}. Activity will log the real sender.`);
+                      setScheduleOpen(false);
+                    }}
+                  >
+                    Schedule send
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
         <button className="v4-diwa-adjust" type="button" onClick={() => setDiwaAdjustOpen(true)}>
           <Sparkles size={15} /> DIWA input
         </button>
         <span>{sendState}</span>
-        <small className="v4-send-note">Pipedrive activity is logged after send with the actual operator, even when the message is sent from another Eco Lawn persona.</small>
+        <small className="v4-send-note">
+          {isCallChannel
+            ? "Dialpad call activity should log the actual caller and attach call notes, recording, transcript and coaching signals back to the deal."
+            : "Pipedrive activity is logged after send with the actual operator, even when the message is sent from another Eco Lawn persona."}
+        </small>
       </div>
+
+      {callWindowOpen && (
+        <div className="v3-modal-backdrop" role="dialog" aria-modal="true" aria-label="DIWA call window">
+          <div className="v3-modal v4-call-modal">
+            <div className="v3-panel-head">
+              <div>
+                <p className="eyebrow">Call Window</p>
+                <h3>{deal.customer}</h3>
+              </div>
+              <button type="button" onClick={() => setCallWindowOpen(false)}>Close</button>
+            </div>
+            <div className="v4-call-window-grid">
+              <article>
+                <span>Recommended call script</span>
+                <pre>{composerText}</pre>
+                <button
+                  className="primary-button"
+                  type="button"
+                  onClick={() => setSendState(`Dialpad call staged for ${deal.phone}. Live coaching ready.`)}
+                >
+                  <PhoneCall size={15} /> Call {deal.phone}
+                </button>
+              </article>
+              <article>
+                <span>Live coaching</span>
+                <ul>
+                  <li>Confirm safety and timing first.</li>
+                  <li>Clarify the real blocker before offering options.</li>
+                  <li>Capture board-pack requirements as snapshot context.</li>
+                </ul>
+                <button type="button" onClick={() => setDiwaAdjustOpen(true)}>
+                  <Sparkles size={15} /> DIWA input
+                </button>
+              </article>
+            </div>
+          </div>
+        </div>
+      )}
 
       {diwaAdjustOpen && (
         <div className="v3-modal-backdrop" role="dialog" aria-modal="true" aria-label="DIWA message input">
@@ -1395,7 +1459,7 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
             <div className="v3-panel-head">
               <div>
                 <p className="eyebrow">DIWA Message Input</p>
-                <h3>Adjust this action</h3>
+                <h3>{isCallChannel ? "Adjust this call" : "Adjust this action"}</h3>
               </div>
               <button type="button" onClick={() => setDiwaAdjustOpen(false)}>Close</button>
             </div>
@@ -1409,7 +1473,7 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
                 <textarea
                   value={diwaInstruction}
                   onChange={(event) => setDiwaInstruction(event.target.value)}
-                  placeholder="Example: make this warmer, mention install timing, and ask for board approval by Friday."
+                  placeholder={isCallChannel ? "Example: focus the call on safety certification first, then ask what the board needs before Friday." : "Example: make this warmer, mention install timing, and ask for board approval by Friday."}
                 />
               </label>
             </div>
