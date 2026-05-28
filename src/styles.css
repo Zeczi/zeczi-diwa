@@ -2571,9 +2571,135 @@ button:hover {
   line-height: 1.45;
 }
 
-.v4-activity-actions {
+.v4-composer-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+
+.v4-composer-options label {
+  min-width: 0;
+}
+
+.v4-composer-options label:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.v4-composer-options select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #303030;
+  border-radius: 7px;
+  background: #0b0b0b;
+  color: var(--text);
+  padding: 0 9px;
+  font: inherit;
+  font-size: 13px;
+}
+
+.v4-toggle-line {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--soft);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.v4-toggle-line input {
+  accent-color: var(--accent);
+}
+
+.v4-send-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  gap: 6px;
+}
+
+.v4-send-row .primary-button,
+.v4-diwa-adjust {
+  width: 100%;
+}
+
+.v4-schedule-button {
+  padding: 0;
+}
+
+.v4-send-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 6;
+  min-width: 168px;
+  border: 1px solid rgba(232, 197, 71, 0.34);
+  border-radius: 7px;
+  background: #0b0b0b;
+  padding: 6px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.42);
+}
+
+.v4-send-menu button {
+  width: 100%;
+  justify-content: flex-start;
+  background: transparent;
+}
+
+.v4-diwa-adjust {
+  border-color: rgba(232, 197, 71, 0.3);
+  background: rgba(232, 197, 71, 0.08);
+  color: var(--accent);
+  font-weight: 850;
+}
+
+.v4-send-note {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.v4-diwa-modal {
+  width: min(860px, 100%);
+}
+
+.v4-diwa-modal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.v4-diwa-modal-grid > div,
+.v4-diwa-modal-grid label {
+  min-width: 0;
   display: grid;
   gap: 6px;
+}
+
+.v4-diwa-modal-grid span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.v4-diwa-modal-grid textarea {
+  min-height: 188px;
+  resize: vertical;
+  border: 1px solid #303030;
+  border-radius: 7px;
+  background: #090909;
+  color: var(--text);
+  padding: 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.v4-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 1180px) {
@@ -2603,6 +2729,12 @@ button:hover {
   .v2-row > span:nth-child(5),
   .v2-row > span:nth-child(6) {
     display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .v4-diwa-modal-grid {
+    grid-template-columns: 1fr;
   }
 }
 

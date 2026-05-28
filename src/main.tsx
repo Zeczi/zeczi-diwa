@@ -1238,13 +1238,6 @@ function ProfileMenu() {
 function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
   const recommendedChannel = getRecommendedChannel(deal);
   const [activeChannel, setActiveChannel] = React.useState(recommendedChannel);
-  const [activityState, setActivityState] = React.useState("Ready to create");
-
-  React.useEffect(() => {
-    setActiveChannel(recommendedChannel);
-    setActivityState("Ready to create");
-  }, [deal.id, recommendedChannel]);
-
   const channels = [
     { label: "SMS", icon: MessageSquareText },
     { label: "WhatsApp", icon: MessageSquareText },
@@ -1257,6 +1250,40 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
     WhatsApp: `Hi ${deal.customer.split(" ")[0]}, just keeping this tidy: ${deal.nextAction}`,
     Email: `Hi ${deal.customer.split(" ")[0]},\n\nThanks again. The clean next step from here is: ${deal.nextAction}\n\nI can keep this moving once you confirm.`,
     Call: `Objective: ${deal.nextAction}\n\nOpen by confirming timing, then clarify the real blocker. Avoid discounting unless price is explicitly the decision issue.`,
+  };
+  const [composerText, setComposerText] = React.useState(channelCopy[recommendedChannel]);
+  const [sendState, setSendState] = React.useState("Ready to send. Open tracking is always on.");
+  const [scheduleOpen, setScheduleOpen] = React.useState(false);
+  const [diwaAdjustOpen, setDiwaAdjustOpen] = React.useState(false);
+  const [diwaInstruction, setDiwaInstruction] = React.useState("");
+  const [fromPersona, setFromPersona] = React.useState(deal.owner);
+  const [signatureEnabled, setSignatureEnabled] = React.useState(true);
+
+  React.useEffect(() => {
+    setActiveChannel(recommendedChannel);
+    setComposerText(channelCopy[recommendedChannel]);
+    setFromPersona(deal.owner);
+    setSendState("Ready to send. Open tracking is always on.");
+    setScheduleOpen(false);
+    setDiwaAdjustOpen(false);
+    setDiwaInstruction("");
+  }, [deal.id, recommendedChannel]);
+
+  React.useEffect(() => {
+    setComposerText(channelCopy[activeChannel]);
+    setSendState(`Ready to send via ${activeChannel}. Open tracking is always on.`);
+    setScheduleOpen(false);
+  }, [activeChannel]);
+
+  const personas = [deal.owner, "Gareth", "Rachel", "Miles", "Kent", "ZECZI Agent"]
+    .filter((persona, index, list) => persona && list.indexOf(persona) === index);
+
+  const applyDiwaAdjustment = () => {
+    const instruction = diwaInstruction.trim() || "Tighten tone and make the next step clearer.";
+    setComposerText(`${composerText}\n\n[DIWA adjustment staged: ${instruction}]`);
+    setSendState("Draft adjusted. New context will be attached to the next deal snapshot.");
+    setDiwaAdjustOpen(false);
+    setDiwaInstruction("");
   };
 
   return (
@@ -1303,18 +1330,98 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
           <span>{activeChannel === recommendedChannel ? "Recommended channel" : "Alternate channel"}</span>
           <strong>{activeChannel}</strong>
         </div>
-        <pre>{channelCopy[activeChannel]}</pre>
-        <div className="v4-activity-actions">
+        <pre>{composerText}</pre>
+
+        <div className="v4-composer-options" aria-label="Composer options">
+          <label>
+            <span>Send as</span>
+            <select value={fromPersona} onChange={(event) => setFromPersona(event.target.value)}>
+              {personas.map((persona) => <option key={persona}>{persona}</option>)}
+            </select>
+          </label>
+          <label className="v4-toggle-line">
+            <input type="checkbox" checked readOnly />
+            <span>Open tracking always on</span>
+          </label>
+          <label className="v4-toggle-line">
+            <input type="checkbox" checked={signatureEnabled} onChange={(event) => setSignatureEnabled(event.target.checked)} />
+            <span>Signature</span>
+          </label>
+        </div>
+
+        <div className="v4-send-row">
           <button
             className="primary-button"
             type="button"
-            onClick={() => setActivityState(`Activity staged for ${deal.owner} via ${activeChannel}`)}
+            onClick={() => {
+              setSendState(`${activeChannel} ready to send as ${fromPersona}. Activity will log the real sender.`);
+              setScheduleOpen(false);
+            }}
           >
-            <Send size={15} /> Create Pipedrive activity
+            <Send size={15} /> Send
           </button>
-          <span>{activityState}</span>
+          <button
+            className="v4-schedule-button"
+            type="button"
+            aria-label="Open send options"
+            onClick={() => setScheduleOpen((open) => !open)}
+          >
+            <Clock3 size={15} />
+          </button>
+          {scheduleOpen && (
+            <div className="v4-send-menu">
+              <button
+                type="button"
+                onClick={() => {
+                  setSendState(`${activeChannel} scheduled as ${fromPersona}. Activity will log the real sender.`);
+                  setScheduleOpen(false);
+                }}
+              >
+                Schedule send
+              </button>
+            </div>
+          )}
         </div>
+        <button className="v4-diwa-adjust" type="button" onClick={() => setDiwaAdjustOpen(true)}>
+          <Sparkles size={15} /> DIWA input
+        </button>
+        <span>{sendState}</span>
+        <small className="v4-send-note">Pipedrive activity is logged after send with the actual operator, even when the message is sent from another Eco Lawn persona.</small>
       </div>
+
+      {diwaAdjustOpen && (
+        <div className="v3-modal-backdrop" role="dialog" aria-modal="true" aria-label="DIWA message input">
+          <div className="v3-modal v4-diwa-modal">
+            <div className="v3-panel-head">
+              <div>
+                <p className="eyebrow">DIWA Message Input</p>
+                <h3>Adjust this action</h3>
+              </div>
+              <button type="button" onClick={() => setDiwaAdjustOpen(false)}>Close</button>
+            </div>
+            <div className="v4-diwa-modal-grid">
+              <div>
+                <span>Current draft</span>
+                <pre>{composerText}</pre>
+              </div>
+              <label>
+                <span>Voice or typed instruction</span>
+                <textarea
+                  value={diwaInstruction}
+                  onChange={(event) => setDiwaInstruction(event.target.value)}
+                  placeholder="Example: make this warmer, mention install timing, and ask for board approval by Friday."
+                />
+              </label>
+            </div>
+            <div className="v4-modal-actions">
+              <button type="button" onClick={() => setDiwaAdjustOpen(false)}>Cancel</button>
+              <button className="primary-button" type="button" onClick={applyDiwaAdjustment}>
+                <Sparkles size={15} /> Generate new version
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
