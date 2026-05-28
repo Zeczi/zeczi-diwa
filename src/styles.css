@@ -2162,6 +2162,10 @@ button:hover {
   padding: 10px;
 }
 
+.v4-queue {
+  container-type: inline-size;
+}
+
 .v4-queue-controls {
   display: grid;
   gap: 7px;
@@ -2262,7 +2266,6 @@ button:hover {
 }
 
 .v4-queue-deal strong,
-.v4-queue-deal small,
 .v4-queue-deal em {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2270,8 +2273,18 @@ button:hover {
 }
 
 .v4-queue-deal small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
   color: var(--muted);
   font-size: 11px;
+}
+
+.v4-queue-deal small span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .v4-queue-deal em {
@@ -2292,6 +2305,74 @@ button:hover {
 .v4-due-cell small {
   color: var(--muted);
   font-size: 10px;
+}
+
+@container (max-width: 430px) {
+  .v4-queue-head {
+    display: none;
+  }
+
+  .v4-queue .v4-command-list button {
+    min-height: 118px;
+    grid-template-columns: 28px minmax(0, 1fr) 76px;
+    grid-template-areas:
+      "rank deal deal"
+      "rank value heat"
+      "rank due due";
+    align-items: start;
+  }
+
+  .v4-queue .v3-rank {
+    grid-area: rank;
+  }
+
+  .v4-queue-deal {
+    grid-area: deal;
+  }
+
+  .v4-queue .v4-command-list button > strong {
+    grid-area: value;
+  }
+
+  .v4-queue .v3-heat {
+    grid-area: heat;
+    justify-self: end;
+  }
+
+  .v4-queue .v4-due-cell {
+    grid-area: due;
+    justify-items: start;
+  }
+
+  .v4-queue-deal small {
+    display: grid;
+    gap: 2px;
+  }
+
+  .v4-queue-deal small span {
+    white-space: normal;
+  }
+}
+
+@container (max-width: 340px) {
+  .v4-queue .v4-command-list button {
+    min-height: 144px;
+    grid-template-columns: 24px minmax(0, 1fr);
+    grid-template-areas:
+      "rank deal"
+      "rank value"
+      "rank heat"
+      "rank due";
+  }
+
+  .v4-queue-deal strong {
+    white-space: normal;
+  }
+
+  .v4-queue .v3-heat,
+  .v4-queue .v4-due-cell {
+    justify-self: start;
+  }
 }
 
 .v4-side {

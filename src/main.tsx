@@ -1191,13 +1191,16 @@ function CockpitV4() {
             <span>Heat</span>
             <span>Due</span>
           </div>
-          <div className="v3-command-list expanded">
+          <div className="v3-command-list expanded v4-command-list">
             {queueDeals.map((deal, index) => (
               <button className={deal.id === selectedDeal.id ? "selected" : ""} type="button" onClick={() => setSelectedId(deal.id)} key={deal.id}>
                 <span className="v3-rank">{index + 1}</span>
                 <div className="v4-queue-deal">
                   <strong>{deal.id} · {deal.customer}</strong>
-                  <small>{deal.company !== "Residential" ? deal.company : deal.name} · Owner: {deal.owner}</small>
+                  <small>
+                    <span>{deal.company !== "Residential" ? deal.company : deal.name}</span>
+                    <span>Owner: {deal.owner}</span>
+                  </small>
                   <em>{getQueueSummary(deal.nextAction)}</em>
                 </div>
                 <strong>{money(deal.value)}</strong>
