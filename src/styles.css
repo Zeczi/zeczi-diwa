@@ -1391,16 +1391,24 @@ button:hover {
   color: #ffb5b3;
 }
 
+.v3-heat.green,
 .v3-heat.ready-to-close {
   border-color: rgba(97, 211, 148, 0.44);
   color: #a6f0c5;
 }
 
+.v3-heat.yellow {
+  border-color: rgba(232, 197, 71, 0.44);
+  color: var(--accent);
+}
+
+.v3-heat.orange,
 .v3-heat.drifting {
   border-color: rgba(247, 178, 103, 0.46);
   color: #ffd0a0;
 }
 
+.v3-heat.red,
 .v3-heat.stale {
   border-color: rgba(120, 120, 120, 0.48);
   color: var(--muted);

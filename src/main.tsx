@@ -2034,6 +2034,15 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
     }
     await navigator.clipboard?.writeText(shareText);
   };
+  const openSnapshotScorecard = (snapshot: (typeof v3Snapshots)[number]) => {
+    const matchingCard =
+      richScorecards.find((card) => card.agent === snapshot.agent && card.human === snapshot.owner) ??
+      richScorecards.find((card) => card.agent === snapshot.agent) ??
+      richScorecards[0];
+    setSnapshotModal(null);
+    setScorecardModal(matchingCard);
+    setEventNoteOpen(true);
+  };
 
   if (activeTab === "Snapshots") {
     const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
@@ -2078,13 +2087,13 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                   <strong>{snapshot.event}<em>{snapshot.stage}</em><em>{snapshot.owner}</em><em>{snapshot.time}</em></strong>
                   <small>{snapshot.type}</small>
                 </div>
-                <span className="v3-heat"><b>{snapshot.heat}%</b><small>Heat</small></span>
+                <span className={`v3-heat ${getScoreTone(snapshot.heat)}`}><b>{snapshot.heat}%</b><small>Heat</small></span>
                 <span className="v4-due-cell"><b>{snapshot.due}</b><small>Due</small></span>
               </div>
               <p>{snapshot.summary}</p>
               <div className="v3-snapshot-actions">
                 <button type="button" onClick={() => setSnapshotModal({ kind: "summary", snapshot })}>Summary</button>
-                <button type="button" onClick={() => setSnapshotModal({ kind: "scorecard", snapshot })}>Scorecard {snapshot.scorecard.score}%</button>
+                <button type="button" onClick={() => openSnapshotScorecard(snapshot)}>Scorecard {snapshot.scorecard.score}%</button>
                 <button type="button" onClick={() => setSnapshotModal({ kind: "note", snapshot })}>View note</button>
               </div>
             </article>
@@ -2177,7 +2186,6 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
             <p><b>Coaching:</b> {card.coaching}</p>
             <div className="v3-snapshot-actions">
               <button type="button" onClick={() => { setScorecardModal(card); setEventNoteOpen(false); }}>Open scorecard</button>
-              <button type="button" onClick={() => setSnapshotModal({ kind: "note", snapshot: v3Snapshots[1] })}>View event note</button>
             </div>
           </article>
         ))}
