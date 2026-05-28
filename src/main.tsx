@@ -2128,6 +2128,78 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
             </section>
           </div>
         )}
+        {scorecardModal && (
+          <div className="v3-modal-backdrop" role="presentation" onClick={() => setScorecardModal(null)}>
+            <section className="v3-modal v3-scorecard-modal" role="dialog" aria-modal="true" aria-label="Full scorecard" onClick={(event) => event.stopPropagation()}>
+              <div className="v3-panel-head">
+                <div>
+                  <p className="eyebrow">Meeting Scorecard · {scorecardModal.event} · {scorecardModal.agent}</p>
+                  <h3>{scorecardModal.id} · {scorecardModal.title}</h3>
+                </div>
+                <div className="v3-scorecard-tools">
+                  <button type="button" onClick={() => copyScorecardMarkdown(scorecardModal)}><Copy size={15} /> Copy markdown</button>
+                  <button type="button" onClick={() => window.print()}><FileText size={15} /> Print</button>
+                  <button type="button" onClick={() => shareScorecard(scorecardModal)}><ArrowUpRight size={15} /> Share</button>
+                  <button type="button" onClick={() => setScorecardModal(null)}>Close</button>
+                </div>
+              </div>
+              <div className="v3-scorecard-review">
+                <section className={`v3-scorecard-hero ${getScoreTone(scorecardModal.score)}`}>
+                  <div className="v3-overall-score">
+                    <span>Overall</span>
+                    <strong><b>{scorecardModal.score ?? "N/A"}</b><small>/100</small></strong>
+                    <em>Score</em>
+                  </div>
+                  <div>
+                    <span>Status</span>
+                    <h4>{scorecardModal.title ?? "Scorecard unavailable"}</h4>
+                    <p>{scorecardModal.summary ?? scorecardModal.why ?? "No scorecard summary is available yet."}</p>
+                  </div>
+                  <div className="v3-scorecard-meta">
+                    <span>Human: {scorecardModal.human ?? "Unknown"}</span>
+                    <span>Stage: {scorecardModal.stage ?? "Unknown"}</span>
+                    <span>Confidence: {scorecardModal.confidence ?? "Unknown"}</span>
+                  </div>
+                </section>
+                <section className="v3-scorecard-summary-grid" aria-label="Scorecard summary">
+                  <article><strong>Key strengths</strong>{(scorecardModal.strengths?.length ? scorecardModal.strengths : ["No strengths captured yet."]).map((item) => <span key={item}>{item}</span>)}</article>
+                  <article><strong>Key weaknesses</strong>{(scorecardModal.weaknesses?.length ? scorecardModal.weaknesses : scorecardModal.improvements ?? ["No weaknesses captured yet."]).map((item) => <span key={item}>{item}</span>)}</article>
+                  <article><strong>Recommended next improvement</strong><p>{(scorecardModal as { nextImprovement?: string }).nextImprovement ?? scorecardModal.coaching ?? "No recommendation captured yet."}</p></article>
+                </section>
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Detailed Score Breakdown</p>
+                    <h4>Criteria, scoring and evidence</h4>
+                  </div>
+                  <div className="v3-criteria-table expanded">
+                    {scorecardModal.criteria?.length ? scorecardModal.criteria.map(([criterion, score, evidence]) => (
+                      <div key={criterion}>
+                        <strong>{criterion}</strong>
+                        <span className={`v3-score-pill ${getScoreTone(score)}`}>{score}</span>
+                        <p>{evidence || "No evidence captured for this criterion."}</p>
+                      </div>
+                    )) : (
+                      <div><strong>No criteria yet</strong><span>N/A</span><p>This scorecard has no detailed criteria payload.</p></div>
+                    )}
+                  </div>
+                </section>
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Event Note</p>
+                    <h4>Transcript and source context</h4>
+                  </div>
+                  <div className="v3-event-note-actions">
+                    <button type="button" onClick={() => setEventNoteOpen((open) => !open)}>{eventNoteOpen ? "Hide event note" : "View event note"}</button>
+                    <button type="button" onClick={() => setEventNoteOpen(true)}><PhoneCall size={15} /> Listen if available</button>
+                  </div>
+                  {eventNoteOpen && (
+                    <pre className="v3-scorecard-event-note">{scorecardModal.eventNote || "No event note or transcript has been attached to this scorecard yet."}</pre>
+                  )}
+                </section>
+              </div>
+            </section>
+          </div>
+        )}
       </div>
     );
   }
