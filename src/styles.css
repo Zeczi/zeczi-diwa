@@ -1754,11 +1754,19 @@ button:hover {
   color: var(--ok);
 }
 
+.v3-score-pill.green {
+  color: var(--ok);
+}
+
 .v3-score-badge.yellow,
 .v3-score-pill.yellow,
 .v3-scorecard-hero.yellow {
   border-color: rgba(232, 197, 71, 0.45);
   background: rgba(232, 197, 71, 0.1);
+  color: var(--accent);
+}
+
+.v3-score-pill.yellow {
   color: var(--accent);
 }
 
@@ -1770,11 +1778,19 @@ button:hover {
   color: var(--warn);
 }
 
+.v3-score-pill.orange {
+  color: var(--warn);
+}
+
 .v3-score-badge.red,
 .v3-score-pill.red,
 .v3-scorecard-hero.red {
   border-color: rgba(242, 95, 92, 0.48);
   background: rgba(242, 95, 92, 0.12);
+  color: var(--danger);
+}
+
+.v3-score-pill.red {
   color: var(--danger);
 }
 
@@ -1813,14 +1829,44 @@ button:hover {
 }
 
 .v3-scorecard-hero strong {
-  color: var(--accent);
-  font-size: 34px;
+  color: inherit;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  font-size: 0;
   line-height: 1;
+}
+
+.v3-scorecard-hero strong b {
+  font-size: 36px;
 }
 
 .v3-scorecard-hero strong small {
   color: inherit;
   font-size: 15px;
+}
+
+.v3-overall-score {
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.16);
+  padding: 10px;
+  text-align: center;
+}
+
+.v3-overall-score span,
+.v3-overall-score em {
+  color: inherit;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
 .v3-scorecard-hero h4 {

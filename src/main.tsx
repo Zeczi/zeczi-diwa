@@ -2022,6 +2022,14 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
     ].join("\n");
     await navigator.clipboard?.writeText(markdown);
   };
+  const shareScorecard = async (card: (typeof richScorecards)[number]) => {
+    const shareText = `${card.title} scorecard: ${card.score}/100 · ${card.event} · ${card.human}`;
+    if (navigator.share) {
+      await navigator.share({ title: `DIWA Scorecard - ${card.title}`, text: shareText });
+      return;
+    }
+    await navigator.clipboard?.writeText(shareText);
+  };
 
   if (activeTab === "Snapshots") {
     const humans = ["All", ...Array.from(new Set(v3Snapshots.map((snapshot) => snapshot.owner)))];
@@ -2180,14 +2188,16 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                 <div className="v3-scorecard-tools">
                   <button type="button" onClick={() => copyScorecardMarkdown(scorecardModal)}><Copy size={15} /> Copy markdown</button>
                   <button type="button" onClick={() => window.print()}><FileText size={15} /> Print</button>
+                  <button type="button" onClick={() => shareScorecard(scorecardModal)}><ArrowUpRight size={15} /> Share</button>
                   <button type="button" onClick={() => setScorecardModal(null)}>Close</button>
                 </div>
               </div>
               <div className="v3-scorecard-review">
                 <section className={`v3-scorecard-hero ${getScoreTone(scorecardModal.score)}`}>
-                  <div>
-                    <span>Overall score</span>
-                    <strong>{scorecardModal.score ?? "N/A"}<small>/100</small></strong>
+                  <div className="v3-overall-score">
+                    <span>Overall</span>
+                    <strong><b>{scorecardModal.score ?? "N/A"}</b><small>/100</small></strong>
+                    <em>Score</em>
                   </div>
                   <div>
                     <span>Status</span>
