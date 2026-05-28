@@ -2189,6 +2189,39 @@ function V3DealTab({ activeTab, deal }: { activeTab: string; deal: (typeof v3Dea
                 </section>
                 <section className="v3-scorecard-section">
                   <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Sales Coaching</p>
+                    <h4>What to repeat and what to improve</h4>
+                  </div>
+                  <div className="v3-scorecard-columns">
+                    <article><strong>Did well</strong>{(scorecardModal.strengths?.length ? scorecardModal.strengths : ["No positive coaching captured yet."]).map((item) => <span key={item}>{item}</span>)}</article>
+                    <article><strong>Missed / next time</strong>{(scorecardModal.improvements?.length ? scorecardModal.improvements : ["No improvement notes captured yet."]).map((item) => <span key={item}>{item}</span>)}</article>
+                  </div>
+                  <article className="v3-scorecard-coaching"><strong>Coaching Summary</strong><p>{scorecardModal.coaching ?? "No coaching summary captured yet."}</p></article>
+                </section>
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
+                    <p className="eyebrow">Deal Intelligence</p>
+                    <h4>Signals and recommended action</h4>
+                  </div>
+                  <div className="v3-deal-intel-grid">
+                    {Object.entries((scorecardModal as { dealIntelligence?: Record<string, string> }).dealIntelligence ?? {
+                      intent: "No buyer intent signal captured.",
+                      sentiment: "No sentiment signal captured.",
+                      urgency: "No urgency signal captured.",
+                      objections: "No objections captured.",
+                      missingInfo: "No missing information captured.",
+                      nextAction: "No recommended next action captured.",
+                      humanRequired: "Unknown.",
+                    }).map(([label, value]) => (
+                      <article key={label}>
+                        <span>{label.replace(/([A-Z])/g, " $1")}</span>
+                        <p>{value}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+                <section className="v3-scorecard-section">
+                  <div className="v3-scorecard-section-head">
                     <p className="eyebrow">Event Note</p>
                     <h4>Transcript and source context</h4>
                   </div>
