@@ -514,8 +514,8 @@ function getScoreTone(score: number | string) {
   const numeric = typeof score === "number" ? score : possible > 0 ? (earned / possible) * 100 : earned;
   if (Number.isNaN(numeric)) return "unknown";
   if (numeric >= 85) return "green";
-  if (numeric >= 70) return "yellow";
-  if (numeric >= 50) return "orange";
+  if (numeric >= 50) return "yellow";
+  if (numeric >= 25) return "orange";
   return "red";
 }
 
