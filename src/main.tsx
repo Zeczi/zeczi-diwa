@@ -507,7 +507,11 @@ function normaliseStatusLabel(label: string) {
 }
 
 function getScoreTone(score: number | string) {
-  const numeric = typeof score === "number" ? score : Number(String(score).split("/")[0]);
+  const value = String(score);
+  const [rawEarned, rawPossible] = value.split("/");
+  const earned = Number(rawEarned);
+  const possible = rawPossible ? Number(rawPossible) : 100;
+  const numeric = typeof score === "number" ? score : possible > 0 ? (earned / possible) * 100 : earned;
   if (Number.isNaN(numeric)) return "unknown";
   if (numeric >= 85) return "green";
   if (numeric >= 70) return "yellow";
