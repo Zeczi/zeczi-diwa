@@ -4,8 +4,8 @@ services:
       context: .
       args:
         VITE_BASE_PATH: "${VITE_BASE_PATH:-/}"
-    image: zeczi-diwa:local
-    container_name: zeczi-diwa
+    image: "${ZECZI_DIWA_IMAGE:-zeczi-diwa:local}"
+    container_name: "${ZECZI_DIWA_CONTAINER_NAME:-zeczi-diwa}"
     restart: unless-stopped
     ports:
       - "${ZECZI_DIWA_HOST_PORT:-5180}:80"

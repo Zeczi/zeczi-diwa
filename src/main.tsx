@@ -840,6 +840,7 @@ const cockpitQueue = [
 ];
 
 function App() {
+  const isPrototypeOne = window.location.pathname.startsWith("/prototype-one") || window.location.pathname.startsWith("/p1");
   const isV1 = window.location.pathname.startsWith("/v1");
   const isV4 = window.location.pathname.startsWith("/v4");
   const isV3 = window.location.pathname.startsWith("/v3");
@@ -880,6 +881,10 @@ function App() {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [askOpen, profileOpen]);
+
+  if (isPrototypeOne) {
+    return <PrototypeOneApp />;
+  }
 
   return (
     <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
@@ -2750,6 +2755,235 @@ function DealRow({ deal }: { deal: Deal }) {
       <p>{deal.next}</p>
       <small>{deal.source}</small>
     </article>
+  );
+}
+
+type PrototypeDeal = {
+  id: string;
+  title: string;
+  contact: string;
+  organisation: string;
+  stage: string;
+  value: number;
+  owner: string;
+  due: string;
+  heat: number;
+  staleRisk: "Low" | "Medium" | "High";
+  closeLikelihood: number;
+  nextAction: string;
+  missingContext: string[];
+  evidence: string[];
+};
+
+const prototypeDeals: PrototypeDeal[] = [
+  { id: "P1-D-001", title: "Evergreen Childcare Play Area", contact: "Helen Marsh", organisation: "Evergreen Childcare", stage: "Quote Sent", value: 42800, owner: "Rachel", due: "Today", heat: 91, staleRisk: "High", closeLikelihood: 84, nextAction: "Call Helen, confirm safety wording, then send board-ready summary.", missingContext: ["Board approval date", "Final install window"], evidence: ["Call summary", "Quote Q-2048 v2", "Site assessment notes"] },
+  { id: "P1-D-002", title: "Westfield Pool Surround", contact: "James Patel", organisation: "Westfield Homes", stage: "Prepare Quote", value: 36500, owner: "Myles", due: "Tomorrow", heat: 74, staleRisk: "Medium", closeLikelihood: 69, nextAction: "Complete drainage and product notes before quote production.", missingContext: ["Drainage note", "Preferred turf product"], evidence: ["Site visit", "Measure notes", "Customer SMS"] },
+  { id: "P1-D-003", title: "North Shore Sports Facility", contact: "Mike Rawiri", organisation: "North Shore Sports Trust", stage: "Closing", value: 118500, owner: "Gareth", due: "Overdue", heat: 88, staleRisk: "High", closeLikelihood: 78, nextAction: "Approve follow-up draft and book a committee decision call.", missingContext: ["Committee meeting date"], evidence: ["Quote viewed three times", "Referral source", "Funding approved in principle"] },
+  { id: "P1-D-004", title: "Barker Residence Backyard Upgrade", contact: "Anna Barker", organisation: "Residential", stage: "AI Follow-Up", value: 17600, owner: "DIWA", due: "14 Jun", heat: 62, staleRisk: "Low", closeLikelihood: 61, nextAction: "Hold until finance timing, then send soft WhatsApp check-in.", missingContext: ["Finance confirmation"], evidence: ["DND date", "Quote viewed once", "WhatsApp preference"] },
+];
+
+const prototypeContacts = [
+  { name: "Helen Marsh", organisation: "Evergreen Childcare", channel: "Phone then email", context: "Needs board-safe compliance and timing evidence." },
+  { name: "James Patel", organisation: "Westfield Homes", channel: "SMS", context: "Visual buyer, price sensitive on extras." },
+  { name: "Mike Rawiri", organisation: "North Shore Sports Trust", channel: "Email", context: "Needs documentation and a clear meeting path." },
+  { name: "Anna Barker", organisation: "Residential", channel: "WhatsApp", context: "Finance dependent; avoid noisy chasing." },
+];
+
+const prototypeOrganisations = [
+  { name: "Evergreen Childcare", type: "Childcare operator", health: "Human Required", note: "Board approval depends on safety and install timing." },
+  { name: "Westfield Homes", type: "Residential", health: "Quote Blocked", note: "Internal quote context is incomplete." },
+  { name: "North Shore Sports Trust", type: "Sports facility", health: "Closing Risk", note: "High-value quote follow-up is overdue." },
+  { name: "Residential", type: "Homeowners", health: "Long Tail", note: "Park until finance timing is active." },
+];
+
+const prototypeActivities = [
+  { label: "Call Helen Marsh", owner: "Rachel", due: "Today", state: "Overdue", ai: "Use board-pack frame; do not discount." },
+  { label: "Complete drainage notes", owner: "Myles", due: "Tomorrow", state: "Open", ai: "Quote cannot move until source context is complete." },
+  { label: "Approve follow-up draft", owner: "Gareth", due: "Today", state: "Open", ai: "Book decision call before urgency cools." },
+  { label: "Finance timing check-in", owner: "DIWA", due: "14 Jun", state: "Scheduled", ai: "Soft WhatsApp only after DND date." },
+];
+
+const prototypeComms = [
+  { channel: "Call", deal: "Evergreen Childcare Play Area", status: "Live-coaching placeholder", detail: "Call notes, objection prompts, and post-call summary will live here." },
+  { channel: "Email", deal: "North Shore Sports Facility", status: "Draft locked", detail: "External sends disabled in Prototype One." },
+  { channel: "WhatsApp", deal: "Barker Residence Backyard Upgrade", status: "Scheduled placeholder", detail: "Future approval queue for low-risk follow-ups." },
+];
+
+const prototypeStages = ["New Lead", "Awaiting Info", "Prepare Quote", "Quote Sent", "AI Follow-Up", "Closing"];
+
+function PrototypeOneApp() {
+  const [selectedDealId, setSelectedDealId] = React.useState(prototypeDeals[0].id);
+  const selectedDeal = prototypeDeals.find((deal) => deal.id === selectedDealId) ?? prototypeDeals[0];
+  const totalValue = prototypeDeals.reduce((sum, deal) => sum + deal.value, 0);
+
+  return (
+    <main className="p1-shell">
+      <aside className="p1-sidebar">
+        <div>
+          <p className="eyebrow">Prototype One</p>
+          <h1>Eco Lawn CRM</h1>
+          <span>Off-production mock workspace</span>
+        </div>
+        <nav aria-label="Prototype One navigation">
+          {[
+            ["Dashboard", Gauge],
+            ["Deals", BriefcaseBusiness],
+            ["Contacts", UserRoundCheck],
+            ["Organisations", Layers3],
+            ["Activities", ClipboardList],
+            ["Communications", Mail],
+            ["Intelligence", Brain],
+            ["Settings", PlugZap],
+          ].map(([label, Icon]) => {
+            const NavIcon = Icon as typeof Gauge;
+            return (
+              <a href={"#p1-" + String(label).toLowerCase()} key={String(label)}>
+                <NavIcon size={16} />
+                <span>{String(label)}</span>
+              </a>
+            );
+          })}
+        </nav>
+        <div className="p1-boundary">
+          <strong>Boundary</strong>
+          <span>Mock data only. No Pipedrive writes. No customer sends. No deployment action.</span>
+        </div>
+      </aside>
+
+      <section className="p1-content">
+        <header className="p1-topbar" id="p1-dashboard">
+          <div>
+            <p className="eyebrow">The Art of Context</p>
+            <h2>Native CRM cockpit for Eco Lawn sales execution.</h2>
+          </div>
+          <button type="button"><Sparkles size={16} /> Ask DIWA</button>
+        </header>
+
+        <section className="p1-metrics" aria-label="Prototype One metrics">
+          <Metric icon={BriefcaseBusiness} label="Open mock pipeline" value={money(totalValue)} detail={prototypeDeals.length + " Eco Lawn-shaped deals"} tone="gold" />
+          <Metric icon={AlertTriangle} label="Human required" value="2" detail="Commercial judgement before action" tone="red" />
+          <Metric icon={ClipboardList} label="Activities" value="4" detail="Due, scheduled, and blocked work" tone="orange" />
+          <Metric icon={Brain} label="Intelligence" value="Mock" detail="Heat, stale risk, evidence, next action" tone="green" />
+        </section>
+
+        <section className="p1-grid" id="p1-deals">
+          <div className="panel p1-panel p1-kanban">
+            <div className="section-head">
+              <div>
+                <p className="eyebrow">Deals</p>
+                <h3>Stage board</h3>
+              </div>
+              <span className="pill">Kanban prototype</span>
+            </div>
+            <div className="p1-stage-board">
+              {prototypeStages.map((stage) => (
+                <div className="p1-stage" key={stage}>
+                  <strong>{stage}</strong>
+                  {prototypeDeals.filter((deal) => deal.stage === stage).map((deal) => (
+                    <button className={deal.id === selectedDeal.id ? "active" : ""} type="button" onClick={() => setSelectedDealId(deal.id)} key={deal.id}>
+                      <span>{deal.title}</span>
+                      <small>{deal.contact} · {money(deal.value)}</small>
+                      <em>{deal.heat}% heat</em>
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <aside className="panel p1-panel p1-detail">
+            <div className="section-head compact">
+              <div>
+                <p className="eyebrow">Deal Detail</p>
+                <h3>{selectedDeal.title}</h3>
+              </div>
+              <span className={"pill " + selectedDeal.staleRisk.toLowerCase()}>{selectedDeal.staleRisk} risk</span>
+            </div>
+            <dl>
+              <div><dt>Contact</dt><dd>{selectedDeal.contact}</dd></div>
+              <div><dt>Organisation</dt><dd>{selectedDeal.organisation}</dd></div>
+              <div><dt>Owner</dt><dd>{selectedDeal.owner}</dd></div>
+              <div><dt>Close likelihood</dt><dd>{selectedDeal.closeLikelihood}%</dd></div>
+            </dl>
+            <section>
+              <h4>Next best action</h4>
+              <p>{selectedDeal.nextAction}</p>
+            </section>
+            <section>
+              <h4>Missing context</h4>
+              <div className="p1-chip-row">{selectedDeal.missingContext.map((item) => <span key={item}>{item}</span>)}</div>
+            </section>
+            <section>
+              <h4>Evidence</h4>
+              <div className="p1-chip-row evidence">{selectedDeal.evidence.map((item) => <span key={item}>{item}</span>)}</div>
+            </section>
+          </aside>
+        </section>
+
+        <section className="p1-grid thirds">
+          <PrototypeList title="Contacts" id="p1-contacts" rows={prototypeContacts.map((contact) => [contact.name, contact.organisation, contact.channel + " · " + contact.context])} />
+          <PrototypeList title="Organisations" id="p1-organisations" rows={prototypeOrganisations.map((org) => [org.name, org.type, org.health + " · " + org.note])} />
+          <PrototypeList title="Activities" id="p1-activities" rows={prototypeActivities.map((item) => [item.label, item.owner + " · " + item.due + " · " + item.state, item.ai])} />
+        </section>
+
+        <section className="p1-grid">
+          <div className="panel p1-panel" id="p1-communications">
+            <div className="section-head compact">
+              <div>
+                <p className="eyebrow">Communications</p>
+                <h3>Draft and ledger placeholders</h3>
+              </div>
+              <span className="pill warn">Sends disabled</span>
+            </div>
+            <div className="p1-table">
+              {prototypeComms.map((item) => (
+                <div key={item.channel + item.deal}>
+                  <strong>{item.channel}</strong>
+                  <span>{item.deal}</span>
+                  <small>{item.status} · {item.detail}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="panel p1-panel" id="p1-intelligence">
+            <div className="section-head compact">
+              <div>
+                <p className="eyebrow">Intelligence</p>
+                <h3>Decision support model</h3>
+              </div>
+            </div>
+            <div className="p1-intel">
+              <span><Gauge size={16} /> Deal heat ranks work by urgency, intent, stale risk, and value.</span>
+              <span><AlertTriangle size={16} /> Human Required is an exception state for unclear commercial judgement.</span>
+              <span><FileText size={16} /> Every recommendation needs evidence and source provenance.</span>
+              <span><PhoneCall size={16} /> Field/mobile capture will add quick note, call, photo, and document placeholders.</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}
+
+function PrototypeList({ title, id, rows }: { title: string; id: string; rows: string[][] }) {
+  return (
+    <div className="panel p1-panel" id={id}>
+      <div className="section-head compact">
+        <div>
+          <p className="eyebrow">CRM</p>
+          <h3>{title}</h3>
+        </div>
+      </div>
+      <div className="p1-table">
+        {rows.map(([primary, secondary, detail]) => (
+          <div key={primary}>
+            <strong>{primary}</strong>
+            <span>{secondary}</span>
+            <small>{detail}</small>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
