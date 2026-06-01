@@ -899,9 +899,8 @@ function App() {
 
         <nav className="nav-list" aria-label="DIWA navigation">
           <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
-          <a className="nav-item" href="#deals" title="Deal Intelligence"><BriefcaseBusiness size={17} /> <span>Deal Intelligence</span></a>
+          <a className="nav-item" href="#deals" title="Deals"><BriefcaseBusiness size={17} /> <span>Deals</span></a>
           <a className="nav-item" href="#activities" title="Activities"><ClipboardList size={17} /> <span>Activities</span></a>
-          <a className="nav-item" href="#context" title="Context Timeline"><Layers3 size={17} /> <span>Context Timeline</span></a>
           <a className="nav-item" href="#reports" title="Reports"><FileText size={17} /> <span>Reports</span></a>
           <a className="nav-item" href="#scorecards" title="Scorecards"><CheckCircle2 size={17} /> <span>Scorecards</span></a>
           <a className="nav-item" href="#agents" title="Agents"><Bot size={17} /> <span>Agents</span></a>
@@ -954,7 +953,7 @@ function App() {
               </>
             ) : (
               <>
-                <p className="eyebrow">Deal Intelligence Workspace Application</p>
+                <p className="eyebrow">Deals Workspace Application</p>
                 <h1>Today&apos;s commercial control surface</h1>
               </>
             )}
@@ -1535,24 +1534,6 @@ function V4ActionPanel({ deal }: { deal: (typeof v3Deals)[number] }) {
 }
 
 function V4SidePanel({ view }: { view: string }) {
-  if (view === "Context Timeline") {
-    return (
-      <section className="panel v4-side-panel">
-        <div className="v3-panel-head"><div><p className="eyebrow">Context Timeline</p><h3>Historic and upcoming context</h3></div></div>
-        <div className="v3-timeline-list">
-          {v3TimelineEvents.map((event) => (
-            <article key={event.type + event.time}>
-              <div><strong>{event.type}</strong><time>{event.time}</time></div>
-              <small>{event.source} · {event.stage}</small>
-              <p>{event.summary}</p>
-              <div>{event.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-            </article>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
   if (view === "AI Activity") {
     return (
       <section className="panel v4-side-panel">
@@ -2231,7 +2212,7 @@ function V3DealTab({ activeTab, deal, summaryTrial = false }: { activeTab: strin
                 </section>
                 <section className="v3-scorecard-section">
                   <div className="v3-scorecard-section-head">
-                    <p className="eyebrow">Deal Intelligence</p>
+                    <p className="eyebrow">Deals</p>
                     <h4>Signals and recommended action</h4>
                   </div>
                   <div className="v3-deal-intel-grid">
@@ -2405,7 +2386,7 @@ function V3DealTab({ activeTab, deal, summaryTrial = false }: { activeTab: strin
 
                 <section className="v3-scorecard-section">
                   <div className="v3-scorecard-section-head">
-                    <p className="eyebrow">Deal Intelligence</p>
+                    <p className="eyebrow">Deals</p>
                     <h4>Signals and recommended action</h4>
                   </div>
                   <div className="v3-deal-intel-grid">
