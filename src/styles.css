@@ -1,15 +1,18 @@
 :root {
   color-scheme: dark;
-  --bg: #101010;
-  --bg-deep: #090908;
-  --panel: #181818;
-  --panel-2: #202020;
-  --line: #303030;
+  --brand-green: #7eb845;
+  --brand-green-deep: #365f26;
+  --brand-green-rgb: 126, 184, 69;
+  --bg: #0b180a;
+  --bg-deep: #050b04;
+  --panel: #10210f;
+  --panel-2: #183016;
+  --line: #375c31;
   --text: #f2f2ef;
   --muted: #a3a39b;
   --soft: #cecec6;
-  --accent: #e8c547;
-  --ok: #61d394;
+  --accent: var(--brand-green);
+  --ok: #9fdf6f;
   --warn: #f7b267;
   --danger: #f25f5c;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -23,7 +26,7 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(232, 197, 71, 0.12), transparent 34rem),
+    radial-gradient(circle at top left, rgba(var(--brand-green-rgb), 0.16), transparent 34rem),
     linear-gradient(180deg, var(--bg-deep), var(--bg) 42rem);
   color: var(--text);
   line-height: 1.45;
@@ -45,13 +48,13 @@ button {
 }
 
 button:hover {
-  border-color: rgba(232, 197, 71, 0.42);
+  border-color: rgba(126, 184, 69, 0.42);
 }
 
 .primary-button {
-  border-color: rgba(232, 197, 71, 0.72);
-  background: var(--accent);
-  color: #111;
+  border-color: rgba(var(--brand-green-rgb), 0.72);
+  background: linear-gradient(180deg, #92c95b, var(--brand-green));
+  color: #10210f;
   font-weight: 800;
 }
 
@@ -70,10 +73,10 @@ button:hover {
   position: sticky;
   top: 0;
   height: 100vh;
-  border-right: 1px solid rgba(232, 197, 71, 0.2);
+  border-right: 1px solid rgba(126, 184, 69, 0.2);
   background:
-    linear-gradient(180deg, rgba(232, 197, 71, 0.08), transparent 15rem),
-    #080808;
+    linear-gradient(180deg, rgba(var(--brand-green-rgb), 0.12), transparent 15rem),
+    #050b04;
   padding: 18px 14px;
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -87,15 +90,16 @@ button:hover {
 }
 
 .brand-logo-wrap {
-  min-height: 44px;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
 .brand-logo {
-  width: 154px;
-  height: 44px;
+  width: 216px;
+  max-width: 100%;
+  height: 54px;
   object-fit: contain;
   object-position: left center;
 }
@@ -115,9 +119,9 @@ button:hover {
 
 .brand-pill {
   width: fit-content;
-  border: 1px solid rgba(232, 197, 71, 0.28);
+  border: 1px solid rgba(var(--brand-green-rgb), 0.32);
   border-radius: 999px;
-  color: var(--accent);
+  color: #dfffc9;
   padding: 4px 9px;
   font-size: 11px;
   font-weight: 800;
@@ -135,9 +139,11 @@ button:hover {
 .sidebar-collapsed .brand-logo-wrap {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
+  min-height: 48px;
+  border-radius: 10px;
   overflow: hidden;
   justify-self: center;
+  flex: 0 0 48px;
 }
 
 .sidebar-collapsed .brand-logo,
@@ -150,6 +156,8 @@ button:hover {
 
 .sidebar-collapsed .brand-icon {
   display: block;
+  width: 48px;
+  height: 48px;
   object-fit: cover;
 }
 
@@ -184,15 +192,15 @@ button:hover {
 
 .nav-item:hover,
 .nav-item.active {
-  border-color: rgba(232, 197, 71, 0.26);
-  background: rgba(232, 197, 71, 0.08);
+  border-color: rgba(126, 184, 69, 0.26);
+  background: rgba(126, 184, 69, 0.08);
   color: var(--text);
 }
 
 .sidebar-panel {
   display: grid;
   gap: 3px;
-  border: 1px solid rgba(232, 197, 71, 0.22);
+  border: 1px solid rgba(126, 184, 69, 0.22);
   border-radius: 8px;
   background: rgba(24, 24, 24, 0.86);
   padding: 12px;
@@ -248,7 +256,7 @@ button:hover {
   width: min(620px, calc(100vw - 112px));
   display: grid;
   gap: 10px;
-  border: 1px solid rgba(232, 197, 71, 0.34);
+  border: 1px solid rgba(126, 184, 69, 0.34);
   border-radius: 8px;
   background: rgba(14, 14, 14, 0.98);
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.46);
@@ -271,7 +279,7 @@ button:hover {
   min-height: 22px;
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(232, 197, 71, 0.34);
+  border: 1px solid rgba(126, 184, 69, 0.34);
   border-radius: 999px;
   color: var(--accent);
   padding: 0 8px;
@@ -284,7 +292,7 @@ button:hover {
   display: flex;
   align-items: center;
   gap: 9px;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #111;
   color: var(--soft);
@@ -307,7 +315,7 @@ button:hover {
   min-height: 78px;
   justify-content: flex-start;
   align-items: flex-start;
-  border-color: #292929;
+  border-color: #213d20;
   background: #111;
   padding: 10px;
   text-align: left;
@@ -374,7 +382,7 @@ button:hover {
   width: 170px;
   display: grid;
   gap: 4px;
-  border: 1px solid rgba(232, 197, 71, 0.32);
+  border: 1px solid rgba(126, 184, 69, 0.32);
   border-radius: 8px;
   background: rgba(14, 14, 14, 0.98);
   box-shadow: 0 18px 58px rgba(0, 0, 0, 0.42);
@@ -394,7 +402,7 @@ button:hover {
 }
 
 .profile-menu button:hover {
-  background: rgba(232, 197, 71, 0.09);
+  background: rgba(126, 184, 69, 0.09);
   color: var(--accent);
 }
 
@@ -423,7 +431,7 @@ button:hover {
   grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
   gap: 18px;
   align-items: stretch;
-  border-bottom: 1px solid rgba(232, 197, 71, 0.18);
+  border-bottom: 1px solid rgba(126, 184, 69, 0.18);
   padding: 8px 0 20px;
 }
 
@@ -443,10 +451,10 @@ button:hover {
   display: grid;
   align-content: start;
   gap: 10px;
-  border: 1px solid rgba(232, 197, 71, 0.28);
+  border: 1px solid rgba(126, 184, 69, 0.28);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(232, 197, 71, 0.13), rgba(232, 197, 71, 0.03)),
+    linear-gradient(180deg, rgba(126, 184, 69, 0.13), rgba(126, 184, 69, 0.03)),
     var(--panel);
   padding: 16px;
 }
@@ -559,9 +567,9 @@ button:hover {
 .deal-row {
   display: grid;
   gap: 10px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 8px;
-  background: #121212;
+  background: #09150d;
   padding: 13px;
 }
 
@@ -617,7 +625,7 @@ button:hover {
 .intent span {
   position: absolute;
   inset: 0 auto 0 0;
-  background: rgba(232, 197, 71, 0.24);
+  background: rgba(126, 184, 69, 0.24);
 }
 
 .pill {
@@ -626,7 +634,7 @@ button:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #3a3a3a;
+  border: 1px solid #4d753d;
   border-radius: 999px;
   color: var(--soft);
   padding: 0 9px;
@@ -652,7 +660,7 @@ button:hover {
 .pill.ok,
 .pill.low {
   border-color: rgba(97, 211, 148, 0.48);
-  color: #a6f0c5;
+  color: #e8ffd8;
 }
 
 .exception-card {
@@ -666,8 +674,8 @@ button:hover {
 }
 
 .exception-card.soft {
-  border-color: rgba(232, 197, 71, 0.25);
-  background: rgba(232, 197, 71, 0.06);
+  border-color: rgba(126, 184, 69, 0.25);
+  background: rgba(126, 184, 69, 0.06);
 }
 
 .exception-card p {
@@ -679,7 +687,7 @@ button:hover {
 .activity-item,
 .source-item {
   min-height: 54px;
-  border-bottom: 1px solid #282828;
+  border-bottom: 1px solid #213d20;
   padding: 8px 0;
 }
 
@@ -753,8 +761,10 @@ button:hover {
   .sidebar-collapsed .brand-logo-wrap {
     width: auto;
     height: 44px;
+    min-height: 44px;
     border-radius: 0;
     justify-self: stretch;
+    flex-basis: auto;
   }
 
   .sidebar-collapsed .sidebar-panel {
@@ -842,7 +852,7 @@ button:hover {
   aspect-ratio: 1;
   border-radius: 50%;
   padding: 0;
-  border: 2px solid rgba(232, 197, 71, 0.72);
+  border: 2px solid rgba(126, 184, 69, 0.72);
   background: #111;
   color: var(--accent);
   font-weight: 900;
@@ -877,7 +887,7 @@ button:hover {
   border: 1px solid var(--line);
   border-left: 3px solid var(--accent);
   border-radius: 7px;
-  background: #141414;
+  background: #0b1a10;
   padding: 10px;
 }
 
@@ -943,7 +953,7 @@ button:hover {
   align-items: center;
   border: 1px solid rgba(97, 211, 148, 0.34);
   border-radius: 999px;
-  color: #a6f0c5;
+  color: #e8ffd8;
   padding: 0 8px;
   font-size: 11px;
   font-weight: 850;
@@ -956,7 +966,7 @@ button:hover {
 
 .v2-table {
   display: grid;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   overflow: hidden;
   max-height: 452px;
@@ -970,7 +980,7 @@ button:hover {
   gap: 8px;
   align-items: center;
   min-height: 46px;
-  border-bottom: 1px solid #292929;
+  border-bottom: 1px solid #213d20;
   background: #111;
   padding: 7px 9px;
   font-size: 12px;
@@ -982,7 +992,7 @@ button:hover {
 
 .v2-row-head {
   min-height: 32px;
-  background: #1a1a1a;
+  background: #102416;
   color: var(--muted);
   font-size: 10px;
   font-weight: 850;
@@ -1029,7 +1039,7 @@ button:hover {
 .v2-feed > div {
   display: grid;
   gap: 3px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 9px;
@@ -1042,7 +1052,7 @@ button:hover {
 }
 
 .v2-exception.muted {
-  border-color: #292929;
+  border-color: #213d20;
   background: #111;
 }
 
@@ -1053,7 +1063,7 @@ button:hover {
 }
 
 .v2-source strong {
-  color: #a6f0c5;
+  color: #e8ffd8;
   font-size: 12px;
 }
 
@@ -1076,7 +1086,7 @@ button:hover {
   display: grid;
   gap: 2px;
   min-height: 72px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-top: 3px solid var(--line);
   border-radius: 7px;
   background: #111;
@@ -1136,7 +1146,7 @@ button:hover {
 .v3-nav-head {
   display: grid;
   gap: 2px;
-  border-bottom: 1px solid #292929;
+  border-bottom: 1px solid #213d20;
   padding-bottom: 9px;
 }
 
@@ -1171,8 +1181,8 @@ button:hover {
 .v3-nav-panel a.active,
 .v3-nav-panel button:hover,
 .v3-nav-panel button.active {
-  border-color: rgba(232, 197, 71, 0.28);
-  background: rgba(232, 197, 71, 0.08);
+  border-color: rgba(126, 184, 69, 0.28);
+  background: rgba(126, 184, 69, 0.08);
   color: var(--text);
 }
 
@@ -1196,7 +1206,7 @@ button:hover {
   align-content: center;
   justify-items: start;
   gap: 2px;
-  border-color: #292929;
+  border-color: #213d20;
   background: #111;
   padding: 8px;
   text-align: left;
@@ -1308,7 +1318,7 @@ button:hover {
   grid-template-columns: 28px minmax(0, 1fr) 86px 82px;
   gap: 8px;
   align-items: center;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 8px;
@@ -1317,8 +1327,8 @@ button:hover {
 }
 
 .v3-command-list button.selected {
-  border-color: rgba(232, 197, 71, 0.44);
-  background: rgba(232, 197, 71, 0.06);
+  border-color: rgba(126, 184, 69, 0.44);
+  background: rgba(126, 184, 69, 0.06);
 }
 
 .v3-command-list button > small {
@@ -1346,7 +1356,7 @@ button:hover {
   justify-content: center;
   border-radius: 999px;
   border: 1px solid rgba(97, 211, 148, 0.42);
-  color: #a6f0c5;
+  color: #e8ffd8;
   font-size: 11px;
   font-weight: 850;
 }
@@ -1367,7 +1377,7 @@ button:hover {
   align-content: center;
   justify-items: center;
   gap: 1px;
-  border: 1px solid rgba(232, 197, 71, 0.34);
+  border: 1px solid rgba(126, 184, 69, 0.34);
   border-radius: 7px;
   color: var(--accent);
   font-size: 11px;
@@ -1394,11 +1404,11 @@ button:hover {
 .v3-heat.green,
 .v3-heat.ready-to-close {
   border-color: rgba(97, 211, 148, 0.44);
-  color: #a6f0c5;
+  color: #e8ffd8;
 }
 
 .v3-heat.yellow {
-  border-color: rgba(232, 197, 71, 0.44);
+  border-color: rgba(126, 184, 69, 0.44);
   color: var(--accent);
 }
 
@@ -1441,14 +1451,14 @@ button:hover {
 }
 
 .v3-tabs button.active {
-  border-color: rgba(232, 197, 71, 0.58);
+  border-color: rgba(126, 184, 69, 0.58);
   color: var(--accent);
 }
 
 .v3-detail-body {
   display: grid;
   gap: 9px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 10px;
@@ -1482,7 +1492,7 @@ button:hover {
   min-width: 0;
   display: grid;
   gap: 1px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 6px;
   padding: 7px;
 }
@@ -1500,7 +1510,7 @@ button:hover {
 .v3-actions-panel article {
   display: grid;
   gap: 7px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 10px;
@@ -1552,7 +1562,7 @@ button:hover {
 .v3-summary-two-col > article,
 .v3-summary-persona-grid article,
 .v3-objection-grid article {
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
 }
@@ -1574,7 +1584,7 @@ button:hover {
   display: grid;
   gap: 4px;
   align-content: center;
-  border-left: 1px solid #292929;
+  border-left: 1px solid #213d20;
   padding-left: 12px;
 }
 
@@ -1689,7 +1699,7 @@ button:hover {
 .v3-quote-snapshot-grid span {
   display: grid;
   gap: 2px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 6px;
   padding: 8px;
 }
@@ -1737,7 +1747,7 @@ button:hover {
 }
 
 .summary-trial-v3 .v3-summary-section:nth-of-type(7) {
-  border-color: rgba(232, 197, 71, 0.28);
+  border-color: rgba(126, 184, 69, 0.28);
 }
 
 .summary-trial-v3 .v3-quote-snapshot-grid span:nth-child(1) {
@@ -1756,8 +1766,8 @@ button:hover {
 }
 
 .summary-trial-v3 .v3-quote-snapshot-grid span:nth-child(4) {
-  border-color: rgba(232, 197, 71, 0.32);
-  background: rgba(232, 197, 71, 0.08);
+  border-color: rgba(126, 184, 69, 0.32);
+  background: rgba(126, 184, 69, 0.08);
 }
 
 .summary-trial-v3 .v3-summary-comms p {
@@ -1767,9 +1777,9 @@ button:hover {
 
 .summary-trial-v3 .v3-summary-comms button {
   min-height: 26px;
-  border: 1px solid rgba(232, 197, 71, 0.34);
+  border: 1px solid rgba(126, 184, 69, 0.34);
   border-radius: 999px;
-  background: rgba(232, 197, 71, 0.08);
+  background: rgba(126, 184, 69, 0.08);
   color: var(--accent);
   padding: 0 9px;
   font-size: 11px;
@@ -1810,7 +1820,7 @@ button:hover {
 .v3-snapshot-filter select {
   width: 100%;
   min-height: 32px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   color: var(--text);
@@ -1828,7 +1838,7 @@ button:hover {
 .v3-snapshot-list article {
   display: grid;
   gap: 8px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 10px;
@@ -1862,7 +1872,7 @@ button:hover {
   width: 1px;
   height: 11px;
   margin-right: 7px;
-  background: #3a3a3a;
+  background: #4d753d;
   vertical-align: -1px;
 }
 
@@ -1900,7 +1910,7 @@ button:hover {
   overflow: auto;
   display: grid;
   gap: 10px;
-  border: 1px solid rgba(232, 197, 71, 0.34);
+  border: 1px solid rgba(126, 184, 69, 0.34);
   border-radius: 8px;
   background: #111;
   padding: 14px;
@@ -1915,7 +1925,7 @@ button:hover {
 .v3-modal pre {
   margin: 0;
   white-space: pre-wrap;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #090909;
   color: var(--soft);
@@ -2003,8 +2013,8 @@ button:hover {
 .v3-score-badge.yellow,
 .v3-score-pill.yellow,
 .v3-scorecard-hero.yellow {
-  border-color: rgba(232, 197, 71, 0.45);
-  background: rgba(232, 197, 71, 0.1);
+  border-color: rgba(126, 184, 69, 0.45);
+  background: rgba(126, 184, 69, 0.1);
   color: var(--accent);
 }
 
@@ -2059,9 +2069,9 @@ button:hover {
   grid-template-columns: minmax(120px, 0.28fr) minmax(0, 1fr) minmax(180px, 0.38fr);
   gap: 12px;
   align-items: stretch;
-  border: 1px solid rgba(232, 197, 71, 0.3);
+  border: 1px solid rgba(126, 184, 69, 0.3);
   border-radius: 8px;
-  background: rgba(232, 197, 71, 0.07);
+  background: rgba(126, 184, 69, 0.07);
   padding: 12px;
 }
 
@@ -2140,7 +2150,7 @@ button:hover {
   display: grid;
   align-content: start;
   gap: 7px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #0c0c0c;
   padding: 10px;
@@ -2161,7 +2171,7 @@ button:hover {
   justify-content: space-between;
   gap: 12px;
   align-items: end;
-  border-bottom: 1px solid #292929;
+  border-bottom: 1px solid #213d20;
   padding-bottom: 6px;
 }
 
@@ -2180,7 +2190,7 @@ button:hover {
   grid-template-columns: minmax(150px, 0.38fr) 58px minmax(0, 1fr);
   gap: 10px;
   align-items: start;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #0c0c0c;
   padding: 9px;
@@ -2215,7 +2225,7 @@ button:hover {
 .v3-scorecard-coaching {
   display: grid;
   gap: 7px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #0c0c0c;
   padding: 10px;
@@ -2236,7 +2246,7 @@ button:hover {
   min-width: 0;
   display: grid;
   gap: 5px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #0c0c0c;
   padding: 9px;
@@ -2254,7 +2264,7 @@ button:hover {
   overflow: auto;
   margin: 0;
   white-space: pre-wrap;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #090909;
   color: var(--soft);
@@ -2324,7 +2334,7 @@ button:hover {
 
 .v3-actions-panel button {
   min-height: 30px;
-  background: #181818;
+  background: #10210f;
 }
 
 .v3-human-card {
@@ -2355,7 +2365,7 @@ button:hover {
   grid-template-columns: 18px minmax(0, 0.58fr) minmax(0, 1fr);
   align-items: center;
   gap: 8px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   color: var(--soft);
@@ -2402,7 +2412,7 @@ button:hover {
 .v3-report-grid span {
   display: grid;
   gap: 2px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 8px;
@@ -2426,9 +2436,9 @@ button:hover {
 .v3-knowledge-brief {
   display: grid;
   gap: 6px;
-  border: 1px solid rgba(232, 197, 71, 0.24);
+  border: 1px solid rgba(126, 184, 69, 0.24);
   border-radius: 7px;
-  background: rgba(232, 197, 71, 0.06);
+  background: rgba(126, 184, 69, 0.06);
   padding: 10px;
   margin-bottom: 10px;
 }
@@ -2444,7 +2454,7 @@ button:hover {
   min-height: 30px;
   display: flex;
   align-items: center;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   color: var(--soft);
@@ -2463,7 +2473,7 @@ button:hover {
   grid-template-columns: minmax(120px, 0.3fr) minmax(0, 1fr) 110px;
   gap: 8px;
   align-items: center;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 8px;
@@ -2548,19 +2558,19 @@ button:hover {
   align-content: center;
   justify-items: start;
   gap: 2px;
-  border-color: #292929;
+  border-color: #213d20;
   background: #111;
   padding: 8px;
   text-align: left;
 }
 
 .v4-stage-strip button.active {
-  border-color: rgba(232, 197, 71, 0.64);
-  background: rgba(232, 197, 71, 0.09);
+  border-color: rgba(126, 184, 69, 0.64);
+  background: rgba(126, 184, 69, 0.09);
 }
 
 .v4-stage-strip button.critical {
-  border-color: #292929;
+  border-color: #213d20;
   background: #111;
 }
 
@@ -2605,7 +2615,7 @@ button:hover {
   align-content: center;
   justify-items: start;
   gap: 2px;
-  border-color: #292929;
+  border-color: #213d20;
   background: #111;
   padding: 9px 10px;
   text-align: left;
@@ -2625,13 +2635,13 @@ button:hover {
 }
 
 .v4-status-row .critical {
-  border-color: #292929;
+  border-color: #213d20;
 }
 
 .v4-status-row .ready,
 .v4-status-row .hot,
 .v4-status-row .drifting {
-  border-color: #292929;
+  border-color: #213d20;
 }
 
 .v4-status-row .stale {
@@ -2639,7 +2649,7 @@ button:hover {
 }
 
 .v4-status-row button.active {
-  background: rgba(232, 197, 71, 0.07);
+  background: rgba(126, 184, 69, 0.07);
 }
 
 .v4-status-row .critical.active {
@@ -2651,7 +2661,7 @@ button:hover {
 }
 
 .v4-status-row .hot.active {
-  border-color: rgba(232, 197, 71, 0.52);
+  border-color: rgba(126, 184, 69, 0.52);
 }
 
 .v4-status-row .drifting.active {
@@ -2676,14 +2686,14 @@ button:hover {
   min-height: 420px;
   border: 0;
   border-radius: 999px;
-  background: linear-gradient(180deg, transparent, rgba(232, 197, 71, 0.28), transparent);
+  background: linear-gradient(180deg, transparent, rgba(126, 184, 69, 0.28), transparent);
   padding: 0;
   cursor: col-resize;
 }
 
 .v4-resize-handle:hover,
 .v4-resize-handle:focus {
-  background: linear-gradient(180deg, transparent, rgba(232, 197, 71, 0.62), transparent);
+  background: linear-gradient(180deg, transparent, rgba(126, 184, 69, 0.62), transparent);
   outline: none;
 }
 
@@ -2727,7 +2737,7 @@ button:hover {
   min-width: 0;
   width: 100%;
   min-height: 32px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   color: var(--text);
@@ -2740,7 +2750,7 @@ button:hover {
 .v4-queue-controls select:focus,
 .v4-queue-controls input:focus {
   outline: none;
-  border-color: rgba(232, 197, 71, 0.58);
+  border-color: rgba(126, 184, 69, 0.58);
 }
 
 .v4-date-control {
@@ -2757,7 +2767,7 @@ button:hover {
 }
 
 .v4-queue-controls button.active {
-  border-color: rgba(232, 197, 71, 0.58);
+  border-color: rgba(126, 184, 69, 0.58);
   color: var(--accent);
 }
 
@@ -2771,7 +2781,7 @@ button:hover {
 
 .v4-queue-head {
   min-height: 26px;
-  border-bottom: 1px solid #292929;
+  border-bottom: 1px solid #213d20;
   color: var(--muted);
   font-size: 10px;
   font-weight: 900;
@@ -2932,7 +2942,7 @@ button:hover {
 
   .v3-deal-detail .v3-summary-hero aside {
     border-left: 0;
-    border-top: 1px solid #292929;
+    border-top: 1px solid #213d20;
     padding-left: 0;
     padding-top: 10px;
   }
@@ -3005,7 +3015,7 @@ button:hover {
 }
 
 .v4-side-tabs button.active {
-  border-color: rgba(232, 197, 71, 0.58);
+  border-color: rgba(126, 184, 69, 0.58);
   color: var(--accent);
 }
 
@@ -3025,7 +3035,7 @@ button:hover {
 .v4-next-step {
   display: grid;
   gap: 8px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 10px;
@@ -3070,7 +3080,7 @@ button:hover {
 }
 
 .v4-channel-tabs button.active {
-  border-color: rgba(232, 197, 71, 0.58);
+  border-color: rgba(126, 184, 69, 0.58);
   color: var(--accent);
 }
 
@@ -3082,7 +3092,7 @@ button:hover {
 .v4-composer {
   display: grid;
   gap: 8px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #111;
   padding: 10px;
@@ -3104,7 +3114,7 @@ button:hover {
   min-height: 132px;
   margin: 0;
   white-space: pre-wrap;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #0b0b0b;
   color: var(--soft);
@@ -3132,7 +3142,7 @@ button:hover {
 .v4-composer-options select {
   width: 100%;
   min-height: 34px;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #0b0b0b;
   color: var(--text);
@@ -3177,7 +3187,7 @@ button:hover {
   right: 0;
   z-index: 6;
   min-width: 168px;
-  border: 1px solid rgba(232, 197, 71, 0.34);
+  border: 1px solid rgba(126, 184, 69, 0.34);
   border-radius: 7px;
   background: #0b0b0b;
   padding: 6px;
@@ -3191,8 +3201,8 @@ button:hover {
 }
 
 .v4-diwa-adjust {
-  border-color: rgba(232, 197, 71, 0.3);
-  background: rgba(232, 197, 71, 0.08);
+  border-color: rgba(126, 184, 69, 0.3);
+  background: rgba(126, 184, 69, 0.08);
   color: var(--accent);
   font-weight: 850;
 }
@@ -3231,7 +3241,7 @@ button:hover {
   display: grid;
   align-content: start;
   gap: 8px;
-  border: 1px solid #292929;
+  border: 1px solid #213d20;
   border-radius: 7px;
   background: #0c0c0c;
   padding: 10px;
@@ -3276,7 +3286,7 @@ button:hover {
 .v4-diwa-modal-grid textarea {
   min-height: 188px;
   resize: vertical;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #090909;
   color: var(--text);
@@ -3445,7 +3455,7 @@ button:hover {
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 22px;
-  border-right: 1px solid rgba(232, 197, 71, 0.2);
+  border-right: 1px solid rgba(126, 184, 69, 0.2);
   background: #080807;
   padding: 20px 14px;
   overflow: auto;
@@ -3483,8 +3493,8 @@ button:hover {
 
 .p1-sidebar a:hover,
 .p1-sidebar a:focus {
-  border-color: rgba(232, 197, 71, 0.3);
-  background: rgba(232, 197, 71, 0.08);
+  border-color: rgba(126, 184, 69, 0.3);
+  background: rgba(126, 184, 69, 0.08);
   color: var(--text);
 }
 
@@ -3517,7 +3527,7 @@ button:hover {
   gap: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(232, 197, 71, 0.09), rgba(32, 32, 32, 0.94));
+  background: linear-gradient(135deg, rgba(126, 184, 69, 0.09), rgba(32, 32, 32, 0.94));
   padding: 16px 18px;
 }
 
@@ -3586,8 +3596,8 @@ button:hover {
 }
 
 .p1-stage button.active {
-  border-color: rgba(232, 197, 71, 0.76);
-  box-shadow: inset 0 0 0 1px rgba(232, 197, 71, 0.22);
+  border-color: rgba(126, 184, 69, 0.76);
+  box-shadow: inset 0 0 0 1px rgba(126, 184, 69, 0.22);
 }
 
 .p1-stage button span {
@@ -3600,7 +3610,7 @@ button:hover {
 }
 
 .p1-stage button em {
-  border: 1px solid rgba(232, 197, 71, 0.3);
+  border: 1px solid rgba(126, 184, 69, 0.3);
   border-radius: 999px;
   color: var(--accent);
   padding: 2px 8px;
@@ -3623,7 +3633,7 @@ button:hover {
 }
 
 .p1-detail dl div {
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #111;
   padding: 9px;
@@ -3678,7 +3688,7 @@ button:hover {
 .p1-table > div {
   display: grid;
   gap: 3px;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #111;
   padding: 10px;
@@ -3705,7 +3715,7 @@ button:hover {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  border: 1px solid #303030;
+  border: 1px solid #375c31;
   border-radius: 7px;
   background: #111;
   color: var(--soft);

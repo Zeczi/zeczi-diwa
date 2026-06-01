@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" role="img" aria-labelledby="title">
+  <title id="title">Eco Lawn DIWA</title>
+  <rect width="520" height="140" rx="18" fill="#07100b"/>
+  <g transform="translate(28 24)">
+    <circle cx="46" cy="46" r="42" fill="#4fb35f"/>
+    <path d="M21 58c21-3 38-17 49-41 4 23-6 45-29 58 17 0 30-5 43-15-8 20-26 32-52 32H18c-9 0-14-11-8-18 4-5 7-11 11-16z" fill="#eaffef"/>
+  </g>
+  <text x="128" y="61" fill="#f2f7f0" font-family="Inter, Arial, sans-serif" font-size="37" font-weight="800" letter-spacing="1">ECO LAWN</text>
+  <text x="130" y="95" fill="#98caa0" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="5">DIWA COCKPIT</text>
+</svg>

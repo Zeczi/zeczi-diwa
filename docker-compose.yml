@@ -3,12 +3,12 @@ services:
     build:
       context: .
       args:
-        VITE_BASE_PATH: "${VITE_BASE_PATH:-/}"
-    image: "${ZECZI_DIWA_IMAGE:-zeczi-diwa:local}"
-    container_name: "${ZECZI_DIWA_CONTAINER_NAME:-zeczi-diwa}"
+        VITE_BASE_PATH: "${VITE_BASE_PATH:-./}"
+    image: zeczi-diwa-ecolawn:local
+    container_name: zeczi-diwa-ecolawn
     restart: unless-stopped
     ports:
-      - "${ZECZI_DIWA_HOST_PORT:-5180}:80"
+      - "127.0.0.1:${ZECZI_DIWA_HOST_PORT:-5182}:80"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
       interval: 30s

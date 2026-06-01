@@ -166,6 +166,8 @@ const navItems = [
 
 const dealTabs = ["Summary", "Snapshots", "Quotes", "Scorecards", "Actions"];
 
+const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+
 const v3Deals = [
   {
     id: "D-1048",
@@ -843,7 +845,8 @@ function App() {
   const isPrototypeOne = window.location.pathname.startsWith("/prototype-one") || window.location.pathname.startsWith("/p1");
   const isV1 = window.location.pathname.startsWith("/v1");
   const isV4 = window.location.pathname.startsWith("/v4");
-  const isV3 = window.location.pathname.startsWith("/v3");
+  const isEcolawn = window.location.pathname.startsWith("/ecolawn");
+  const isV3 = isEcolawn || window.location.pathname.startsWith("/v3");
   const isV2 = !isV1 && !isV3 && !isV4;
   const useV4Experience = isV3 || isV4;
   const [askOpen, setAskOpen] = React.useState(false);
@@ -891,10 +894,10 @@ function App() {
       <aside className="sidebar">
         <div className="brand-block">
           <div className="brand-logo-wrap">
-            <img className="brand-logo" src="/brand/zeczi-logo.png" alt="ZECZI" />
-            <img className="brand-icon" src="/brand/zeczi-favicon.png" alt="ZECZI" />
+            <img className="brand-logo" src={assetPath("/brand/ecolawn-logo-official.png")} alt="Eco Lawn" />
+            <img className="brand-icon" src={assetPath("/brand/ecolawn-mark.jpg")} alt="Eco Lawn" />
           </div>
-          <span className="brand-pill">DIWA</span>
+          <span className="brand-pill">ECO LAWN</span>
         </div>
 
         <nav className="nav-list" aria-label="DIWA navigation">
@@ -938,13 +941,13 @@ function App() {
           <div>
             {useV4Experience ? (
               <>
-                <p className="eyebrow">DIWA Cockpit v4</p>
-                <h1>Pipeline stages drive the workspace.</h1>
+                <p className="eyebrow">Eco Lawn DIWA Cockpit</p>
+                <h1>{isEcolawn ? "Sales pipeline stages drive the workspace." : "Pipeline stages drive the workspace."}</h1>
               </>
             ) : isV3 ? (
               <>
-                <p className="eyebrow">DIWA Cockpit v3</p>
-                <h1>Command centre for deal context.</h1>
+                <p className="eyebrow">Eco Lawn DIWA Cockpit</p>
+                <h1>Sales command centre.</h1>
               </>
             ) : isV2 ? (
               <>
@@ -964,7 +967,7 @@ function App() {
               <Sparkles size={16} /> Ask DIWA
             </button>
             <button className="customer-avatar" aria-label="Customer profile" title="Customer profile" onClick={() => setProfileOpen((current) => !current)} aria-expanded={profileOpen}>
-              <img src="/brand/customer-avatar.jpg" alt="" />
+              <img src={assetPath("/brand/customer-avatar.jpg")} alt="" />
             </button>
             {askOpen && <AskDiwaPanel />}
             {profileOpen && <ProfileMenu />}

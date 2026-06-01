@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" role="img" aria-labelledby="title">
+  <title id="title">Eco Lawn</title>
+  <rect width="640" height="160" rx="22" fill="#7eb845"/>
+  <g fill="#fff">
+    <g transform="translate(42 28)">
+      <path d="M50 10c10-12 28-13 39-1l10 12-24 42-47-27 22-26z"/>
+      <path d="M106 14h46c12 0 21 13 15 24l-9 16 14 8-44 27-19-50 15 8 13-23h-39l8-10z"/>
+      <path d="M160 68l22 38c6 11-2 24-15 24h-19v17l-45-27 45-27v17h27l-20-34 5-8z"/>
+      <path d="M91 140H43c-12 0-20-13-14-24l12-20-14-8 45-27 17 51-14-8-13 22h36l-7 14z"/>
+      <path d="M10 80c22 19 34 41 38 65H27C23 120 15 100 0 84l10-4z"/>
+      <path d="M34 62c24 23 39 49 45 83H59c-5-31-16-53-35-74l10-9z"/>
+      <path d="M63 46c17 31 25 62 23 99h-18c1-37-5-63-19-90l14-9z"/>
+    </g>
+    <text x="184" y="104" font-family="Inter, Arial, Helvetica, sans-serif" font-size="72" font-weight="300" letter-spacing="9">ECO LAWN</text>
+    <text x="594" y="45" font-family="Inter, Arial, Helvetica, sans-serif" font-size="16" font-weight="700">TM</text>
+  </g>
+</svg>
