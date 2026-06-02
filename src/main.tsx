@@ -897,7 +897,6 @@ function App() {
             <img className="brand-logo" src={assetPath("/brand/ecolawn-logo-official.png")} alt="Eco Lawn" />
             <img className="brand-icon" src={assetPath("/brand/ecolawn-mark.jpg")} alt="Eco Lawn" />
           </div>
-          <span className="brand-pill">ECO LAWN</span>
         </div>
 
         <nav className="nav-list" aria-label="DIWA navigation">
@@ -941,13 +940,13 @@ function App() {
           <div>
             {useV4Experience ? (
               <>
-                <p className="eyebrow">Eco Lawn DIWA Cockpit</p>
-                <h1>{isEcolawn ? "Sales pipeline stages drive the workspace." : "Pipeline stages drive the workspace."}</h1>
+                <p className="eyebrow">DIWA Cockpit</p>
+                <h1>Deal intelligence, smart queues, and sales context in one operating layer.</h1>
               </>
             ) : isV3 ? (
               <>
-                <p className="eyebrow">Eco Lawn DIWA Cockpit</p>
-                <h1>Sales command centre.</h1>
+                <p className="eyebrow">DIWA Cockpit</p>
+                <h1>Deal intelligence, smart queues, and sales context in one operating layer.</h1>
               </>
             ) : isV2 ? (
               <>
