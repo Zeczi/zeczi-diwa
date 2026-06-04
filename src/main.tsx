@@ -29,6 +29,10 @@ import {
   UserRoundCheck,
   Zap,
 } from "lucide-react";
+import { ActivitiesLeadsCampaigns } from "./ActivitiesLeadsCampaigns";
+import { DealsModule } from "./DealsModule";
+import { FilterConsole } from "./FilterConsole";
+import { ReportsInboxProducts } from "./ReportsInboxProducts";
 import "./styles.css";
 
 type Deal = {
@@ -903,7 +907,11 @@ function App() {
           <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
           <a className="nav-item" href="#deals" title="Deals"><BriefcaseBusiness size={17} /> <span>Deals</span></a>
           <a className="nav-item" href="#activities" title="Activities"><ClipboardList size={17} /> <span>Activities</span></a>
+          <a className="nav-item" href="#leads" title="Leads"><UserRoundCheck size={17} /> <span>Leads</span></a>
+          <a className="nav-item" href="#campaigns" title="Campaigns"><Send size={17} /> <span>Campaigns</span></a>
           <a className="nav-item" href="#reports" title="Reports"><FileText size={17} /> <span>Reports</span></a>
+          <a className="nav-item" href="#sales-inbox" title="Sales Inbox"><Inbox size={17} /> <span>Inbox</span></a>
+          <a className="nav-item" href="#products" title="Products"><Layers3 size={17} /> <span>Products</span></a>
           <a className="nav-item" href="#scorecards" title="Scorecards"><CheckCircle2 size={17} /> <span>Scorecards</span></a>
           <a className="nav-item" href="#agents" title="Agents"><Bot size={17} /> <span>Agents</span></a>
           <a className="nav-item" href="#integrations" title="Integrations"><PlugZap size={17} /> <span>Integrations</span></a>
@@ -1099,6 +1107,9 @@ function App() {
           </section>
             </>
           )}
+          <DealsModule />
+          <ActivitiesLeadsCampaigns />
+          <ReportsInboxProducts />
         </div>
       </section>
     </main>
@@ -1198,6 +1209,8 @@ function CockpitV4({ summaryTrial = false }: { summaryTrial?: boolean }) {
           </button>
         ))}
       </div>
+
+      <FilterConsole deals={v3Deals} onSelectDeal={setSelectedId} />
 
       <div
         className="v4-workspace"
