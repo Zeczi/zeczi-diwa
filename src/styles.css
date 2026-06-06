@@ -4992,6 +4992,29 @@ button:hover {
 }
 
 @media (max-width: 760px) {
+  .v4-stage-strip {
+    position: static;
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+  }
+
+  .v4-stage-strip button,
+  .v4-status-row button {
+    min-height: 48px;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: 10px;
+  }
+
+  .v4-stage-strip span,
+  .v4-status-row span {
+    min-width: 0;
+  }
+
+  .v4-status-row {
+    grid-template-columns: 1fr;
+  }
+
   .v4-call-actions,
   .v4-call-window-grid,
   .v4-diwa-modal-grid {
