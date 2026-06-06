@@ -16,6 +16,7 @@ import {
   Inbox,
   Layers3,
   Mail,
+  Menu,
   MessageSquareText,
   PanelLeftClose,
   PanelLeftOpen,
@@ -27,6 +28,7 @@ import {
   Star,
   Target,
   UserRoundCheck,
+  X,
   Zap,
 } from "lucide-react";
 import { ActivitiesLeadsCampaigns } from "./ActivitiesLeadsCampaigns";
@@ -855,6 +857,7 @@ function App() {
   const useV4Experience = isV3 || isV4;
   const [askOpen, setAskOpen] = React.useState(false);
   const [profileOpen, setProfileOpen] = React.useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   const askPanelRef = React.useRef<HTMLDivElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
@@ -889,12 +892,33 @@ function App() {
     };
   }, [askOpen, profileOpen]);
 
+  React.useEffect(() => {
+    if (!mobileNavOpen) return;
+
+    const closeMobileNav = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (!target?.closest(".sidebar")) setMobileNavOpen(false);
+    };
+
+    const closeMobileNavOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileNavOpen(false);
+    };
+
+    window.addEventListener("pointerdown", closeMobileNav);
+    window.addEventListener("keydown", closeMobileNavOnEscape);
+
+    return () => {
+      window.removeEventListener("pointerdown", closeMobileNav);
+      window.removeEventListener("keydown", closeMobileNavOnEscape);
+    };
+  }, [mobileNavOpen]);
+
   if (isPrototypeOne) {
     return <PrototypeOneApp />;
   }
 
   return (
-    <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
+    <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""} ${mobileNavOpen ? "mobile-nav-open" : ""}`}>
       <aside className="sidebar">
         <div className="brand-block">
           <div className="brand-logo-wrap">
@@ -904,18 +928,18 @@ function App() {
         </div>
 
         <nav className="nav-list" aria-label="DIWA navigation">
-          <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
-          <a className="nav-item" href="#deals" title="Deals"><BriefcaseBusiness size={17} /> <span>Deals</span></a>
-          <a className="nav-item" href="#activities" title="Activities"><ClipboardList size={17} /> <span>Activities</span></a>
-          <a className="nav-item" href="#leads" title="Leads"><UserRoundCheck size={17} /> <span>Leads</span></a>
-          <a className="nav-item" href="#campaigns" title="Campaigns"><Send size={17} /> <span>Campaigns</span></a>
-          <a className="nav-item" href="#reports" title="Reports"><FileText size={17} /> <span>Reports</span></a>
-          <a className="nav-item" href="#sales-inbox" title="Sales Inbox"><Inbox size={17} /> <span>Inbox</span></a>
-          <a className="nav-item" href="#products" title="Products"><Layers3 size={17} /> <span>Products</span></a>
-          <a className="nav-item" href="#scorecards" title="Scorecards"><CheckCircle2 size={17} /> <span>Scorecards</span></a>
-          <a className="nav-item" href="#agents" title="Agents"><Bot size={17} /> <span>Agents</span></a>
-          <a className="nav-item" href="#integrations" title="Integrations"><PlugZap size={17} /> <span>Integrations</span></a>
-          <a className="nav-item" href="#knowledge" title="Knowledge"><Brain size={17} /> <span>Knowledge</span></a>
+          <a className="nav-item active" href="#cockpit" title="Cockpit" onClick={() => setMobileNavOpen(false)}><Gauge size={17} /> <span>Cockpit</span></a>
+          <a className="nav-item" href="#deals" title="Deals" onClick={() => setMobileNavOpen(false)}><BriefcaseBusiness size={17} /> <span>Deals</span></a>
+          <a className="nav-item" href="#activities" title="Activities" onClick={() => setMobileNavOpen(false)}><ClipboardList size={17} /> <span>Activities</span></a>
+          <a className="nav-item" href="#leads" title="Leads" onClick={() => setMobileNavOpen(false)}><UserRoundCheck size={17} /> <span>Leads</span></a>
+          <a className="nav-item" href="#campaigns" title="Campaigns" onClick={() => setMobileNavOpen(false)}><Send size={17} /> <span>Campaigns</span></a>
+          <a className="nav-item" href="#reports" title="Reports" onClick={() => setMobileNavOpen(false)}><FileText size={17} /> <span>Reports</span></a>
+          <a className="nav-item" href="#sales-inbox" title="Sales Inbox" onClick={() => setMobileNavOpen(false)}><Inbox size={17} /> <span>Inbox</span></a>
+          <a className="nav-item" href="#products" title="Products" onClick={() => setMobileNavOpen(false)}><Layers3 size={17} /> <span>Products</span></a>
+          <a className="nav-item" href="#scorecards" title="Scorecards" onClick={() => setMobileNavOpen(false)}><CheckCircle2 size={17} /> <span>Scorecards</span></a>
+          <a className="nav-item" href="#agents" title="Agents" onClick={() => setMobileNavOpen(false)}><Bot size={17} /> <span>Agents</span></a>
+          <a className="nav-item" href="#integrations" title="Integrations" onClick={() => setMobileNavOpen(false)}><PlugZap size={17} /> <span>Integrations</span></a>
+          <a className="nav-item" href="#knowledge" title="Knowledge" onClick={() => setMobileNavOpen(false)}><Brain size={17} /> <span>Knowledge</span></a>
         </nav>
 
         <div className="sidebar-foot">
@@ -932,12 +956,20 @@ function App() {
           <button
             className="sidebar-toggle"
             type="button"
-            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-pressed={sidebarCollapsed}
-            onClick={() => setSidebarCollapsed((current) => !current)}
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={mobileNavOpen ? "Close navigation" : sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-pressed={mobileNavOpen || sidebarCollapsed}
+            aria-expanded={mobileNavOpen}
+            onClick={() => {
+              if (window.matchMedia("(max-width: 640px)").matches) {
+                setMobileNavOpen((current) => !current);
+                return;
+              }
+              setSidebarCollapsed((current) => !current);
+            }}
+            title={mobileNavOpen ? "Close navigation" : sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+            <span className="mobile-menu-icon">{mobileNavOpen ? <X size={20} /> : <Menu size={20} />}</span>
+            <span className="desktop-menu-icon">{sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</span>
             <span className="toggle-label">{sidebarCollapsed ? "Expand" : "Collapse"}</span>
           </button>
         </div>
