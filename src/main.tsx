@@ -13,13 +13,16 @@ import {
   Clock3,
   FileText,
   Gauge,
+  Eye,
   Inbox,
   Layers3,
   Mail,
   MessageSquareText,
+  MousePointerClick,
   PanelLeftClose,
   PanelLeftOpen,
   PhoneCall,
+  PlayCircle,
   PlugZap,
   Send,
   Search,
@@ -27,6 +30,7 @@ import {
   Star,
   Target,
   UserRoundCheck,
+  CreditCard,
   Zap,
 } from "lucide-react";
 import "./styles.css";
@@ -345,6 +349,21 @@ const v3TimelineEvents = [
 const v3QuoteSnapshots = [
   { version: "Q-2048 v2", value: 42800, created: "8 May 2026", sent: "8 May 2026", status: "Viewed twice", reason: "Added compliance wording and optional shock pad line item.", risk: "Board approval depends on clear safety and timing explanation." },
   { version: "Q-2048 v1", value: 39750, created: "7 May 2026", sent: "7 May 2026", status: "Superseded", reason: "Initial quote after site assessment.", risk: "Did not address compliance requirements deeply enough." },
+];
+
+const v3QuoteLandingMetrics = [
+  { label: "Quote views", value: "2", detail: "Latest view today", icon: Eye, tone: "green" },
+  { label: "Engaged sections", value: "5", detail: "Scope, install, finance, video, acceptance", icon: MousePointerClick, tone: "blue" },
+  { label: "Finance clicks", value: "1", detail: "Finance option opened", icon: CreditCard, tone: "gold" },
+  { label: "Video engagement", value: "68%", detail: "Install method video watched", icon: PlayCircle, tone: "orange" },
+];
+
+const v3QuoteLandingSections = [
+  { label: "Scope", engagement: "Viewed twice", signal: "Customer checked playground shock-pad and compliance wording.", next: "Keep safety language tight and board-ready." },
+  { label: "Install timing", engagement: "Viewed twice", signal: "School holiday timing was revisited after the quote revision.", next: "Confirm capacity before promising install dates." },
+  { label: "Finance", engagement: "Clicked once", signal: "Finance is not the main blocker, but the option is being considered.", next: "Do not lead with discounting; keep finance as a support option." },
+  { label: "Videos", engagement: "68% watched", signal: "Install method content is doing useful confidence work.", next: "Reference the video in the follow-up instead of resending generic material." },
+  { label: "Acceptance path", engagement: "Opened", signal: "Customer is close enough to review how to proceed.", next: "Send a board pack and book the decision call." },
 ];
 
 const v3Scorecards = [
@@ -2273,16 +2292,77 @@ function V3DealTab({ activeTab, deal, summaryTrial = false }: { activeTab: strin
 
   if (activeTab === "Quotes") {
     return (
-      <div className="v3-quote-grid">
-        {v3QuoteSnapshots.map((quote) => (
-          <article key={quote.version}>
-            <div><strong>{quote.version}</strong><span>{quote.status}</span></div>
-            <h4>{money(quote.value)}</h4>
-            <small>Created {quote.created} · Sent {quote.sent}</small>
-            <p><b>Revision:</b> {quote.reason}</p>
-            <p><b>Risk:</b> {quote.risk}</p>
-          </article>
-        ))}
+      <div className="v3-quote-landing">
+        <section className="v3-quote-hero">
+          <div>
+            <p className="eyebrow">Rich Quote Landing Page · {deal.quote}</p>
+            <h3>{deal.customer} is reviewing the quote, not just receiving it.</h3>
+            <p>{deal.snapshot}</p>
+          </div>
+          <aside>
+            <span>{deal.quoteStatus}</span>
+            <strong>{money(deal.quoteValue)}</strong>
+            <small>{deal.quoteViewed} · {deal.expectedTiming}</small>
+          </aside>
+        </section>
+
+        <div className="v3-quote-metrics">
+          {v3QuoteLandingMetrics.map(({ label, value, detail, icon: Icon, tone }) => (
+            <article className={tone} key={label}>
+              <Icon size={16} />
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <small>{detail}</small>
+            </article>
+          ))}
+        </div>
+
+        <section className="v3-quote-section">
+          <div className="v3-scorecard-section-head">
+            <p className="eyebrow">Quote Versions</p>
+            <h4>What changed and why it matters</h4>
+          </div>
+          <div className="v3-quote-grid">
+            {v3QuoteSnapshots.map((quote) => (
+              <article key={quote.version}>
+                <div><strong>{quote.version}</strong><span>{quote.status}</span></div>
+                <h4>{money(quote.value)}</h4>
+                <small>Created {quote.created} · Sent {quote.sent}</small>
+                <p><b>Revision:</b> {quote.reason}</p>
+                <p><b>Risk:</b> {quote.risk}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="v3-quote-section">
+          <div className="v3-scorecard-section-head">
+            <p className="eyebrow">Customer Engagement</p>
+            <h4>What the quote behaviour is telling us</h4>
+          </div>
+          <div className="v3-quote-engagement-table">
+            {v3QuoteLandingSections.map((section) => (
+              <article key={section.label}>
+                <strong>{section.label}<em>{section.engagement}</em></strong>
+                <p>{section.signal}</p>
+                <span>{section.next}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="v3-quote-section v3-quote-follow-up">
+          <div className="v3-scorecard-section-head">
+            <p className="eyebrow">Follow-Up Implication</p>
+            <h4>{deal.nextAction}</h4>
+          </div>
+          <div className="v3-quote-detail-list">
+            <p><b>Commercial hook</b><span>Safety compliance, install timing and a clean board pack matter more than discounting.</span></p>
+            <p><b>Buying signal</b><span>{buyingSignals.join(", ")}.</span></p>
+            <p><b>Risk</b><span>If the quote remains a static PDF-style record, the team misses engagement timing and loses close control.</span></p>
+            <p><b>Recommended action</b><span>Use this quote landing behaviour to prepare the human follow-up, not another generic check-in.</span></p>
+          </div>
+        </section>
       </div>
     );
   }
