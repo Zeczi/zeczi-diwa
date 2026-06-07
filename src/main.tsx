@@ -13,13 +13,17 @@ import {
   Clock3,
   FileText,
   Gauge,
+  Eye,
   Inbox,
   Layers3,
   Mail,
+  Menu,
   MessageSquareText,
+  MousePointerClick,
   PanelLeftClose,
   PanelLeftOpen,
   PhoneCall,
+  PlayCircle,
   PlugZap,
   Send,
   Search,
@@ -27,8 +31,14 @@ import {
   Star,
   Target,
   UserRoundCheck,
+  CreditCard,
+  X,
   Zap,
 } from "lucide-react";
+import { ActivitiesLeadsCampaigns } from "./ActivitiesLeadsCampaigns";
+import { DealsModule } from "./DealsModule";
+import { FilterConsole } from "./FilterConsole";
+import { ReportsInboxProducts } from "./ReportsInboxProducts";
 import "./styles.css";
 
 type Deal = {
@@ -345,6 +355,21 @@ const v3TimelineEvents = [
 const v3QuoteSnapshots = [
   { version: "Q-2048 v2", value: 42800, created: "8 May 2026", sent: "8 May 2026", status: "Viewed twice", reason: "Added compliance wording and optional shock pad line item.", risk: "Board approval depends on clear safety and timing explanation." },
   { version: "Q-2048 v1", value: 39750, created: "7 May 2026", sent: "7 May 2026", status: "Superseded", reason: "Initial quote after site assessment.", risk: "Did not address compliance requirements deeply enough." },
+];
+
+const v3QuoteLandingMetrics = [
+  { label: "Quote views", value: "2", detail: "Latest view today", icon: Eye, tone: "green" },
+  { label: "Engaged sections", value: "5", detail: "Scope, install, finance, video, acceptance", icon: MousePointerClick, tone: "blue" },
+  { label: "Finance clicks", value: "1", detail: "Finance option opened", icon: CreditCard, tone: "gold" },
+  { label: "Video engagement", value: "68%", detail: "Install method video watched", icon: PlayCircle, tone: "orange" },
+];
+
+const v3QuoteLandingSections = [
+  { label: "Scope", engagement: "Viewed twice", signal: "Customer checked playground shock-pad and compliance wording.", next: "Keep safety language tight and board-ready." },
+  { label: "Install timing", engagement: "Viewed twice", signal: "School holiday timing was revisited after the quote revision.", next: "Confirm capacity before promising install dates." },
+  { label: "Finance", engagement: "Clicked once", signal: "Finance is not the main blocker, but the option is being considered.", next: "Do not lead with discounting; keep finance as a support option." },
+  { label: "Videos", engagement: "68% watched", signal: "Install method content is doing useful confidence work.", next: "Reference the video in the follow-up instead of resending generic material." },
+  { label: "Acceptance path", engagement: "Opened", signal: "Customer is close enough to review how to proceed.", next: "Send a board pack and book the decision call." },
 ];
 
 const v3Scorecards = [
@@ -851,6 +876,7 @@ function App() {
   const useV4Experience = isV3 || isV4;
   const [askOpen, setAskOpen] = React.useState(false);
   const [profileOpen, setProfileOpen] = React.useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   const askPanelRef = React.useRef<HTMLDivElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
     return window.localStorage.getItem("diwa-sidebar-collapsed") === "true";
@@ -885,29 +911,55 @@ function App() {
     };
   }, [askOpen, profileOpen]);
 
+  React.useEffect(() => {
+    if (!mobileNavOpen) return;
+
+    const closeMobileNav = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (!target?.closest(".sidebar")) setMobileNavOpen(false);
+    };
+
+    const closeMobileNavOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileNavOpen(false);
+    };
+
+    window.addEventListener("pointerdown", closeMobileNav);
+    window.addEventListener("keydown", closeMobileNavOnEscape);
+
+    return () => {
+      window.removeEventListener("pointerdown", closeMobileNav);
+      window.removeEventListener("keydown", closeMobileNavOnEscape);
+    };
+  }, [mobileNavOpen]);
+
   if (isPrototypeOne) {
     return <PrototypeOneApp />;
   }
 
   return (
-    <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
+    <main className={`shell ${sidebarCollapsed ? "sidebar-collapsed" : ""} ${mobileNavOpen ? "mobile-nav-open" : ""}`}>
       <aside className="sidebar">
         <div className="brand-block">
           <div className="brand-logo-wrap">
             <img className="brand-logo" src={assetPath("/brand/ecolawn-logo-official.png")} alt="Eco Lawn" />
             <img className="brand-icon" src={assetPath("/brand/ecolawn-mark.jpg")} alt="Eco Lawn" />
           </div>
+          <span className="brand-pill">ECO LAWN</span>
         </div>
 
         <nav className="nav-list" aria-label="DIWA navigation">
-          <a className="nav-item active" href="#cockpit" title="Cockpit"><Gauge size={17} /> <span>Cockpit</span></a>
-          <a className="nav-item" href="#deals" title="Deals"><BriefcaseBusiness size={17} /> <span>Deals</span></a>
-          <a className="nav-item" href="#activities" title="Activities"><ClipboardList size={17} /> <span>Activities</span></a>
-          <a className="nav-item" href="#reports" title="Reports"><FileText size={17} /> <span>Reports</span></a>
-          <a className="nav-item" href="#scorecards" title="Scorecards"><CheckCircle2 size={17} /> <span>Scorecards</span></a>
-          <a className="nav-item" href="#agents" title="Agents"><Bot size={17} /> <span>Agents</span></a>
-          <a className="nav-item" href="#integrations" title="Integrations"><PlugZap size={17} /> <span>Integrations</span></a>
-          <a className="nav-item" href="#knowledge" title="Knowledge"><Brain size={17} /> <span>Knowledge</span></a>
+          <a className="nav-item active" href="#cockpit" title="Cockpit" onClick={() => setMobileNavOpen(false)}><Gauge size={17} /> <span>Cockpit</span></a>
+          <a className="nav-item" href="#deals" title="Deals" onClick={() => setMobileNavOpen(false)}><BriefcaseBusiness size={17} /> <span>Deals</span></a>
+          <a className="nav-item" href="#activities" title="Activities" onClick={() => setMobileNavOpen(false)}><ClipboardList size={17} /> <span>Activities</span></a>
+          <a className="nav-item" href="#leads" title="Leads" onClick={() => setMobileNavOpen(false)}><UserRoundCheck size={17} /> <span>Leads</span></a>
+          <a className="nav-item" href="#campaigns" title="Campaigns" onClick={() => setMobileNavOpen(false)}><Send size={17} /> <span>Campaigns</span></a>
+          <a className="nav-item" href="#reports" title="Reports" onClick={() => setMobileNavOpen(false)}><FileText size={17} /> <span>Reports</span></a>
+          <a className="nav-item" href="#sales-inbox" title="Sales Inbox" onClick={() => setMobileNavOpen(false)}><Inbox size={17} /> <span>Inbox</span></a>
+          <a className="nav-item" href="#products" title="Products" onClick={() => setMobileNavOpen(false)}><Layers3 size={17} /> <span>Products</span></a>
+          <a className="nav-item" href="#scorecards" title="Scorecards" onClick={() => setMobileNavOpen(false)}><CheckCircle2 size={17} /> <span>Scorecards</span></a>
+          <a className="nav-item" href="#agents" title="Agents" onClick={() => setMobileNavOpen(false)}><Bot size={17} /> <span>Agents</span></a>
+          <a className="nav-item" href="#integrations" title="Integrations" onClick={() => setMobileNavOpen(false)}><PlugZap size={17} /> <span>Integrations</span></a>
+          <a className="nav-item" href="#knowledge" title="Knowledge" onClick={() => setMobileNavOpen(false)}><Brain size={17} /> <span>Knowledge</span></a>
         </nav>
 
         <div className="sidebar-foot">
@@ -924,12 +976,20 @@ function App() {
           <button
             className="sidebar-toggle"
             type="button"
-            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-pressed={sidebarCollapsed}
-            onClick={() => setSidebarCollapsed((current) => !current)}
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={mobileNavOpen ? "Close navigation" : sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-pressed={mobileNavOpen || sidebarCollapsed}
+            aria-expanded={mobileNavOpen}
+            onClick={() => {
+              if (window.matchMedia("(max-width: 640px)").matches) {
+                setMobileNavOpen((current) => !current);
+                return;
+              }
+              setSidebarCollapsed((current) => !current);
+            }}
+            title={mobileNavOpen ? "Close navigation" : sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+            <span className="mobile-menu-icon">{mobileNavOpen ? <X size={20} /> : <Menu size={20} />}</span>
+            <span className="desktop-menu-icon">{sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</span>
             <span className="toggle-label">{sidebarCollapsed ? "Expand" : "Collapse"}</span>
           </button>
         </div>
@@ -940,13 +1000,13 @@ function App() {
           <div>
             {useV4Experience ? (
               <>
-                <p className="eyebrow">DIWA Cockpit</p>
-                <h1>Deal intelligence, smart queues, and sales context in one operating layer.</h1>
+                <p className="eyebrow">Eco Lawn DIWA Cockpit</p>
+                <h1>{isEcolawn ? "Sales pipeline stages drive the workspace." : "Pipeline stages drive the workspace."}</h1>
               </>
             ) : isV3 ? (
               <>
-                <p className="eyebrow">DIWA Cockpit</p>
-                <h1>Deal intelligence, smart queues, and sales context in one operating layer.</h1>
+                <p className="eyebrow">Eco Lawn DIWA Cockpit</p>
+                <h1>Sales command centre.</h1>
               </>
             ) : isV2 ? (
               <>
@@ -1099,6 +1159,9 @@ function App() {
           </section>
             </>
           )}
+          <DealsModule />
+          <ActivitiesLeadsCampaigns />
+          <ReportsInboxProducts />
         </div>
       </section>
     </main>
@@ -1198,6 +1261,8 @@ function CockpitV4({ summaryTrial = false }: { summaryTrial?: boolean }) {
           </button>
         ))}
       </div>
+
+      <FilterConsole deals={v3Deals} onSelectDeal={setSelectedId} />
 
       <div
         className="v4-workspace"
@@ -2272,16 +2337,77 @@ function V3DealTab({ activeTab, deal, summaryTrial = false }: { activeTab: strin
 
   if (activeTab === "Quotes") {
     return (
-      <div className="v3-quote-grid">
-        {v3QuoteSnapshots.map((quote) => (
-          <article key={quote.version}>
-            <div><strong>{quote.version}</strong><span>{quote.status}</span></div>
-            <h4>{money(quote.value)}</h4>
-            <small>Created {quote.created} · Sent {quote.sent}</small>
-            <p><b>Revision:</b> {quote.reason}</p>
-            <p><b>Risk:</b> {quote.risk}</p>
-          </article>
-        ))}
+      <div className="v3-quote-landing">
+        <section className="v3-quote-hero">
+          <div>
+            <p className="eyebrow">Rich Quote Landing Page · {deal.quote}</p>
+            <h3>{deal.customer} is reviewing the quote, not just receiving it.</h3>
+            <p>{deal.snapshot}</p>
+          </div>
+          <aside>
+            <span>{deal.quoteStatus}</span>
+            <strong>{money(deal.quoteValue)}</strong>
+            <small>{deal.quoteViewed} · {deal.expectedTiming}</small>
+          </aside>
+        </section>
+
+        <div className="v3-quote-metrics">
+          {v3QuoteLandingMetrics.map(({ label, value, detail, icon: Icon, tone }) => (
+            <article className={tone} key={label}>
+              <Icon size={16} />
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <small>{detail}</small>
+            </article>
+          ))}
+        </div>
+
+        <section className="v3-quote-section">
+          <div className="v3-scorecard-section-head">
+            <p className="eyebrow">Quote Versions</p>
+            <h4>What changed and why it matters</h4>
+          </div>
+          <div className="v3-quote-grid">
+            {v3QuoteSnapshots.map((quote) => (
+              <article key={quote.version}>
+                <div><strong>{quote.version}</strong><span>{quote.status}</span></div>
+                <h4>{money(quote.value)}</h4>
+                <small>Created {quote.created} · Sent {quote.sent}</small>
+                <p><b>Revision:</b> {quote.reason}</p>
+                <p><b>Risk:</b> {quote.risk}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="v3-quote-section">
+          <div className="v3-scorecard-section-head">
+            <p className="eyebrow">Customer Engagement</p>
+            <h4>What the quote behaviour is telling us</h4>
+          </div>
+          <div className="v3-quote-engagement-table">
+            {v3QuoteLandingSections.map((section) => (
+              <article key={section.label}>
+                <strong>{section.label}<em>{section.engagement}</em></strong>
+                <p>{section.signal}</p>
+                <span>{section.next}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="v3-quote-section v3-quote-follow-up">
+          <div className="v3-scorecard-section-head">
+            <p className="eyebrow">Follow-Up Implication</p>
+            <h4>{deal.nextAction}</h4>
+          </div>
+          <div className="v3-quote-detail-list">
+            <p><b>Commercial hook</b><span>Safety compliance, install timing and a clean board pack matter more than discounting.</span></p>
+            <p><b>Buying signal</b><span>{buyingSignals.join(", ")}.</span></p>
+            <p><b>Risk</b><span>If the quote remains a static PDF-style record, the team misses engagement timing and loses close control.</span></p>
+            <p><b>Recommended action</b><span>Use this quote landing behaviour to prepare the human follow-up, not another generic check-in.</span></p>
+          </div>
+        </section>
       </div>
     );
   }
